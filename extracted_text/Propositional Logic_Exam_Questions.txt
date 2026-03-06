@@ -1,0 +1,105 @@
+CSC-343: Midterm Exam 
+(Propositional Logic Review Questions) 
+ 
+ 
+ 
+ 
+ 
+• Show all work for full credit. Answers without supporting steps or reasoning will receive little or 
+no credit.  
+• Present your work in a clear, logical, and organized manner. Do not scatter steps with arrows or 
+disconnected notes.  
+• Clearly indicate your final answers (e.g., box or highlight them).  
+• For proofs or problems, state all assumptions explicitly and justify each step.  
+• Only non-graphing calculators are permitted. No other electronic devices (including cell phones) 
+are allowed.  
+• Use a pencil or erasable pen for your responses. 
+• For questions requiring responses that are not computational, you must use complete sentences. 
+• Any extraneous commentary about exam content will result in a reduced professionalism grade. If 
+you have concerns, ask clarifying questions instead. 
+• Scratch paper is for your use only. It will be collected but not reviewed. Transfer all final work to 
+this exam. 
+ 
+ 
+ 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+  
+
+Short Answer 
+1. Explain the difference between an argument being valid and an argument being sound. Why does this 
+distinction matter for AI systems? 
+2. Why is enumeration (truth table checking) considered an intractable inference procedure? What is its 
+time complexity? 
+3. Describe the main difference between forward chaining and backward chaining. In what scenario 
+would you prefer backward chaining over forward chaining? 
+4. What does it mean for an inference system to be complete? 
+True or False 
+1. An argument can be valid even if all of its premises are false. 
+2. If a propositional formula 𝜑 is satisfiable, then ~𝜑 must be unsatisfiable. 
+3. If a propositional formula 𝜑 is a tautology, then ~𝜑 must be unsatisfiable. 
+4. Forward chaining is guaranteed to terminate on any finite knowledge base with a finite set of 
+propositional symbols. 
+5. Backward chaining is more efficient than forward chaining when the goal can be proven using only a 
+small subset of the rules in the knowledge base. 
+6. The resolution rule is sound because whenever both parent clauses are true, the resolvent must also be 
+true. 
+7. If an inference system is complete, it must also be sound. 
+8. The formula (𝑃 ⇒ 𝑄) is logically equivalent to (~𝑄 ⇒ ~𝑃). 
+9. In the resolution refutation procedure, if we fail to derive the empty clause after exhausting all possible 
+resolutions, we can conclude that the query is entailed by the knowledge base. 
+10. A formula in Conjunctive Normal Form (CNF) that contains the clause (𝑃 ∨ ~𝑃) can be simplified by 
+removing that clause entirely without changing the formula's satisfiability. 
+11. Modus ponens alone (without any other inference rules) forms a complete inference system for 
+propositional logic. 
+Other Questions 
+1. Suppose your knowledge base 𝐾𝐵 = {𝐴 ∨ 𝐵, ~𝐴 ∨ 𝐶, ~𝐵 ∨ 𝐷, ~𝐶 ∨ 𝐷}. Use the resolution to prove 
+𝐾𝐵 ⊨ 𝐷. Be clear about each step and explain why the result follows. 
+2. Convert the (𝑃 ⇔  𝑄) ⇒ (𝑅 ∧ ~(𝑆 ∨ 𝑃)) to Conjunctive Normal Form (CNF). Show all steps clearly, 
+indicating which transformation rule you apply at each step. 
+3. Given the following knowledge base: 
+Facts: {𝐴, 𝐵} 
+Rules: 
+1. A ∧ B → C 
+
+2. C → D 
+3. B ∧ D → E 
+4. A ∧ E → F 
+5. C ∧ F → G 
+6. D ∧ E → H 
+(a) Execute the forward chaining algorithm to determine all facts that can be derived.  Make sure 
+to specify the current fact database after each iteration. 
+(b) Using backward chaining, determine whether 𝐺 can be proven from the knowledge base. 
+Draw a directed hypergraph showing the derivation. 
+4. For the knowledge base below, does 𝐾𝐵 ⊨ 𝑇? Be clear in all your steps and your resolvents. 
+Knowledge Base: 
+• P ∨ Q 
+• ¬P ∨ R 
+• ¬Q ∨ R 
+• ¬R ∨ S 
+• ¬S ∨ T 
+5. An inference algorithm is sound if it only derives sentences that are actually entailed by the knowledge 
+base. 
+(a) Define soundness formally using the symbols ⊢  (derives) and ⊨ (entails). 
+(b) A student builds a forward chaining system but introduces a bug: the algorithm sometimes 
+fires a rule when only some of its premises are satisfied, rather than requiring all premises. 
+Explain why this bug compromises soundness and give a concrete example demonstrating the 
+problem. 
+6. An inference algorithm is complete if it can derive every sentence that is entailed by the knowledge 
+base. A Horn clause  is a disjunction of literals with at most one positive literal. When written in 
+implication form, a definite clause (a Horn clause with exactly one positive literal) has the structure 𝐴1 ∧
+ 𝐴2 ∧ … ∧ 𝐴𝑛 ⇒  𝐵, where all literals are positive. 
+(a) Define completeness formally using the symbols ⊢  (derives) and ⊨ (entails). 
+(b) Resolution is complete for propositional logic, but forward chaining is only complete for 
+knowledge bases consisting of Horn clauses. Give an example of a simple knowledge base and 
+query where forward chaining fails to derive an entailed conclusion and explain why. 
+7. Forward chaining and backward chaining are restricted to knowledge bases containing only Horn 
+clauses (definite clauses), which do not permit negations. Explain why allowing negated literals in these 
+clauses would be problematic for these algorithms. 
+ 

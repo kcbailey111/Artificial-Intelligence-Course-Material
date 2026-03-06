@@ -1,0 +1,127 @@
+CSC-343: Midterm Exam 
+(Uniformed Search Review Questions) 
+ 
+ 
+ 
+ 
+• Show all work for full credit. Answers without supporting steps or reasoning will receive little or 
+no credit.  
+• Present your work in a clear, logical, and organized manner. Do not scatter steps with arrows or 
+disconnected notes.  
+• Clearly indicate your final answers (e.g., box or highlight them).  
+• For proofs or problems, state all assumptions explicitly and justify each step.  
+• Only non-graphing calculators are permitted. No other electronic devices (including cell phones) 
+are allowed.  
+• Use a pencil or erasable pen for your responses. 
+• For questions requiring responses that are not computational, you must use complete sentences. 
+• Any extraneous commentary about exam content will result in a reduced professionalism grade. If 
+you have concerns, ask clarifying questions instead. 
+• Scratch paper is for your use only. It will be collected but not reviewed. Transfer all final work to 
+this exam. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+ 
+ 
+ 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+  
+
+Short Answer 
+1. What is the “frontier” in a search algorithm, and why is it important? 
+2. Explain why DFS is not complete in infinite state spaces, while BFS is complete in finite state spaces. 
+3. What is the key difference between Tree Search and Graph Search? When would you choose one over 
+the other? 
+4. Explain the tradeoff that Iterative Deepening Search makes. Why is the redundant work at shallow 
+levels acceptable? 
+5. What does it mean for a search algorithm to be “optimal”? Give an example of an optimal algorithm 
+and a non-optimal algorithm from the uninformed search strategies. 
+6. Why might DFS be preferred over BFS in some situations, despite not guaranteeing optimal solutions? 
+True or False 
+1. Breadth-First Search is guaranteed to find the optimal solution when all edge costs are equal. 
+2. Depth-First Search requires less memory than Breadth-First Search because it only needs to store the 
+current path and unexplored siblings along that path. 
+3. In graph search, a node is added to the explored set when it is first generated (added to the frontier). 
+4. Iterative Deepening Search has the same asymptotic time complexity as Breadth-First Search. 
+5. Tree search can visit the same state multiple times, while graph search visits each state at most once. 
+6. Uniform-Cost Search expands nodes in order of increasing depth from the start state. 
+7. In a search tree with branching factor 𝑏, solution depth 𝑑, and maximum depth 𝑚, BFS has space 
+complexity 𝑂(𝑏𝑑) while DFS has space complexity 𝑂(𝑏𝑑). 
+ 
+Other Questions 
+Question 1 and 2 refer to the following state space graph where S is the start state and G is the goal 
+state. Edges are unlabeled (unit cost). As is typical from class, children are considered left-to-right. 
+S 
+/|\ 
+/ | \ 
+A  B  C 
+/|  |  |\ 
+D E  F  G H 
+|    | 
+G    G 
+1. Execute BFS. Show the contents of the frontier and explored 
+set after each iteration until the goal is found. Use the format: 
+Iteration Node Expanded Frontier 
+(front → back) 
+Explored Set 
+1  S ∅ 
+    
+What is the solution path found? Is this the optimal solution in 
+terms of path length? 
+2. Execute DFS. Show the contents of the frontier and explored 
+set after each iteration. Clearly indicate the top-of-stack using the 
+rightmost element. What solution path does DFS find? 
+Compared to the BFS solution, which found a shorter path?
+
+ 
+3. Consider the following undirected, weighted graph with start S and goal I: 
+          S 
+         /|\ 
+       2/ |3 \1 
+       /  |   \ 
+      A   B    C 
+     /|   |    |\ 
+   4/ |2  |5   |1 \6 
+   /  |   |    |   \ 
+  D   E   F    G    H 
+       \       | 
+        \3     |2 
+         \     | 
+           \  / 
+             I 
+Execute Uniform-Cost Search, showing the priority queue 
+contents (with path costs) after each node expansion. Break ties 
+alphabetically. 
+Iteration Node Expanded Path Cost Priority Queue 
+1  0 𝑆 
+    
+What is the optimal path and its total cost? 
+4. Consider the following tree: 
+         S 
+       / | \ 
+      A  B  C 
+     /|  |  |\ 
+    D E  F  G H 
+      |     | 
+      I     J (GOAL) 
+Execute Iterative Deepening Search, showing which nodes are 
+visited at each depth limit (0, 1, 2, 3). As is typical from class, 
+children are considered left-to-right. 
+Depth Limit Nodes Visited (in order) Goal Found? 
+0 𝑆 No. 
+   
+If this tree uniformly had branching factor 𝑏 = 3 and the goal was at 
+depth 𝑑 = 3, calculate the total nodes visited by IDS.
+ 
+5. Consider a search problem with branching factor 𝑏 = 4, solution depth 𝑑 = 5, and maximum depth 
+𝑚 =  10. 
+• Calculate the worst-case number of nodes generated by BFS to find a solution at depth 𝑑. Express 
+as both a formula and a numerical value. 
+• Calculate the worst-case number of nodes generated by DFS if it explores to maximum depth 𝑚 
+before finding the solution. 

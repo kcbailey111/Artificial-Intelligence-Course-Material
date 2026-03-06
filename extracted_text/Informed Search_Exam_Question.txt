@@ -1,0 +1,137 @@
+CSC-343: Midterm Exam 
+(Informed Search Review Questions) 
+ 
+ 
+ 
+ 
+• Show all work for full credit. Answers without supporting steps or reasoning will receive little or 
+no credit.  
+• Present your work in a clear, logical, and organized manner. Do not scatter steps with arrows or 
+disconnected notes.  
+• Clearly indicate your final answers (e.g., box or highlight them).  
+• For proofs or problems, state all assumptions explicitly and justify each step.  
+• Only non-graphing calculators are permitted. No other electronic devices (including cell phones) 
+are allowed.  
+• Use a pencil or erasable pen for your responses. 
+• For questions requiring responses that are not computational, you must use complete sentences. 
+• Any extraneous commentary about exam content will result in a reduced professionalism grade. If 
+you have concerns, ask clarifying questions instead. 
+• Scratch paper is for your use only. It will be collected but not reviewed. Transfer all final work to 
+this exam. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+ 
+ 
+ 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+  
+
+Short Answer 
+1. What is the fundamental difference between uninformed search (like UCS) and informed search (like 
+A*)? How does this difference affect the number of nodes expanded? 
+2. Define what it means for a heuristic to be admissible. Suppose A* uses a heuristic that overestimates 
+the cost to the goal for some nodes. Explain why A* might fail to find the optimal solution. 
+3. Explain the concept of heuristic dominance. Why would you prefer a dominating heuristic when using 
+A*? 
+4. For the 8-puzzle, consider the following two heuristics: 
+• Misplaced Tiles (ℎ₁): The number of tiles not in their goal position. 
+• Manhattan Distance (ℎ₂): The sum of the horizontal and vertical distances each tile must travel to 
+reach its goal position. 
+Explain why ℎ2 dominates ℎ1. 
+True or False 
+1. A* search is guaranteed to find an optimal solution if the heuristic is admissible, regardless of whether 
+it is consistent. 
+2. If heuristic ℎ₂ dominates heuristic ℎ₁, then ℎ₂(𝑛) ≥ ℎ₁(𝑛) for all states 𝑛. 
+3. A consistent heuristic is always admissible, but an admissible heuristic is not always consistent. 
+4. The straight-line distance heuristic for route-finding is both admissible and consistent. 
+5. In Weighted A* with 𝑓(𝑛) = 𝑔(𝑛) + 2 · ℎ(𝑛), if the heuristic ℎ is admissible, the algorithm is 
+guaranteed to find a solution whose cost is at most twice the optimal cost. 
+6. Beam search with beam width 𝑘 = 1 is equivalent to Greedy Best-First Search. 
+7. If A* using heuristic ℎ expands node 𝑛, then 𝑓(𝑛) ≤ 𝐶∗, where 𝐶∗ is the optimal solution cost. 
+8. An anytime algorithm must use an admissible heuristic to guarantee that solution quality improves over 
+time. 
+  
+
+Other Questions 
+For questions 1 through 3, consider the following graph where S is the start and G is the goal. Edge 
+costs are shown on edges, and ℎ(𝑛) values (heuristic estimates to G) are shown in parentheses next to 
+each node. 
+         S (h=10) 
+        /|\ 
+       4 3 2 
+      /  |  \ 
+   A(7) B(6) C(8) 
+     \   |   / 
+      5  3  2 
+       \ | / 
+        D(4) 
+         | 
+         6 
+         | 
+        G(0) 
+1. Are the listed heuristic values for ℎ admissible? Justify your 
+answer by checking specific nodes. 
+2. Execute A* search, showing the frontier (priority queue) 
+contents after each expansion. For each node in the frontier, 
+show 𝑓(𝑛) = 𝑔(𝑛) + ℎ(𝑛). Break ties alphabetically. Use a 
+search tree structure we used in class. 
+3. Execute Greedy Best-First Search using a search tree 
+structure. Is the resulting path optimal? 
+ 
+4. Consider the 8-puzzle with the following three heuristics: 
+• ℎ₁(𝑛): Number of misplaced tiles (not counting the blank) 
+• ℎ₂(𝑛): Manhattan distance (sum of horizontal + vertical distances of each tile from its goal 
+position) 
+• ℎ₃(𝑛): Number of tiles not in the goal row + Number of tiles not in the goal column 
+Consider the following puzzle state and goal 
+state. 
+   Current State:          Goal State: 
++---+---+---+         +---+---+---+ 
+| 2 | 8 | 3 |         | 1 | 2 | 3 | 
++---+---+---+         +---+---+---+ 
+| 1 | 6 | 4 |         | 4 | 5 | 6 | 
++---+---+---+         +---+---+---+ 
+| 7 |   | 5 |         | 7 | 8 |   | 
++---+---+---+         +---+---+---+ 
+ 
+ 
+(a) Calculate ℎ₁(𝑛), ℎ₂(𝑛), and ℎ₃(𝑛) for this 
+state. Show your work for each tile. 
+(b) Based on these calculations and the 
+definition of dominance, can you determine 
+which heuristic dominates the others? Explain. 
+ 
+ 
+(c) Consider a second state. Calculate all three 
+heuristics for this state. Does this change (or 
+solidify) your conclusion about dominance? 
++---+---+---+ 
+| 1 | 2 | 3 | 
++---+---+---+ 
+| 4 | 5 | 6 | 
++---+---+---+ 
+|   | 7 | 8 | 
++---+---+---+ 
+ 
+
+5. Consider a search tree with branching factor 3 and the following structure. Node labels show 𝑓-values 
+(𝑓 = 𝑔 + ℎ). 
+Level 0:           S(10) 
+                 /  |  \ 
+Level 1:      A(8) B(12) C(9) 
+              /|\  /|\   /|\ 
+Level 2:      ...  ...   ... 
+(a) With beam width 𝑘 = 2, which nodes survive at Level 1? 
+(b) Explain why pruning node B could be problematic, and what this reveals about beam search's 
+guarantees regarding completeness and optimality. 
+(c) Consider a problem that has optimal solution cost 50. Beam search with 𝑘 = 3 finds a solution 
+with cost 65. Can we conclude the heuristic is inadmissible? Explain. 
+(d) Describe a scenario where increasing the beam width from 𝑘 = 2 to 𝑘 = 3 could actually lead to 
+a worse solution. 

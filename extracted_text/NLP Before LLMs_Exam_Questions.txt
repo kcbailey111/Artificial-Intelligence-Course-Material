@@ -1,0 +1,121 @@
+CSC-343: Midterm Exam 
+(NLP Before LLMs Review Questions) 
+ 
+ 
+ 
+ 
+• Show all work for full credit. Answers without supporting steps or reasoning will receive little or 
+no credit.  
+• Present your work in a clear, logical, and organized manner. Do not scatter steps with arrows or 
+disconnected notes.  
+• Clearly indicate your final answers (e.g., box or highlight them).  
+• For proofs or problems, state all assumptions explicitly and justify each step.  
+• Only non-graphing calculators are permitted. No other electronic devices (including cell phones) 
+are allowed.  
+• Use a pencil or erasable pen for your responses. 
+• For questions requiring responses that are not computational, you must use complete sentences. 
+• Any extraneous commentary about exam content will result in a reduced professionalism grade. If 
+you have concerns, ask clarifying questions instead. 
+• Scratch paper is for your use only. It will be collected but not reviewed. Transfer all final work to 
+this exam. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+ 
+ 
+ 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+  
+
+Short Answer 
+1. What is the fundamental difference between symbolic/rule -based NLP systems and statistical NLP 
+systems? Explain why the statistical approach is considered more robust. 
+2. Describe the data sparsity problem that arises when trying to estimate 𝑃(𝑤𝑛 |𝑤1, 𝑤2, … , 𝑤𝑛−1) for long 
+sequences. Why can't we simply memorize probabilities for all possible word sequences? 
+3. Explain the distributional hypothesis “You shall know a word by the company it keeps”. How does this 
+principle justify using word co-occurrence patterns to learn semantic representations? 
+4. Why do we use log -likelihood instead of raw likelihood  when training language models and word 
+embeddings? What numerical problem does this solve? 
+5. Describe three limitations of simple word embeddings like Word2Vec. 
+6. Explain the relationship between perplexity and cross -entropy. How do you convert from one to the 
+other? 
+ 
+True or False 
+1. A bigram language model makes the assumption that the probability of a word depends only on the 
+single word that precedes it. 
+2. In distributional semantics, words that frequently appear together in sentences (like “king” and 
+“throne”) are expected to have more similar vector representations than words that appear in similar 
+contexts (like “doctor” and “nurse”). 
+3. Add-1 (Laplace) smoothing tends to overestimate the probability of unseen events more than add -𝑘 
+smoothing with 𝑘 <  1. 
+4. A unigram language model can capture grammatical structure and word order dependencies in 
+generated text. 
+5. Perplexity of 100 indicates that the language model is equally uncertain between 100 possible next 
+words on average. 
+6. In the Skip-gram model, each word is represented by two vectors: one when it serves as a center word 
+and one when it serves as a context word. 
+7. Cosine similarity between two word vectors can range from −1 to 1, where values close to 1 indicate 
+similar meanings. 
+8. One-hot vector representations inherently capture semantic similarity between words because similar 
+words have similar binary patterns. 
+9. The Markov assumption in n -gram models exists primarily to address the data sparsity problem that 
+arises as context length increases. 
+  
+
+Other Questions 
+1. N-gram Probability Calculation: Given the following bigram counts from a corpus: 
+Count("the cat"): 15 
+Count("the"): 500 
+Count("cat sat"): 8 
+Count("cat"): 50 
+Count("sat"): 80 
+Calculate each of the following: 
+(a) P("cat" | "the") using maximum likelihood estimation. [0.03] 
+(b) P("sat" | "cat") using maximum likelihood estimation. [0.16] 
+(c) P("the cat sat") using the bigram model. [0.0048] 
+ 
+2. Perplexity Comparison: Two language models are evaluated on the same test corpus: 
+Model A: cross-entropy = 4.5 bits/word 
+Model B: cross-entropy = 6.2 bits/word   
+(a) Calculate the perplexity for each model. 
+(b) Which model is better and why? 
+(c) Interpret the perplexity values: what does Model A's perplexity tell us about the average number 
+of equally likely choices the model faces? 
+ 
+3. Consider a vocabulary of size |𝑉|  =  10,000. You observe: 
+Count("quantum", "physics") = 3 
+Count("quantum") = 100 
+Calculate P("physics" | "quantum") using: 
+(a) Maximum likelihood (no smoothing) [0.03] 
+(b) Add-1 (Laplace) smoothing [0.000396] 
+(c) Add-0.1 smoothing [0.002818] 
+ 
+ 
+ 
+ 
+ 
+
+4. A bigram language model assigns the following probabilities to a test sentence “the dog barked”: 
+P("the" | <START>) = 0.1 
+P("dog" | "the") = 0.02 
+P("barked" | "dog") = 0.05 
+P(<END> | "barked") = 0.4 
+Calculate: 
+(a) The probability of the entire sentence. [0.00004] 
+(b) The cross-entropy in 
+𝑏𝑖𝑡𝑠
+𝑤𝑜𝑟𝑑. [3.65] 
+(c) The perplexity. [12.55] 
+ 
+5. Consider the sentence “the quick brown fox jumps” with window size 2. 
+(a) List all (center word, context word) pairs that would be generated for training. [14 pairs] 
+(b) If we instead used window size 1, how many fewer training pairs would we get? [8 pairs] 
+(c) Briefly explain how window size affects what semantic relationships are captured. 
+ 
+ 

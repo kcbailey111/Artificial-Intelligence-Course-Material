@@ -1,0 +1,97 @@
+CSC-343: Midterm Exam 
+(Advanced Search (Optimization) Review Questions) 
+ 
+ 
+ 
+ 
+• Show all work for full credit. Answers without supporting steps or reasoning will receive little or 
+no credit.  
+• Present your work in a clear, logical, and organized manner. Do not scatter steps with arrows or 
+disconnected notes.  
+• Clearly indicate your final answers (e.g., box or highlight them).  
+• For proofs or problems, state all assumptions explicitly and justify each step.  
+• Only non-graphing calculators are permitted. No other electronic devices (including cell phones) 
+are allowed.  
+• Use a pencil or erasable pen for your responses. 
+• For questions requiring responses that are not computational, you must use complete sentences. 
+• Any extraneous commentary about exam content will result in a reduced professionalism grade. If 
+you have concerns, ask clarifying questions instead. 
+• Scratch paper is for your use only. It will be collected but not reviewed. Transfer all final work to 
+this exam. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+ 
+ 
+ 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+  
+
+Short Answer 
+1. When should you use optimization techniques (like hill climbing) instead of path -finding search (like 
+A*)? 
+2. What is the “local optima problem” in hill climbing? Why does it occur? 
+3. Explain the exploration versus exploitation tradeoff in simulated annealing. How does temperature 
+control this tradeoff? 
+4. What is the purpose of the cooling schedule in simulated annealing? What happens if the temperature 
+decreases too quickly? 
+5. In genetic algorithms, what is the role of crossover? How does it differ from mutation? 
+6. Explain why elitism is commonly used in genetic algorithms. What problem does it solve? 
+7. How does the definition of “neighbor” affect hill climbing performance? What is the tradeoff between 
+small and large neighborhoods? 
+8. Why might a genetic algorithm outperform hill climbing on a problem with many local optima? 
+ 
+True or False 
+1. A* search is more memory-efficient than hill climbing and genetic algorithms. 
+2. Hill climbing is guaranteed to find the global optimum if the search space has only one local optimum. 
+3. In simulated annealing, decreasing the temperature too quickly can cause the algorithm to behave like 
+hill climbing. 
+4. Genetic algorithms maintain a population of solutions, which helps them explore multiple regions of 
+the search space simultaneously. 
+5. In the 2-opt neighborhood for TSP, reversing a segment of the tour always produces a valid tour. 
+6. A larger neighborhood in hill climbing always leads to better solutions because more options are 
+considered. 
+7. In genetic algorithms, a higher mutation rate always leads to faster convergence to the optimal solution. 
+8. Random restart hill climbing can find the global optimum with probability approaching 1 if run with 
+enough restarts. 
+  
+
+Other Questions 
+1. Consider the following optimization landscape where we want to maximize 𝑓(𝑥). Each state has 
+neighbors immediately to its left and right. 
+State A B C D E F G H I J K L M N O P Q R S T 
+𝑓(𝑥) 2 4 6 8 5 2 4 7 10 6 3 5 8 11 6 6 6 13 9 6 
+(a) Identify all local maxima in this landscape. Which is the global maximum? 
+(b) Starting from state C, trace hill climbing. Show each step and the final state reached. 
+(c) Starting from state G, trace hill climbing. What state does it terminate at? 
+(d) Starting from state P, trace hill climbing. What state does it terminate at? 
+ 
+2. In simulated annealing, the probability of accepting a worse move is given by: 
+𝑃 =  𝑒−|𝑓(𝑐𝑢𝑟𝑟𝑒𝑛𝑡)− 𝑓(𝑛𝑒𝑖𝑔ℎ𝑏𝑜𝑟)|
+𝑇  
+where we are maximizing 𝑓, and 𝑇 is the temperature. 
+(a) Calculate the acceptance probability when the current state has 𝑓 = 50, neighbor has 𝑓 = 45, and 
+𝑇 = 10.  
+(b) Calculate the acceptance probability for the same scenario, but 𝑇 = 2. 
+(c) As 𝑇 → 0, what does simulated annealing behave like? As 𝑇 → ∞? 
+ 
+3. For each problem below, recommend the most appropriate algorithm (Hill Climbing, Simulated 
+Annealing, or Genetic Algorithm) and justify your choice. 
+(a) A phone camera engineer is adjusting two continuous parameters (lens offset and gain). A tiny 
+change in either parameter produces a tiny, predictable change in sharpness. Evaluations are 
+instant and you already have a decent starting setting. 
+(b) You must schedule 200 exams into time slots and rooms with constraints: no student conflicts, 
+room capacities, and professor availability. There are astronomically many combinations, and you 
+want a good feasible timetable, not necessarily the perfect one. 
+(c) You are optimizing a complex objective where almost every local improvement leads to a dead 
+end (think “rugged mountains”), and a good solution requires taking several worse steps before 
+reaching a much better region. 
+(d) You are calibrating a sensor by adjusting a single value, and the accuracy curve is basically a 
+single smooth hill (one peak). Starting near the peak, you just need to climb to the top. 
+ 
