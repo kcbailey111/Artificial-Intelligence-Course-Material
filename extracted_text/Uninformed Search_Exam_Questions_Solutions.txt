@@ -1,0 +1,134 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(Uninformed Search Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. What is the "frontier" in a search algorithm, and why is it important?
+
+   The frontier is the set of nodes that have been generated but not yet expanded. It represents the boundary between explored and unexplored parts of the search space. The choice of how to select the next node from the frontier (FIFO for BFS, LIFO for DFS, priority for UCS) defines the search strategy and its properties (completeness, optimality).
+
+2. Explain why DFS is not complete in infinite state spaces, while BFS is complete in finite state spaces.
+
+   DFS can follow one path indefinitely in an infinite space and never return to try other branches, so it may never find a goal. BFS explores level by level, so in a finite state space it will eventually visit every reachable state, including any goal.
+
+3. What is the key difference between Tree Search and Graph Search? When would you choose one over the other?
+
+   Tree Search: can add the same state to the frontier multiple times via different paths; may revisit states.
+   Graph Search: maintains an explored set and never adds a state that has already been explored; visits each state at most once.
+   Use Tree Search when memory is critical or when revisiting states might be beneficial. Use Graph Search when you want to avoid redundant work and have enough memory for the explored set.
+
+4. Explain the tradeoff that Iterative Deepening Search makes. Why is the redundant work at shallow levels acceptable?
+
+   IDS makes repeated depth-limited searches with increasing depth limits. The tradeoff: it re-expands nodes at shallow depths many times (redundant work), but gains BFS-like completeness and optimality with DFS-like space complexity O(bd).
+   Redundant work is acceptable because the number of nodes grows exponentially with depth; most nodes are at the deepest level, so re-expanding shallower nodes is a small fraction of total work.
+
+5. What does it mean for a search algorithm to be "optimal"? Give an example of an optimal algorithm and a non-optimal algorithm from the uninformed search strategies.
+
+   Optimal: the algorithm finds a least-cost solution when costs matter (or shortest path when costs are uniform).
+   Optimal: BFS (uniform cost), UCS. Non-optimal: DFS (may find a longer path first).
+
+6. Why might DFS be preferred over BFS in some situations, despite not guaranteeing optimal solutions?
+
+   DFS uses less memory (O(bm) vs O(b^d) for BFS, where m can be much larger than d). It can find a solution quickly if goals are deep. Useful when memory is limited or when any solution (not necessarily optimal) is acceptable.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. Breadth-First Search is guaranteed to find the optimal solution when all edge costs are equal.
+   TRUE. BFS explores in order of depth, so the first goal found has minimum depth (and minimum cost when costs are equal).
+
+2. Depth-First Search requires less memory than Breadth-First Search because it only needs to store the current path and unexplored siblings along that path.
+   TRUE. DFS stores O(bm) nodes; BFS stores O(b^d) for the frontier.
+
+3. In graph search, a node is added to the explored set when it is first generated (added to the frontier).
+   FALSE. A node is added to the explored set when it is expanded (removed from the frontier), not when first generated.
+
+4. Iterative Deepening Search has the same asymptotic time complexity as Breadth-First Search.
+   TRUE. Both are O(b^d) when the goal is at depth d; IDS has a constant factor overhead from re-expansion.
+
+5. Tree search can visit the same state multiple times, while graph search visits each state at most once.
+   TRUE. Tree search has no explored set; graph search avoids revisiting explored states.
+
+6. Uniform-Cost Search expands nodes in order of increasing depth from the start state.
+   FALSE. UCS expands in order of increasing path cost g(n), not depth. Depth and cost differ when edge costs are not uniform.
+
+7. In a search tree with branching factor b, solution depth d, and maximum depth m, BFS has space complexity O(b^d) while DFS has space complexity O(b^d).
+   FALSE. BFS: O(b^d). DFS: O(bm), not O(b^d).
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+1. BFS on the given graph (S start, G goal, unit cost, children left-to-right):
+
+   Iteration  Node Expanded   Frontier (front→back)      Explored Set
+   -----------------------------------------------------------------------
+   1          S               [A, B, C]                   {S}
+   2          A               [B, C, D, E]                {S, A}
+   3          B               [C, D, E, F]                {S, A, B}
+   4          C               [D, E, F, G, H]             {S, A, B, C}
+   5          D               [E, F, G, H]                {S, A, B, C, D}
+   6          E               [F, G, H]                   {S, A, B, C, D, E}
+   7          F               [G, H]                      {S, A, B, C, D, E, F}
+   8          G               [H]                         {S, A, B, C, D, E, F, G}
+   Goal G found when G is expanded.
+
+   Solution path: S → A → D → G (or S → C → G depending on child order; D and G both connect). Given the graph:
+   S has children A, B, C (left-to-right). A has D, E. D has G. So path S-A-D-G.
+   This is optimal (shortest path length 3).
+
+2. DFS on the same graph (stack, rightmost = top):
+
+   Iteration  Node Expanded   Frontier (stack, top=right)   Explored Set
+   -----------------------------------------------------------------------
+   1          S               [A, B, C]                     {S}
+   2          C               [A, B, G, H]                  {S, C}
+   3          H               [A, B, G]                     {S, C, H}
+   4          G               [A, B]                        {S, C, H, G}
+   Goal G found.
+
+   Solution path: S → C → H → G (or S → C → G if G is child of C). From the graph, C has children G and H (left-to-right). So DFS goes C, then G (or H first). If G is left of H: S-C-G. If H is left: S-C-H-G. Given "G H" as children of C, left-to-right: G, H. So DFS: S, A?, B?, C, G. Path: S-C-G.
+   BFS found S-A-D-G (length 3). DFS found S-C-G (length 2). So DFS found a shorter path here. (With this graph, S-C-G is length 2; S-A-D-G is length 3.)
+
+3. Uniform-Cost Search (S to I, break ties alphabetically):
+
+   Iteration  Node Expanded   Path Cost   Priority Queue (cost, node)
+   -----------------------------------------------------------------------
+   1          S               0           [(2,A), (3,B), (1,C)]
+   2          C               1           [(2,A), (3,B), (2,G), (7,H)]
+   3          A               2           [(3,B), (2,G), (6,D), (4,E), (7,H)]
+   4          G               2           [(3,B), (4,E), (4,I), (6,D), (7,H)]
+   5          B               3           [(4,E), (4,I), (6,D), (8,F), (7,H)]
+   6          E               4           [(4,I), (6,D), (7,F), (7,H)]
+   7          I               4           Goal found.
+
+   Optimal path: S → C → G → I. Total cost: 1 + 1 + 2 = 4.
+
+4. Iterative Deepening Search (S start, J goal, children left-to-right):
+
+   Depth 0: S. Goal? No.
+   Depth 1: S, A, B, C. Goal? No.
+   Depth 2: S, A, B, C, D, E, F, G, H. Goal? No.
+   Depth 3: S, A, B, C, D, E, F, G, H, I, J. Goal? Yes.
+
+   Nodes visited at each depth limit:
+   Depth 0: S
+   Depth 1: S, A, D, E, B, F, C, G, H
+   Depth 2: S, A, D, I, E, B, F, C, G, J (goal)
+   (Exact order depends on which branch contains J. If J is child of G: S, A, D, E, B, F, C, G, J.)
+
+   For b=3, d=3: At depth 0: 1. At depth 1: 1+3=4. At depth 2: 1+3+9=13. At depth 3: 1+3+9+27=40.
+   Total nodes visited by IDS: 1 + 4 + 13 + 40 = 58.
+   (Standard formula: (b/(b-1))^2 * b^d for large d; for b=3,d=3: roughly 1+4+13+40=58.)
+
+5. b=4, d=5, m=10:
+
+   BFS worst-case nodes generated to find solution at depth d:
+   Sum from depth 0 to d: 1 + 4 + 16 + 64 + 256 + 1024 = (4^6 - 1)/(4 - 1) = (4096 - 1)/3 = 1365.
+   Formula: (b^(d+1) - 1)/(b - 1) = (4^6 - 1)/3 = 1365.
+
+   DFS worst-case (explores to depth m before finding solution at d):
+   Assumes DFS goes depth m first. Nodes = 1 + 4 + 16 + ... + 4^10 = (4^11 - 1)/3 = (4194304 - 1)/3 = 1398101.

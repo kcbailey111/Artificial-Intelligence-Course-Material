@@ -1,0 +1,138 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(Propositional Logic Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. Explain the difference between an argument being valid and an argument being sound. Why does this distinction matter for AI systems?
+
+   Valid: whenever the premises are true, the conclusion must be true (the form of the argument is correct).
+   Sound: the argument is valid AND all premises are actually true.
+   An argument can be valid with false premises. Soundness requires both valid form and true premises. For AI systems, we need sound reasoning so conclusions are actually true in the world, not just logically implied by possibly false beliefs.
+
+2. Why is enumeration (truth table checking) considered an intractable inference procedure? What is its time complexity?
+
+   For n propositional symbols, a truth table has 2^n rows. Checking entailment requires evaluating the KB and query for each row. Time complexity is O(2^n), which is exponential and intractable for large n.
+
+3. Describe the main difference between forward chaining and backward chaining. In what scenario would you prefer backward chaining over forward chaining?
+
+   Forward chaining: start from known facts, apply rules to derive new facts until the goal is derived (data-driven).
+   Backward chaining: start from the goal (query), find rules whose conclusion matches the goal, then recursively prove their premises (goal-driven).
+   Prefer backward chaining when the goal is specific and only a small subset of the KB is relevant; it avoids deriving many irrelevant facts.
+
+4. What does it mean for an inference system to be complete?
+
+   An inference system is complete if, whenever KB ⊨ α (the KB entails α), the system can derive α (KB ⊢ α). That is, every entailed sentence can be derived.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. An argument can be valid even if all of its premises are false.
+   TRUE. Validity depends only on form: if premises were true, conclusion would be true. Premises can be false.
+
+2. If a propositional formula φ is satisfiable, then ¬φ must be unsatisfiable.
+   FALSE. Both can be satisfiable (e.g., P: φ = P, ¬φ = ¬P; both satisfiable).
+
+3. If a propositional formula φ is a tautology, then ¬φ must be unsatisfiable.
+   TRUE. A tautology is true in all models; ¬φ is false in all models, so ¬φ is unsatisfiable.
+
+4. Forward chaining is guaranteed to terminate on any finite knowledge base with a finite set of propositional symbols.
+   TRUE. There are finitely many possible facts; forward chaining derives at most that many.
+
+5. Backward chaining is more efficient than forward chaining when the goal can be proven using only a small subset of the rules in the knowledge base.
+   TRUE. Backward chaining focuses on the goal and relevant rules; forward chaining may derive many irrelevant facts.
+
+6. The resolution rule is sound because whenever both parent clauses are true, the resolvent must also be true.
+   TRUE. Resolution is sound: if parent clauses are true, the resolvent is true.
+
+7. If an inference system is complete, it must also be sound.
+   FALSE. Completeness and soundness are independent. A system can be complete but unsound (derive non-entailed sentences).
+
+8. The formula (P ⇒ Q) is logically equivalent to (¬Q ⇒ ¬P).
+   TRUE. Contrapositive. Both mean "if P then Q."
+
+9. In the resolution refutation procedure, if we fail to derive the empty clause after exhausting all possible resolutions, we can conclude that the query is entailed by the knowledge base.
+   FALSE. We conclude the query is NOT entailed. Resolution refutation proves KB ⊨ α by showing KB ∧ ¬α is unsatisfiable (empty clause). If we cannot derive the empty clause, we cannot conclude entailment.
+
+10. A formula in CNF that contains the clause (P ∨ ¬P) can be simplified by removing that clause entirely without changing the formula's satisfiability.
+    TRUE. (P ∨ ¬P) is always true (tautology), so it can be removed from a conjunction.
+
+11. Modus ponens alone (without any other inference rules) forms a complete inference system for propositional logic.
+    FALSE. Modus ponens is not complete for full propositional logic; it cannot derive all entailed sentences (e.g., some require other rules or resolution).
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+1. Resolution to prove KB ⊨ D. KB = {A∨B, ¬A∨C, ¬B∨D, ¬C∨D}.
+
+   Refutation: Add ¬D and derive empty clause.
+   Clauses: A∨B, ¬A∨C, ¬B∨D, ¬C∨D, ¬D.
+
+   Resolve ¬D with ¬B∨D: {¬B}
+   Resolve ¬D with ¬C∨D: {¬C}
+   Resolve A∨B with ¬A∨C: {B∨C}
+   Resolve B∨C with ¬B: {C}
+   Resolve C with ¬C: ∅ (empty clause).
+
+   Thus KB ∧ ¬D is unsatisfiable, so KB ⊨ D.
+
+2. Convert (P ⇔ Q) ⇒ (R ∧ ¬(S ∨ P)) to CNF.
+
+   Step 1: P ⇔ Q ≡ (P⇒Q)∧(Q⇒P) ≡ (¬P∨Q)∧(¬Q∨P).
+   So (P⇔Q)⇒(R∧¬(S∨P)) ≡ ¬[(¬P∨Q)∧(¬Q∨P)] ∨ [R∧¬(S∨P)].
+
+   Step 2: ¬[(¬P∨Q)∧(¬Q∨P)] ≡ ¬(¬P∨Q)∨¬(¬Q∨P) ≡ (P∧¬Q)∨(Q∧¬P).
+   So we have [(P∧¬Q)∨(Q∧¬P)] ∨ [R∧¬(S∨P)].
+
+   Step 3: ¬(S∨P) ≡ ¬S∧¬P. So R∧¬(S∨P) ≡ R∧¬S∧¬P.
+
+   Step 4: Distribute to get CNF:
+   (P∧¬Q)∨(Q∧¬P)∨(R∧¬S∧¬P).
+   Use distribution: (A∨B)∧(A∨C) for A∨(B∧C).
+   Write X = (P∧¬Q)∨(Q∧¬P). Then X∨(R∧¬S∧¬P).
+   (X∨R)∧(X∨¬S)∧(X∨¬P).
+   X = (P∧¬Q)∨(Q∧¬P). Distribute:
+   (P∨Q)∧(P∨¬P)∧(¬Q∨Q)∧(¬Q∨¬P) = (P∨Q)∧(¬Q∨¬P) (tautologies removed).
+   So CNF: (P∨Q)∧(¬P∨¬Q)∧(P∨Q∨R)∧(P∨Q∨¬S)∧(P∨Q∨¬P)... 
+   More carefully, X = (P∧¬Q)∨(Q∧¬P).
+   (P∧¬Q)∨(Q∧¬P)∨R gives (P∨Q∨R)∧(P∨¬P∨R)∧(¬Q∨Q∨R)∧(¬Q∨¬P∨R) = (P∨Q∨R)∧(¬P∨¬Q∨R).
+   Similarly for ¬S and ¬P. Final CNF clauses:
+   (P∨Q), (¬P∨¬Q), (P∨Q∨R), (¬P∨¬Q∨R), (P∨Q∨¬S), (¬P∨¬Q∨¬S), (P∨Q∨¬P), (¬P∨¬Q∨¬P).
+   Simplifying: (P∨¬P)=tautology. So: (P∨Q), (¬P∨¬Q), (P∨Q∨R), (¬P∨¬Q∨R), (P∨Q∨¬S), (¬P∨¬Q∨¬S).
+
+3. Forward and Backward Chaining:
+
+   Facts: {A, B}. Rules: A∧B→C, C→D, B∧D→E, A∧E→F, C∧F→G, D∧E→H.
+
+   (a) Forward chaining:
+   Start: {A, B}
+   A∧B satisfied → add C: {A, B, C}
+   C satisfied → add D: {A, B, C, D}
+   B∧D satisfied → add E: {A, B, C, D, E}
+   A∧E satisfied → add F: {A, B, C, D, E, F}
+   C∧F satisfied → add G: {A, B, C, D, E, F, G}
+   D∧E satisfied → add H: {A, B, C, D, E, F, G, H}
+   No more rules fire. Derived: C, D, E, F, G, H.
+
+   (b) Backward chaining for G: Need C∧F→G. Prove C: A∧B→C, A and B are facts. Prove F: A∧E→F, need E: B∧D→E, need D: C→D, need C (done). So C, D, E, F, G. G can be proven.
+
+4. KB ⊨ T? KB: P∨Q, ¬P∨R, ¬Q∨R, ¬R∨S, ¬S∨T.
+
+   Refutation: add ¬T.
+   Resolve ¬T with ¬S∨T: {¬S}
+   Resolve ¬S with ¬R∨S: {¬R}
+   Resolve ¬R with ¬P∨R: {¬P}
+   Resolve ¬R with ¬Q∨R: {¬Q}
+   Resolve P∨Q with ¬P: {Q}
+   Resolve Q with ¬Q: ∅. So KB ⊨ T.
+
+5. (a) Soundness: An algorithm is sound if whenever KB ⊢ α, then KB ⊨ α. (If it derives α, then α is entailed.)
+   (b) Bug: Firing a rule when only some premises are satisfied. Example: Rule A∧B→C. If we fire when only A is true, we might derive C even when B is false. Then we could have KB ⊢ C but KB ⊭ C (e.g., model where A true, B false, C false). So soundness is violated.
+
+6. (a) Completeness: An algorithm is complete if whenever KB ⊨ α, then KB ⊢ α. (If α is entailed, the algorithm can derive it.)
+   (b) Example: KB = {P∨Q}. Query: P∨Q. Forward chaining with Horn clauses only handles definite clauses (at most one positive literal). P∨Q has two positive literals; it is not a Horn clause. Forward chaining cannot derive P∨Q from {P∨Q} because it doesn't have rules of that form—it works with implications. So forward chaining fails to derive P∨Q even though KB ⊨ P∨Q.
+
+7. Forward and backward chaining work with definite clauses (A₁∧...∧Aₙ ⇒ B). They determine when to fire a rule by checking whether all premises are true. With negated literals (e.g., A∧¬B⇒C), we need to know when ¬B holds—i.e., when B is false. That requires either a closed-world assumption (everything not known true is false) or explicit negation handling. Standard forward/backward chaining assumes positive literals only; adding negation complicates the inference and can break completeness/soundness without a proper semantics for negation (e.g., negation as failure).

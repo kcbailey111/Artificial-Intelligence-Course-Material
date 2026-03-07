@@ -1,0 +1,121 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(NLP Before LLMs Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. What is the fundamental difference between symbolic/rule-based NLP systems and statistical NLP systems? Explain why the statistical approach is considered more robust.
+
+   Symbolic/rule-based: rely on hand-crafted grammar rules and lexicons. Linguistic knowledge is explicitly encoded.
+   Statistical: learn patterns from data; probabilities and models are estimated from corpora.
+   Statistical systems are more robust because they handle real-world variation, ambiguity, and noise that are hard to capture with rules. Rules tend to be brittle and fail on unexpected inputs.
+
+2. Describe the data sparsity problem that arises when trying to estimate P(w_n | w_1, w_2, ..., w_{n-1}) for long sequences. Why can't we simply memorize probabilities for all possible word sequences?
+
+   As context length grows, the number of possible n-grams grows exponentially (|V|^n). Most sequences never appear in the corpus, so we have zero or very few counts for most n-grams. We cannot memorize all probabilities because the number of possible sequences is astronomically large and the corpus covers only a tiny fraction.
+
+3. Explain the distributional hypothesis "You shall know a word by the company it keeps". How does this principle justify using word co-occurrence patterns to learn semantic representations?
+
+   The hypothesis: words with similar meanings appear in similar contexts. If two words tend to co-occur with the same surrounding words, they likely have similar meanings. Co-occurrence counts (e.g., in a context window) yield a vector per word; similar vectors correspond to similar meanings. This justifies learning semantic representations from co-occurrence patterns.
+
+4. Why do we use log-likelihood instead of raw likelihood when training language models and word embeddings? What numerical problem does this solve?
+
+   Likelihood is a product of many small probabilities (each in (0,1)), which causes numerical underflow. Logarithms convert products to sums: log(∏ p_i) = Σ log(p_i). Log-likelihood avoids underflow and is numerically stable. Also, maximizing log-likelihood is equivalent to maximizing likelihood since log is monotonic.
+
+5. Describe three limitations of simple word embeddings like Word2Vec.
+
+   (1) One vector per word—no sense disambiguation; homonyms share one representation. (2) No direct modeling of word order or syntax; only context windows. (3) Limited capture of negation, compositionality, and more complex semantic relations; linear analogies work for some cases but not all.
+
+6. Explain the relationship between perplexity and cross-entropy. How do you convert from one to the other?
+
+   Perplexity = 2^(cross-entropy) (or e^(cross-entropy) in natural log). Cross-entropy H measures average bits per word; perplexity is the exponentiated cross-entropy. Lower cross-entropy means lower perplexity and a better model. Perplexity can be interpreted as the effective "branching factor" (number of equally likely choices) per word.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. A bigram language model assumes the probability of a word depends only on the single word that precedes it.
+   TRUE.
+
+2. In distributional semantics, words that frequently appear together in sentences (like "king" and "throne") are expected to have more similar vector representations than words that appear in similar contexts (like "doctor" and "nurse").
+   FALSE. Distributional semantics emphasizes similar contexts. "Doctor" and "nurse" appear in similar contexts and thus have similar vectors. "King" and "throne" co-occur but may have different contextual distributions.
+
+3. Add-1 (Laplace) smoothing tends to overestimate the probability of unseen events more than add-k smoothing with k < 1.
+   TRUE. Add-1 adds a full count to every n-gram, which can heavily boost unseen events when V is large. Add-k with k < 1 (e.g., 0.1) adds less and produces smaller probability mass for unseen events.
+
+4. A unigram language model can capture grammatical structure and word order dependencies in generated text.
+   FALSE. Unigrams model P(w) only; they ignore context and word order, so they cannot capture grammar or dependencies.
+
+5. Perplexity of 100 indicates that the language model is equally uncertain between 100 possible next words on average.
+   TRUE. Perplexity is the effective number of equiprobable choices; 100 means the model is roughly as uncertain as choosing among 100 equally likely words.
+
+6. In the Skip-gram model, each word is represented by two vectors: one when it serves as a center word and one when it serves as a context word.
+   TRUE. Each word has an input (center) and output (context) vector; the final embedding is often the input vector or an average of both.
+
+7. Cosine similarity between two word vectors can range from -1 to 1, where values close to 1 indicate similar meanings.
+   TRUE. Cosine similarity measures angle; 1 = same direction (similar), -1 = opposite.
+
+8. One-hot vector representations inherently capture semantic similarity because similar words have similar binary patterns.
+   FALSE. One-hot vectors are orthogonal; every pair has cosine similarity 0 (except same word). No semantic similarity is captured.
+
+9. The Markov assumption in n-gram models exists primarily to address the data sparsity problem that arises as context length increases.
+   TRUE. Limiting context to n-1 words reduces the number of parameters and makes estimates feasible from finite corpora.
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+1. N-gram probability calculation:
+
+   Count("the cat")=15, Count("the")=500, Count("cat sat")=8, Count("cat")=50, Count("sat")=80.
+
+   (a) P("cat" | "the") = Count("the cat")/Count("the") = 15/500 = 0.03  ✓ [0.03]
+
+   (b) P("sat" | "cat") = Count("cat sat")/Count("cat") = 8/50 = 0.16  ✓ [0.16]
+
+   (c) P("the cat sat") = P("the"|<START>) × P("cat"|"the") × P("sat"|"cat") × P(<END>|"sat")
+   Assuming P("the"|<START>)=Count("the")/corpus_start_count, etc. With only these counts:
+   P("the cat sat") ≈ P("cat"|"the") × P("sat"|"cat") = 0.03 × 0.16 = 0.0048  ✓ [0.0048]
+   (Full sentence would need start/end; 0.0048 matches given answer.)
+
+2. Perplexity comparison:
+
+   (a) Model A: CE=4.5 → Perplexity = 2^4.5 ≈ 22.6
+       Model B: CE=6.2 → Perplexity = 2^6.2 ≈ 73.5
+
+   (b) Model A is better. Lower cross-entropy and lower perplexity indicate better predictions on the test set.
+
+   (c) Model A's perplexity ≈ 22.6 means the model is, on average, as uncertain as choosing among about 23 equally likely next words.
+
+3. |V|=10,000. Count("quantum","physics")=3, Count("quantum")=100.
+
+   (a) MLE: P("physics"|"quantum") = 3/100 = 0.03  ✓ [0.03]
+
+   (b) Add-1: P = (3+1)/(100+|V|) = 4/(100+10000) = 4/10100 ≈ 0.000396  ✓ [0.000396]
+
+   (c) Add-0.1: P = (3+0.1)/(100+0.1×10000) = 3.1/(100+1000) = 3.1/1100 ≈ 0.002818  ✓ [0.002818]
+
+4. Bigram model for "the dog barked":
+   P("the"|<START>)=0.1, P("dog"|"the")=0.02, P("barked"|"dog")=0.05, P(<END>|"barked")=0.4.
+
+   (a) P(sentence) = 0.1 × 0.02 × 0.05 × 0.4 = 0.00004  ✓ [0.00004]
+
+   (b) Cross-entropy = - (1/4) × [log2(0.1)+log2(0.02)+log2(0.05)+log2(0.4)]
+      = - (1/4) × [-3.32 + (-5.64) + (-4.32) + (-1.32)] = - (1/4) × (-14.6) ≈ 3.65 bits/word  ✓ [3.65]
+
+   (c) Perplexity = 2^3.65 ≈ 12.55  ✓ [12.55]
+
+5. "the quick brown fox jumps" with window size 2:
+
+   (a) For each center word, context = 2 words left and 2 right:
+   "the": (the, quick), (the, brown)
+   "quick": (quick, the), (quick, brown), (quick, fox)
+   "brown": (brown, the), (brown, quick), (brown, fox), (brown, jumps)
+   "fox": (fox, quick), (fox, brown), (fox, jumps)
+   "jumps": (jumps, brown), (jumps, fox)
+   Total: 2+3+4+3+2 = 14 pairs  ✓ [14 pairs]
+
+   (b) Window size 1: each center has 1 left, 1 right. "the":1, "quick":2, "brown":2, "fox":2, "jumps":1. Total: 8. Fewer by 14-8 = 6. (Or: with ws=1 we get fewer pairs. 14-8=6 fewer.) ✓ [8 pairs with ws=1, so 6 fewer]
+
+   (c) Larger windows capture longer-range dependencies and more global context; smaller windows focus on immediate neighbors and local syntax. Larger windows can capture topical/semantic relations; smaller ones tend to capture syntactic relations.

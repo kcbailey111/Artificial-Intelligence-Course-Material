@@ -1,0 +1,137 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(Advanced Search (Optimization) Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. When should you use optimization techniques (like hill climbing) instead of path-finding search (like A*)?
+
+   Use optimization techniques when:
+   - There is no explicit start and goal state; you seek the best configuration in a solution space.
+   - The problem is about finding a state that maximizes/minimizes an objective function f(x) (e.g., scheduling, parameter tuning, TSP).
+   Use path-finding search when:
+   - There is a clear start state and goal state, and you need to find a path (sequence of actions) from start to goal.
+   - Solution quality is measured by path cost (e.g., navigation, puzzle solving).
+
+2. What is the "local optima problem" in hill climbing? Why does it occur?
+
+   The local optima problem is when hill climbing gets stuck at a state that is better than its immediate neighbors but worse than the global optimum. It occurs because hill climbing only moves to a neighbor if it improves f(x); once no neighbor improves f(x), the algorithm terminates. There is no mechanism to escape a local optimum by temporarily accepting a worse state.
+
+3. Explain the exploration versus exploitation tradeoff in simulated annealing. How does temperature control this tradeoff?
+
+   Exploration: trying new regions of the search space (often by accepting worse moves). Exploitation: moving toward better states.
+   - High T: acceptance probability for worse moves is higher → more exploration (random walk–like behavior).
+   - Low T: acceptance probability is lower → more exploitation (behaves like hill climbing).
+   Temperature controls this: as T decreases, the algorithm shifts from exploration to exploitation.
+
+4. What is the purpose of the cooling schedule in simulated annealing? What happens if the temperature decreases too quickly?
+
+   The cooling schedule controls how temperature T decreases over time. Its purpose is to allow enough exploration early on (high T) and then converge to a good solution (low T).
+   If T decreases too quickly: the algorithm may settle into a local optimum before escaping, behaving almost like hill climbing. Not enough exploration occurs.
+
+5. In genetic algorithms, what is the role of crossover? How does it differ from mutation?
+
+   Crossover: combines genetic material from two parent solutions to produce offspring. It recombines good building blocks (subsolutions) from different individuals.
+   Mutation: randomly modifies genes in a single individual. It introduces new diversity and helps escape local optima.
+   Crossover exploits existing good solutions; mutation explores new regions.
+
+6. Explain why elitism is commonly used in genetic algorithms. What problem does it solve?
+
+   Elitism keeps the best individual(s) from the current generation in the next generation without modification.
+   It solves the problem of losing the best solution when crossover and mutation might degrade it. Without elitism, a very fit individual could be lost and the population might drift away from good solutions.
+
+7. How does the definition of "neighbor" affect hill climbing performance? What is the tradeoff between small and large neighborhoods?
+
+   Small neighborhood: fewer options per step, may miss good moves, faster per step, but more likely to get stuck in poor local optima.
+   Large neighborhood: more options per step, better chance to escape local optima and find good solutions, but each step is slower (more evaluations).
+   Tradeoff: larger neighborhoods improve solution quality but increase computational cost per iteration.
+
+8. Why might a genetic algorithm outperform hill climbing on a problem with many local optima?
+
+   Genetic algorithms maintain a population of solutions exploring multiple regions simultaneously, can escape local optima via mutation and crossover, and do not rely on a single current state. Hill climbing, with one current state, easily gets stuck in a local optimum and has no mechanism to escape.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. A* search is more memory-efficient than hill climbing and genetic algorithms.
+   FALSE. A* stores the frontier and explored set; it can use O(b^d) memory. Hill climbing and GAs typically use much less memory (hill climbing: current state and neighbors; GAs: fixed population size).
+
+2. Hill climbing is guaranteed to find the global optimum if the search space has only one local optimum.
+   TRUE. If there is only one local optimum, it must be the global optimum. Hill climbing will terminate there.
+
+3. In simulated annealing, decreasing the temperature too quickly can cause the algorithm to behave like hill climbing.
+   TRUE. Quick cooling reduces the probability of accepting worse moves, so the algorithm soon only accepts improving moves, like hill climbing.
+
+4. Genetic algorithms maintain a population of solutions, which helps them explore multiple regions of the search space simultaneously.
+   TRUE. Multiple solutions in different regions allow parallel exploration.
+
+5. In the 2-opt neighborhood for TSP, reversing a segment of the tour always produces a valid tour.
+   TRUE. 2-opt reverses a contiguous segment; the result remains a valid Hamiltonian cycle (tour).
+
+6. A larger neighborhood in hill climbing always leads to better solutions because more options are considered.
+   FALSE. Larger neighborhoods can improve solutions but do not guarantee better results; they increase per-step cost and may still lead to local optima.
+
+7. In genetic algorithms, a higher mutation rate always leads to faster convergence to the optimal solution.
+   FALSE. Too high mutation disrupts good solutions and can prevent convergence; there is an optimal range.
+
+8. Random restart hill climbing can find the global optimum with probability approaching 1 if run with enough restarts.
+   TRUE. With enough independent random restarts, the probability of at least one restart finding the global optimum approaches 1.
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+1. Optimization landscape (maximizing f(x)):
+
+   (a) Local maxima: States where f(x) is greater than both neighbors.
+        A(4): neighbors B(6), (no left) — not local max (B > A)
+        B(6): A(4), C(8) — not (C > B)
+        C(8): B(6), D(5) — LOCAL MAX
+        D(5): C(8), E(2) — not (C > D)
+        E(2): D(5), F(4) — not
+        F(4): E(2), G(7) — not
+        G(7): F(4), H(10) — not
+        H(10): G(7), I(6) — LOCAL MAX
+        I(6): H(10), J(3) — not
+        J(3): I(6), K(5) — not
+        K(5): J(3), L(8) — not
+        L(8): K(5), M(11) — not
+        M(11): L(8), N(6) — LOCAL MAX
+        N(6): M(11), O(6) — not
+        O(6): N(6), P(6) — plateau
+        P(6): O(6), Q(6) — plateau
+        Q(6): P(6), R(13) — not
+        R(13): Q(6), S(9) — LOCAL MAX (and GLOBAL MAXIMUM)
+        S(9): R(13), T(6) — not
+        T(6): S(9), (no right) — not
+
+   Local maxima: C(8), H(10), M(11), R(13). Global maximum: R (f = 13).
+
+   (b) Starting from C: C has f=8. Neighbors B(6), D(5). Both are worse. STOP at C.
+
+   (c) Starting from G: G(7). Neighbors F(4), H(10). H is better → move to H. H(10). Neighbors G(7), I(6). Both worse. STOP at H.
+
+   (d) Starting from P: P(6). Neighbors O(6), Q(6). If we don't move on plateaus, STOP at P. If we allow equal, we could move to O or Q—standard hill climbing often stops when no strict improvement. So STOP at P (or possibly O/Q depending on tie-breaking).
+
+2. Simulated annealing: P = e^(-|f(current) - f(neighbor)|/T), maximizing f.
+
+   (a) f(current)=50, f(neighbor)=45, T=10:
+       P = e^(-|50-45|/10) = e^(-5/10) = e^(-0.5) ≈ 0.6065
+
+   (b) Same, T=2:
+       P = e^(-5/2) = e^(-2.5) ≈ 0.0821
+
+   (c) As T → 0: P for worse moves → 0. Only improving moves accepted → behaves like hill climbing.
+       As T → ∞: P → 1. All moves accepted → behaves like random walk (pure exploration).
+
+3. Algorithm recommendations:
+
+   (a) Hill Climbing. Smooth, predictable landscape; good starting point; fast evaluations. Local search is efficient.
+
+   (b) Genetic Algorithm or Simulated Annealing. Huge combinatorial space; need good feasible solution, not necessarily optimal. GA can handle complex constraints; SA can escape local optima.
+
+   (c) Simulated Annealing. Rugged landscape; need to accept worse moves to reach better regions. SA is designed for this.
+
+   (d) Hill Climbing. Single smooth peak; start near top. Simple hill climbing is sufficient and efficient.
