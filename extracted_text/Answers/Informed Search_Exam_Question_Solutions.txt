@@ -136,22 +136,21 @@ Graph (Questions 1–3):
    - 5: (2,2)→(1,2) = 1
    h₂ = 1+2+0+1+1+1+0+1 = 7.
 
-   h₃ (not in goal row + not in goal column):
-   - 2: wrong row (0≠0? row 0, goal row 0), wrong col (0≠1): +2
-   - 8: wrong row: +1, correct col: +0
-   - 3: correct: 0
-   - 1: wrong row, wrong col: +2
-   - 6: correct row, wrong col: +1
-   - 4: correct row, wrong col: +1
-   - 7: correct: 0
-   - 5: wrong row, correct col: +1
-   h₃ = 2+1+0+2+1+1+0+1 = 8.
+   h₃ (not in goal row + not in goal column): For each tile, +1 if not in goal row, +1 if not in goal col.
+   - 2: (0,0) goal (0,1): in row ✓, not in col: +1
+   - 8: (0,1) goal (2,1): not in row: +1, in col ✓
+   - 3: (0,2) goal (0,2): both ✓: 0
+   - 1: (1,0) goal (0,0): not in row: +1, in col ✓
+   - 6: (1,1) goal (1,2): in row ✓, not in col: +1
+   - 4: (1,2) goal (1,1): in row ✓, not in col: +1
+   - 7: (2,0) goal (2,0): both ✓: 0
+   - 5: (2,2) goal (1,2): not in row: +1, in col ✓
+   h₃ = 1+1+0+1+1+1+0+1 = 6.
 
    (b) Dominance.
 
-   h₂ ≥ h₁ always (each misplaced tile adds ≥1 to Manhattan). So h₂ dominates h₁.
-   h₃ does not dominate h₂: a tile can have Manhattan 2 but contribute only 1 to h₃ (e.g., wrong row only). So h₃(n) can be less than h₂(n). Similarly h₂ need not dominate h₃.
-   Conclusion: h₂ dominates h₁. No dominance relation between h₃ and h₂.
+   h₂ ≥ h₁ always (each misplaced tile contributes ≥1 to Manhattan). So h₂ dominates h₁.
+   h₂ ≥ h₃ always: for each tile, h₃ contributes 0–2; Manhattan contributes at least that (wrong row+col implies Manhattan ≥ 2). So h₂ dominates h₃ as well. h₂ dominates both h₁ and h₃.
 
    (c) Second state:
    | 1 | 2 | 3 |
@@ -161,7 +160,7 @@ Graph (Questions 1–3):
    h₁: 7, 8 misplaced. h₁ = 2.
    h₂: 7: (2,1)→(2,0) = 1; 8: (2,2)→(2,1) = 1. h₂ = 2.
    h₃: 7: wrong col: +1; 8: wrong col: +1. h₃ = 2.
-   So h₁ = h₂ = h₃ = 2. This does not change the dominance conclusion: h₂ ≥ h₁ holds; h₃ and h₂ remain incomparable in general.
+   So h₁ = h₂ = h₃ = 2. This confirms h₂ ≥ h₁ and h₂ ≥ h₃ (both equalities hold). Dominance conclusions remain: h₂ dominates h₁ and h₃.
 
 --------------------------------------------------------------------------------
 5. Beam search: Level 0: S(10); Level 1: A(8), B(12), C(9). Branching factor 3.
