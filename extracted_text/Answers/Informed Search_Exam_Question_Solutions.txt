@@ -1,0 +1,175 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(Informed Search Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. What is the fundamental difference between uninformed search (like UCS) and informed search (like A*)? How does this difference affect the number of nodes expanded?
+
+   Informed search uses a heuristic h(n) that estimates the cost from n to the goal. Uninformed search (e.g., UCS) uses only g(n)—the cost from the start—and has no information about the goal direction.
+   Using a good heuristic allows A* to focus exploration toward the goal, expanding fewer nodes than UCS. A* expands primarily nodes that appear promising (low f = g + h), while UCS expands in all directions by g alone. With an admissible heuristic, A* still finds the optimal path but typically expands far fewer nodes.
+
+2. Define what it means for a heuristic to be admissible. Suppose A* uses a heuristic that overestimates the cost to the goal for some nodes. Explain why A* might fail to find the optimal solution.
+
+   Admissible: h(n) never overestimates the true cost to reach the goal from n; that is, h(n) ≤ h*(n) for all n, where h*(n) is the actual optimal cost from n to the goal.
+   If h overestimates for some node n (h(n) > h*(n)), then f(n) = g(n) + h(n) can exceed the optimal solution cost C* even when n is on an optimal path. A* expands nodes in order of f(n). If a node on the optimal path has f(n) > C*, it may be expanded after a non-optimal goal is found and returned. Thus A* can return a suboptimal solution and fail to find the optimal one.
+
+3. Explain the concept of heuristic dominance. Why would you prefer a dominating heuristic when using A*?
+
+   Heuristic h₂ dominates h₁ if h₂(n) ≥ h₁(n) for all states n, and h₂(n) > h₁(n) for at least one state.
+   A dominating heuristic is preferred because it gives higher f-values (or same) to non-goal nodes, causing A* to expand fewer nodes while still finding the optimal solution. More informed heuristics prune more of the search space, improving efficiency.
+
+4. For the 8-puzzle: h₁ = Misplaced Tiles, h₂ = Manhattan Distance. Explain why h₂ dominates h₁.
+
+   Each misplaced tile contributes at least 1 to h₁. For Manhattan distance, each tile must move at least its Manhattan distance to reach its goal; a misplaced tile has Manhattan distance ≥ 1. So for every tile, its contribution to h₂ is ≥ its contribution to h₁ (0 if correct, else Manhattan ≥ 1). Thus h₂(n) ≥ h₁(n) for all n. For states where a tile is in the wrong position but not in its goal row or column, Manhattan can be 2 or more while the tile contributes only 1 to h₁. Hence h₂ strictly exceeds h₁ for some states. Therefore h₂ dominates h₁.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. A* search is guaranteed to find an optimal solution if the heuristic is admissible, regardless of whether it is consistent.
+   TRUE. Admissibility alone guarantees optimality. Consistency implies admissibility and yields better efficiency (e.g., no re-expansions in graph search) but is not required for optimality.
+
+2. If heuristic h₂ dominates heuristic h₁, then h₂(n) ≥ h₁(n) for all states n.
+   TRUE. That is the definition of dominance.
+
+3. A consistent heuristic is always admissible, but an admissible heuristic is not always consistent.
+   TRUE. Consistency (h(n) ≤ c(n,n') + h(n') for all n, n') implies admissibility. An admissible heuristic can violate the consistency inequality for some transitions.
+
+4. The straight-line distance heuristic for route-finding is both admissible and consistent.
+   TRUE. Straight-line distance never overestimates actual path cost (admissible). It satisfies the triangle inequality, so it is consistent.
+
+5. In Weighted A* with f(n) = g(n) + 2·h(n), if the heuristic h is admissible, the algorithm is guaranteed to find a solution whose cost is at most twice the optimal cost.
+   TRUE. Weighted A* with weight w guarantees that the solution cost is at most w·C* when h is admissible.
+
+6. Beam search with beam width k = 1 is equivalent to Greedy Best-First Search.
+   FALSE. Beam search keeps the top k nodes at each depth level. Greedy Best-First Search selects from the entire frontier by h(n). With k=1, beam search keeps one node per level, but the selection and pruning mechanics differ from Greedy Best-First Search.
+
+7. If A* using heuristic h expands node n, then f(n) ≤ C*, where C* is the optimal solution cost.
+   TRUE. A* only expands nodes with f(n) ≤ C* when h is admissible. Nodes with f(n) > C* are never expanded.
+
+8. An anytime algorithm must use an admissible heuristic to guarantee that solution quality improves over time.
+   FALSE. An anytime algorithm returns improving solutions over time but does not require an admissible heuristic. Some anytime variants use inadmissible heuristics.
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+Graph (Questions 1–3):
+         S (h=10)
+        /|\
+       4 3 2
+      /  |  \
+   A(7) B(6) C(8)
+     \   |   /
+      5  3  2
+       \ | /
+        D(4)
+         |
+         6
+         |
+        G(0)
+
+--------------------------------------------------------------------------------
+1. Are the listed heuristic values admissible? Justify.
+
+   Check that h(n) never exceeds the true cost from n to G.
+
+   - G: h(G)=0. True cost 0. OK.
+   - D: Only path D→G, cost 6. h(D)=4 ≤ 6. OK.
+   - A: Best path A→D→G, cost 5+6=11. h(A)=7 ≤ 11. OK.
+   - B: Best path B→D→G, cost 3+6=9. h(B)=6 ≤ 9. OK.
+   - C: Best path C→D→G, cost 2+6=8. h(C)=8 ≤ 8. OK.
+   - S: Best path S→C→D→G, cost 2+2+6=10. h(S)=10 ≤ 10. OK.
+
+   All heuristic values are admissible.
+
+--------------------------------------------------------------------------------
+2. Execute A* search. Frontier shows (node, f = g + h). Break ties alphabetically.
+
+   Expand    Frontier (priority queue, min f first)
+   --------------------------------------------------------
+   —         [(S, 0+10=10)]
+   S         [(A, 4+7=11), (B, 3+6=9), (C, 2+8=10)]
+   B         [(C, 10), (A, 11), (D, 6+4=10)]  [B→D: g=6]
+   C         [(D, 8), (A, 11)]  [C→D: g=4, f=8; replace worse D]
+   D         [(G, 10+0=10), (A, 11)]
+   G         Goal found.
+
+   Path: S → C → D → G. Cost: 2 + 2 + 6 = 10.
+
+--------------------------------------------------------------------------------
+3. Execute Greedy Best-First Search (select by h only).
+
+   Expand    Frontier (by h)
+   --------------------------------------------------------
+   —         [(S, h=10)]
+   S         [(A, 7), (B, 6), (C, 8)]   → expand B (lowest h)
+   B         [(D, 4), (A, 7), (C, 8)]   → expand D
+   D         [(G, 0), (A, 7), (C, 8)]   → expand G
+   G         Goal found.
+
+   Path: S → B → D → G. Cost: 3 + 3 + 6 = 12.
+   Optimal cost is 10 (S→C→D→G). Greedy Best-First Search is not optimal here.
+
+--------------------------------------------------------------------------------
+4. 8-puzzle heuristics.
+
+   Current State:          Goal State:
+   | 2 | 8 | 3 |           | 1 | 2 | 3 |
+   | 1 | 6 | 4 |           | 4 | 5 | 6 |
+   | 7 |   | 5 |           | 7 | 8 |   |
+
+   (a) Calculate h₁, h₂, h₃.
+
+   h₁ (misplaced tiles): 2, 8, 6, 4, 5 are misplaced. h₁ = 5.
+
+   h₂ (Manhattan distance): 
+   - 2: (0,0)→(0,1) = 1
+   - 8: (0,1)→(2,1) = 2
+   - 3: (0,2)→(0,2) = 0
+   - 1: (1,0)→(0,0) = 1
+   - 6: (1,1)→(1,2) = 1
+   - 4: (1,2)→(1,1) = 1
+   - 7: (2,0)→(2,0) = 0
+   - 5: (2,2)→(1,2) = 1
+   h₂ = 1+2+0+1+1+1+0+1 = 7.
+
+   h₃ (not in goal row + not in goal column):
+   - 2: wrong row (0≠0? row 0, goal row 0), wrong col (0≠1): +2
+   - 8: wrong row: +1, correct col: +0
+   - 3: correct: 0
+   - 1: wrong row, wrong col: +2
+   - 6: correct row, wrong col: +1
+   - 4: correct row, wrong col: +1
+   - 7: correct: 0
+   - 5: wrong row, correct col: +1
+   h₃ = 2+1+0+2+1+1+0+1 = 8.
+
+   (b) Dominance.
+
+   h₂ ≥ h₁ always (each misplaced tile adds ≥1 to Manhattan). So h₂ dominates h₁.
+   h₃ does not dominate h₂: a tile can have Manhattan 2 but contribute only 1 to h₃ (e.g., wrong row only). So h₃(n) can be less than h₂(n). Similarly h₂ need not dominate h₃.
+   Conclusion: h₂ dominates h₁. No dominance relation between h₃ and h₂.
+
+   (c) Second state:
+   | 1 | 2 | 3 |
+   | 4 | 5 | 6 |
+   |   | 7 | 8 |
+
+   h₁: 7, 8 misplaced. h₁ = 2.
+   h₂: 7: (2,1)→(2,0) = 1; 8: (2,2)→(2,1) = 1. h₂ = 2.
+   h₃: 7: wrong col: +1; 8: wrong col: +1. h₃ = 2.
+   So h₁ = h₂ = h₃ = 2. This does not change the dominance conclusion: h₂ ≥ h₁ holds; h₃ and h₂ remain incomparable in general.
+
+--------------------------------------------------------------------------------
+5. Beam search: Level 0: S(10); Level 1: A(8), B(12), C(9). Branching factor 3.
+
+   (a) With k = 2, keep the 2 nodes with lowest f at Level 1: A(8) and C(9). B(12) is pruned.
+
+   (b) B might lie on the optimal path. Pruning B can remove the optimal solution. Beam search is neither complete nor optimal: it can fail to find a goal and can find suboptimal solutions.
+
+   (c) Optimal cost 50, beam (k=3) finds 65. We cannot conclude the heuristic is inadmissible. Beam search does not guarantee optimality even with an admissible heuristic, because pruning can remove optimal paths. The suboptimal solution may be due to pruning, not to an inadmissible heuristic.
+
+   (d) With k=2 we might keep A and C, which lead to an optimal path. With k=3 we add B. B might have children with low f (good heuristic) that are kept at the next level, while better nodes (from A or C) are pruned. The search can then follow B’s branch to a suboptimal goal. So increasing k can add a branch that looks promising but leads to a worse solution.

@@ -1,0 +1,230 @@
+CSC-343: Midterm Exam - SOLUTIONS
+(First-Order Logic Review Questions)
+
+================================================================================
+SHORT ANSWER
+================================================================================
+
+1. What are some key limitations of propositional logic that motivated the development of FOL?
+
+   Propositional logic cannot express:
+   - Internal structure of propositions (e.g., cannot relate "John loves Mary" and "Mary is loved" as involving the same relationship)
+   - Generalizations over objects (e.g., "all birds have feathers" requires a separate proposition for each bird)
+   - Existence and universal quantification (e.g., "there exists a bird that can fly")
+   - Relationships between objects (e.g., "X is the father of Y")
+   - Reusable patterns that apply to many individuals
+
+   FOL addresses these by introducing predicates, variables, quantifiers (∀, ∃), and functions, enabling compact representation of domains with many objects and relationships.
+
+2. Explain the difference between a term and a sentence in FOL. Give an example of each.
+
+   Term: A term refers to an object in the domain. Terms include constants (e.g., john, 5), variables (e.g., X, Y), and function applications (e.g., Father(john), Plus(2, 3)).
+   Example term: Father(john) or Age(Mary)
+
+   Sentence: A sentence is a formula that has a truth value (true or false). Sentences are built from predicates applied to terms, and can be combined with connectives (∧, ∨, ¬, ⇒) and quantifiers (∀, ∃).
+   Example sentence: Loves(john, mary) or ∀X Bird(X) → Has_Feathers(X)
+
+   Key difference: Terms denote objects; sentences express propositions that can be evaluated.
+
+3. Explain the unification algorithm and its role in making resolution inference work in FOL.
+
+   Unification finds a substitution θ (mapping variables to terms) such that two expressions become identical when θ is applied. For example, Unify(P(X, a), P(b, Y)) yields θ = {X/b, Y/a}.
+
+   In resolution for FOL, we work with clauses that may contain variables. To resolve two clauses, we need to find complementary literals (e.g., P(...) and ¬P(...)) that can be made identical by substitution. The unification algorithm finds the most general unifier (MGU) that makes the literals match, enabling the resolution rule to be applied. Without unification, we could not combine knowledge from different clauses that use different variable names or structures.
+
+4. What is the "occurs check" in the unification algorithm? Give an example of when it prevents unification.
+
+   The occurs check prevents unifying a variable X with a term t in which X occurs. If we allowed X = f(X), we would get an infinite structure (X = f(f(f(...)))), which is not a valid finite term.
+
+   Example: Unifying X with g(X). Without the occurs check, we might set θ = {X/g(X)}. Applying θ to X gives g(X), and applying it to g(X) gives g(g(X))—still not equal. We would need X = g(g(g(...))), an infinite term. The occurs check detects that X occurs in g(X) and fails the unification.
+
+5. What is Universal Instantiation, and how does it enable reasoning with universally quantified statements?
+
+   Universal Instantiation (UI): From ∀v α, we can derive α[v/t]—the result of substituting any term t for all free occurrences of variable v in α.
+
+   Example: From ∀X Bird(X) → Has_Feathers(X), we can derive Bird(tweety) → Has_Feathers(tweety) by substituting tweety for X.
+
+   This enables reasoning by "instantiating" the general rule to specific individuals. Once we have a ground instance (e.g., Bird(tweety) → Has_Feathers(tweety)), we can apply Modus Ponens if we know Bird(tweety), to conclude Has_Feathers(tweety). UI bridges universal statements and ground facts.
+
+6. What role does backtracking play in Prolog's execution model, and how does it relate to exploring the search space?
+
+   Prolog attempts to satisfy a query by matching goals against clauses in the knowledge base. When multiple clauses match (or multiple ways to satisfy a goal), Prolog tries one choice first. If that choice eventually fails (cannot satisfy a subgoal), Prolog backtracks: it undoes the choice and tries the next alternative.
+
+   The search space is the space of all possible ways to satisfy the query (different clause orderings, different variable bindings). Backtracking systematically explores this space by depth-first search: try one path until failure, then backtrack and try another. This allows Prolog to find all solutions to a query by exhausting alternatives when the user requests more solutions.
+
+7. What is Generalized Modus Ponens, and how does it combine Universal Instantiation with standard Modus Ponens?
+
+   Generalized Modus Ponens (GMP): Given definite clauses
+     p₁', p₂', ..., pₙ'    (ground instances of premises)
+     (p₁ ∧ p₂ ∧ ... ∧ pₙ ⇒ q)    (implication)
+   where there exists a substitution θ such that θ(pᵢ) = pᵢ' for each i, we can conclude θ(q).
+
+   GMP combines UI and Modus Ponens: (1) From a universally quantified rule ∀X (p₁ ∧ ... ∧ pₙ ⇒ q), we use UI to get an instance. (2) We use unification to find θ that makes the rule premises match known facts. (3) We then apply Modus Ponens: if the (instantiated) premises are true, the (instantiated) conclusion is true. This allows one inference step to handle variables without explicitly enumerating all ground instances.
+
+================================================================================
+TRUE OR FALSE
+================================================================================
+
+1. In FOL, the expression Father(John) could be either a term or a sentence depending on how Father is defined in the knowledge base.
+   TRUE. If Father is a function symbol, Father(John) is a term (denoting an object). If Father is a predicate symbol, Father(John) is a sentence (a formula with a truth value).
+
+2. The sentence ∀X∃Y Loves(X, Y) has the same meaning as ∃Y∀X Loves(X, Y).
+   FALSE. ∀X∃Y Loves(X, Y) means "Everyone loves someone" (each person may love a different person). ∃Y∀X Loves(X, Y) means "There exists someone whom everyone loves." The order of quantifiers matters.
+
+3. Unification of the expressions P(X, a) and P(b, X) succeeds with the substitution {X/a, X/b}.
+   FALSE. A substitution cannot assign X to both a and b—that would require a = b. Unifying P(X, a) and P(b, X) requires X = b (from first argument) and X = a (from second argument), so b = a. Unless a and b are the same constant, unification fails. Also {X/a, X/b} is not a valid substitution (conflicting bindings).
+
+4. In FOL, ∀X (Student(X) ∧ Smart(X)) means "All students are smart."
+   FALSE. ∀X (Student(X) ∧ Smart(X)) means "Everything is both a student and smart" (every entity in the domain satisfies both). "All students are smart" is ∀X (Student(X) → Smart(X)).
+
+5. The occurs check in the unification algorithm prevents the creation of infinite term structures.
+   TRUE. The occurs check rejects unifying X with a term containing X (e.g., X = f(X)), which would imply an infinite structure.
+
+6. Forward chaining in FOL is goal-directed, meaning it only derives facts relevant to the query.
+   FALSE. Forward chaining is data-driven: it starts from known facts and derives all consequences. It is not goal-directed. Backward chaining is goal-directed.
+
+7. Universal instantiation allows us to substitute any ground term for a universally quantified variable.
+   TRUE. From ∀v α, we may derive α[v/t] for any term t. In practice, we often use ground terms for forward/backward chaining. (Some formulations allow any term.)
+
+8. The expression ∀x ¬P(x) is logically equivalent to ¬∃x P(x).
+   TRUE. This is the quantifier De Morgan law: "Everything is not P" is equivalent to "There does not exist something that is P."
+
+================================================================================
+OTHER QUESTIONS
+================================================================================
+
+1. Unification pairs:
+
+   (a) Likes(X, Ice_Cream) and Likes(John, Y)
+       Unify: X=John, Ice_Cream=Y (treating Ice_Cream as constant). θ = {X/John, Y/Ice_Cream}.
+       Yes, MGU = {X/John, Y/Ice_Cream}.
+
+   (b) Parent(X, Father(X)) and Parent(Alice, Y)
+       Unify: X=Alice, Father(X)=Y, so Y=Father(Alice). θ = {X/Alice, Y/Father(Alice)}.
+       Yes, MGU = {X/Alice, Y/Father(Alice)}.
+
+   (c) Knows(Father(X), X) and Knows(Father(Y), Mother(Y))
+       Unify: Father(X)=Father(Y) → X=Y. Then X=Mother(Y)=Mother(X). So X=Mother(X).
+       Occurs check: X occurs in Mother(X)? Yes. Fails.
+       No unification (occurs check).
+
+   (d) P(X, f(X), g(Y)) and P(A, f(A), Z)
+       Unify: X=A, f(X)=f(A) (consistent), g(Y)=Z. θ = {X/A, Z/g(Y)}.
+       Yes, MGU = {X/A, Z/g(Y)}.
+
+   (e) Ancestor(Tom, Father(Tom)) and Ancestor(X, X)
+       Unify: Tom=X, Father(Tom)=X, so X=Tom and X=Father(Tom) → Tom=Father(Tom).
+       A constant cannot equal a compound term (clash). Fails.
+       No unification.
+
+   (f) F(X, g(X)) and F(g(Y), Y)
+       Unify: X=g(Y), g(X)=Y. Substitute: g(g(Y))=Y. Y occurs in g(g(Y))? Yes. Occurs check fails.
+       No unification (occurs check).
+
+--------------------------------------------------------------------------------
+
+2. Forward chaining with Generalized Modus Ponens
+
+   Facts: Bird(Tweety), Bird(Polly), Penguin(Pete), Broken_Wing(Tweety)
+
+   Rules:
+   R1: ∀x Penguin(X) → Bird(X)
+   R2: ∀x Bird(X) → Has_Feathers(X)
+   R3: ∀x (Bird(x) ∧ ¬Broken_Wing(x)) → Can_Fly(x)
+   R4: ∀x Has_Feathers(x) → Warm(x)
+
+   Step 1: R1, Penguin(Pete). θ={X/Pete}. Conclude Bird(Pete).
+           Add: Bird(Pete)
+
+   Step 2: R2, Bird(Tweety). θ={X/Tweety}. Conclude Has_Feathers(Tweety).
+           Add: Has_Feathers(Tweety)
+
+   Step 3: R2, Bird(Polly). θ={X/Polly}. Conclude Has_Feathers(Polly).
+           Add: Has_Feathers(Polly)
+
+   Step 4: R2, Bird(Pete). θ={X/Pete}. Conclude Has_Feathers(Pete).
+           Add: Has_Feathers(Pete)
+
+   Step 5: R4, Has_Feathers(Tweety). θ={x/Tweety}. Conclude Warm(Tweety).
+           Add: Warm(Tweety)
+
+   Step 6: R4, Has_Feathers(Polly). θ={x/Polly}. Conclude Warm(Polly).
+           Add: Warm(Polly)
+
+   Step 7: R4, Has_Feathers(Pete). θ={x/Pete}. Conclude Warm(Pete).
+           Add: Warm(Pete)
+
+   Step 8: R3, Bird(Polly) ∧ ¬Broken_Wing(Polly). Both true. θ={x/Polly}. Conclude Can_Fly(Polly).
+           Add: Can_Fly(Polly)
+
+   Step 9: R3, Bird(Pete) ∧ ¬Broken_Wing(Pete). Both true. θ={x/Pete}. Conclude Can_Fly(Pete).
+           Add: Can_Fly(Pete)
+
+   (Tweety has Broken_Wing, so Can_Fly(Tweety) is not derived.)
+
+   No more rules fire.
+
+   All new facts derived: Bird(Pete), Has_Feathers(Tweety), Has_Feathers(Polly), Has_Feathers(Pete),
+   Warm(Tweety), Warm(Polly), Warm(Pete), Can_Fly(Polly), Can_Fly(Pete).
+
+--------------------------------------------------------------------------------
+
+3. Occurs check and unification:
+
+   (a) Unify: X with f(Y) where current substitution is {Y/X}.
+        Apply current sub: Y becomes X, so we're unifying X with f(X).
+        X occurs in f(X)? Yes. Occurs check FAILS.
+
+   (b) Unify: X with g(A, X).
+        X occurs in g(A, X)? Yes. Occurs check FAILS.
+
+   (c) Unify: f(X, Y) with f(g(Y), A).
+        Unify arguments: X=g(Y), Y=A. So X=g(A), Y=A. θ = {X/g(A), Y/A}.
+        No occurs check issue. SUCCEEDS. θ = {X/g(A), Y/A}.
+
+   (d) Unify: X with h(Y, Z) where current substitution is {Z/f(X)}.
+        Apply {Z/f(X)} to h(Y,Z): get h(Y, f(X)). So we need X = h(Y, f(X)).
+        X occurs in h(Y, f(X))? Yes. Occurs check FAILS.
+
+--------------------------------------------------------------------------------
+
+4. Prolog append:
+
+   append([], L, L).
+   append([H|T1], L2, [H|T3]) :- append(T1, L2, T3).
+
+   (a) Query: append([1, 2], [3, 4], Result)
+
+   Call 1: append([1, 2], [3, 4], Result)
+           Match clause 2: H=1, T1=[2], L2=[3, 4], Result=[1|T3]
+           Need: append([2], [3, 4], T3)
+
+   Call 2: append([2], [3, 4], T3)
+           Match clause 2: H=2, T1=[], L2=[3, 4], T3=[2|T3']
+           Need: append([], [3, 4], T3')
+
+   Call 3: append([], [3, 4], T3')
+           Match clause 1: T3' = [3, 4]
+           Success.
+
+   Backtrack: T3' = [3, 4], so T3 = [2, 3, 4], so Result = [1, 2, 3, 4].
+   Result = [1, 2, 3, 4].
+
+   (b) Query: append(X, Y, [1, 2]) — find all (X, Y) such that X appended to Y gives [1, 2]
+
+   Call 1: append(X, Y, [1, 2])
+           Try clause 1: X=[], Y=[1, 2]. Success. Solution 1: X=[], Y=[1, 2].
+
+   Backtrack. Try clause 2: [1, 2]=[H|T3], so H=1, T3=[2]. X=[1|T1], Y=L2.
+           Need: append(T1, L2, [2])
+           Try clause 1: T1=[], L2=[2]. X=[1], Y=[2]. Success. Solution 2: X=[1], Y=[2].
+
+   Backtrack. Try clause 2 for append(T1, L2, [2]): T1=[2|T1'], L2=L2', [2]=[H'|T3'], H'=2, T3'=[].
+           Need: append(T1', L2', [])
+           Try clause 1: T1'=[], L2'=[]. So T1=[2], L2=[]. Then from outer call: X=[1, 2], Y=[].
+           Success. Solution 3: X=[1, 2], Y=[].
+
+   Backtrack. append(T1', L2', []) with clause 2? []=[H''|T3''] fails. No more.
+   For append(T1, L2, [2]) with clause 2, any further recursion would need to unify [2] with [H'|T3'] where T3' is non-empty—impossible. No more solutions for this branch.
+
+   All solutions: X=[], Y=[1, 2]; X=[1], Y=[2]; X=[1, 2], Y=[].
