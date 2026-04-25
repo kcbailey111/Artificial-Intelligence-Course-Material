@@ -1,0 +1,606 @@
+Evaluation Metrics
+
+Accuracy
+Definition. The accuracy of a classifier 𝑴 on a dataset of 𝑛 examples is given by: 
+𝐴𝑐𝑐𝑢𝑟𝑎𝑐𝑦(𝑴)  = 𝑖 ∶ 𝑴 𝐱𝑖 = 𝑦𝑖
+𝑛
+where:
+• 𝐱𝑖: input features for example 𝑖, 
+• 𝑦𝑖 ∈ {1, 2, … , 𝑘}: example 𝑖 is one of k classes, and
+• 𝑴 𝐱𝑖 ∈ {1, 2, … , 𝑘}: predicted label for example 𝑖.
+= # correct predictions
+𝑛
+Example. Suppose we have an animal image classifier with 𝑘 = 3 
+classes: 𝑐𝑎𝑡, 𝑏𝑖𝑟𝑑, 𝑑𝑜𝑔 .
+Also suppose we have a dataset with 100 images 
+and the following results.
+Predicted 
+Cat
+Predicted 
+Dog
+Predicted 
+Bird
+Actual 
+Cat
+70 5 0
+Actual 
+Dog
+8 12 0
+Actual 
+Bird
+3 0 2
+TOTAL
+75
+20
+5
+TOTAL 81 17 2 100
+𝐴𝑐𝑐𝑢𝑟𝑎𝑐𝑦 𝑴 = 70 + 12 + 2
+100 = 0.84
+What is the problem with using accuracy with this dataset?
+A naive classifier always predicting “cat” gets 75% accuracy.
+High overall accuracy masks poor performance on rare classes!
+
+The Confusion Matrix
+Definition. For a classifier with 𝑘 > 2 classes, the confusion matrix is a 𝑘 × 𝑘 table given by:
+where 𝐶𝑖,𝑗 is the count: 𝑒𝑥𝑎𝑚𝑝𝑙𝑒𝑠 𝑤𝑖𝑡ℎ 𝑡𝑟𝑢𝑒 𝑐𝑙𝑎𝑠𝑠 𝑖, 𝑝𝑟𝑒𝑑𝑖𝑐𝑡𝑒𝑑 𝑎𝑠 𝑐𝑙𝑎𝑠𝑠 𝑗 .
+We observed the use of a matrix to present the results of a classifier in the last example. Let’s formalize this notion. 
+ො𝑦 = 1 ො𝑦 = 2 … ො𝑦 = 𝑘
+𝑦 = 1 𝐶1,1 𝐶1,2 … 𝐶1,𝑘
+𝑦 = 2 𝐶2,1 𝐶2,2 … 𝐶2,𝑘
+… … … … …
+𝑦 = 𝑘 𝐶𝑘,1 𝐶𝑘,2 … 𝐶𝑘,𝑘
+Actual
+Predicted
+The main diagonal gives us the counts of correct predictions; all others are mis-classifications.
+
+The Confusion Matrix
+Predicted Positive Predicted Negative
+Actually Positive True Positive (𝑇𝑃) False Negative (𝑭𝑵)
+Actually Negative False Positive (𝑭𝑷) True Negative (𝑇𝑁)
+It is most common for us to consider 
+confusion matrices for binary classifiers and 
+refer to the labels as 𝑝𝑜𝑠𝑖𝑡𝑖𝑣𝑒, 𝑛𝑒𝑔𝑎𝑡𝑖𝑣𝑒.
+When 𝑘 > 2, per-class metrics are obtained by reducing 
+to 𝑘 binary classification problems (one-vs-all).
+In the 𝑐𝑎𝑡, 𝑏𝑖𝑟𝑑, 𝑑𝑜𝑔  example, we would treat cats 
+as positive, {dog, bird} as negative, then repeat for 
+each class taking on the positive moniker.
+There are 4 possible outcomes we visualize 
+as the binary confusion matrix. 
+
+Evaluating Impact vs. Accuracy I
+In many real-world scenarios, one type 
+of error is much worse than another.
+Consider a scenario where missing a 
+disease diagnosis is dangerous.
+Sick Healthy
+Sick CORRECT DIAGNOSIS (𝑇𝑃)
+Patient receives life-saving treatment.
+Outcome: Survival
+MISSED DIAGNOSIS (𝑭𝑵)
+Patient is sent home while sick; disease 
+progresses without care.
+Outcome: Dangerous / Critical
+Healthy FALSE ALARM (𝑭𝑷)
+Patient undergoes unnecessary stress and extra 
+testing.
+Outcome: Inconvenience / Anxiety
+CLEAN BILL OF HEALTH (𝑇𝑁)
+Healthy patient is correctly reassured.
+Outcome: Peace of Mind
+Actual
+Predicted
+
+Evaluating Impact vs. Accuracy II
+Consider a scenario where the justice system must decide if a defendant is guilty or innocent.
+Guilty Not Guilty
+Guilty JUSTICE SERVED (𝑇𝑃)
+The perpetrator is held accountable for their 
+actions.
+Outcome: Justice
+ACQUITTAL BY ERROR (𝑭𝑵)
+A guilty person is released back into society.
+Outcome: Public Risk
+Not Guilty WRONGFUL CONVICTION (𝑭𝑷)
+An innocent person is convicted and deprived of 
+their liberty.
+Outcome: Miscarriage of Justice
+EXONERATION (𝑇𝑁)
+The innocent person is correctly cleared of all 
+charges.
+Outcome: Freedom Preserved
+Actual
+Predicted
+
+Questions
+If you were designing an Airport Security Scanner, 
+which box would you be most afraid of, and why?
+Positive Negative
+Positive True Positive (𝑇𝑃) False Negative (𝑭𝑵)
+Negative False Positive (𝑭𝑷) True Negative (𝑇𝑁)
+Actual
+Predicted
+False Negative (“Miss”): A threat (weapon/explosive) 
+passes through undetected, risking catastrophic loss of life.
+False Positive (“False Alarm”): A harmless item triggers an alarm, 
+resulting only in a minor delay or manual search.
+If you are an e-commerce giant building a “Fraud 
+Detection” system to auto-block credit cards, why 
+are you terrified of a False Positive?
+A False Positive means you just blocked a loyal 
+customer's legitimate purchase. The Consequence 
+may be that the immediate sale is lost, we frustrate 
+the customer, and likely drive them to a competitor.
+(A False Negative occurs when a stolen credit card is used, but the 
+model fails to flag it and allows the transaction to go through.)
+When an automated sensor scans $1,000 smartphone 
+screens for cracks, why is a mistake in either direction 
+a disaster?
+Both mistakes hit the “bottom line” equally hard.
+• The False Negative is a cracked screen reaches a 
+customer, leading to expensive returns and a 
+damaged reputation.
+• The False Positive is a perfect, expensive screen 
+is thrown in the trash, directly wasting profit.
+
+Precision
+Positive Negative
+Positive 𝑇𝑃 𝑭𝑵
+Negative 𝑭𝑷 𝑇𝑁
+Actual
+Predicted
+We need a measurement that tells us: Of all the times the 
+model predicted positive, how often was it actually right?
+If your email spam filter 
+identifies 100 emails as 
+Junk, but 20 of them were 
+actually important 
+messages, is your filter 
+doing a good job?
+The Experience: The user stops trusting the filter. They feel forced to check the Junk 
+folder every day anyway, just in case the filter made a mistake.
+The Lesson: It is not enough to catch a lot of junk; you have to be accurate in your 
+accusations. If you say something is Junk, you better be right, or you are just creating 
+more work for the user.
+Definition. The Precision of a binary 
+classifier 𝑀 is the fraction of positive 
+predictions that are correct:
+𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 = 𝑇𝑃
+𝑇𝑃 + 𝑭𝑷 
+We need a way to measure trust.
+If you arrest everyone on the street, you 
+will definitely catch the thief, but you just 
+ruined the lives of thousands of innocent 
+people.
+
+Recall
+Positive Negative
+Positive 𝑇𝑃 𝑭𝑵
+Negative 𝑭𝑷 𝑇𝑁
+Actual
+Predicted
+We need a measurement that tells us: Of all the actual positive 
+cases that exist, how many did the model find?
+If a massive earthquake is 
+starting, but your system 
+stays silent because it 
+wasn’t “100% sure” it 
+wasn't just a heavy truck 
+driving by, what happens?
+The Experience: You do not care if the alarm goes off once in a while for a false 
+vibration (a False Alarm). You only care that when a real disaster happens, the 
+alarm sounds every single time.
+The Lesson: When lives are at stake, hesitation is the greatest risk. We prefer a 
+system that is highly sensitive: one that triggers easily rather than one that waits 
+for perfect certainty while the danger slips by.
+Definition. The Recall of a binary 
+classifier 𝑀 is the fraction of actual 
+positives that are correctly identified:
+𝑅𝑒𝑐𝑎𝑙𝑙 𝑀 = 𝑇𝑃
+𝑇𝑃 + 𝑭𝑵 
+We need a way to measure coverage.
+Recall is finding every rock that falls; in 
+safety, we maximize this metric to ensure a 
+single miss does not become a catastrophe.
+
+Precision & Recall 
+  Soundness & Completeness
+A reminder about what we learned from Logic. A proof system or reasoning system is:
+Sound: Every conclusion is correct. Complete Every truth can be proven.
+No false positives! No false negatives!
+Logic Classification Metric
+Sound (no false proofs) Few false positives 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛
+Complete (proves all truths) Few false negatives 𝑅𝑒𝑐𝑎𝑙𝑙
+Sound and Complete
+(Both approaches always give the 
+same answer.)
+Perfect Positive Classification
+{ Predicted positive } = { Actual positive }
+𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 =  𝑅𝑒𝑐𝑎𝑙𝑙 =  1
+In logic, there are many interesting systems that are either sound OR complete, not both. In Machine Learning, 
+most classifiers must trade off 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 and 𝑅𝑒𝑐𝑎𝑙𝑙; achieving both equal to 1 is rare.
+Important Note: This only guarantees correct handling of positives. (True negatives are not considered.)
+
+The Precision-Recall Tradeoff
+• Blue curve: Distribution of actual 
+negatives across predicted 
+probabilities.
+• Orange curve: Distribution of actual 
+positives across predicted probabilities
+• Overlap region: Where the model is 
+uncertain: where errors happen
+• Move threshold left: Catch more positives (↑ Recall) but 
+more false alarms (↓ Precision)
+• Move threshold right: Fewer false alarms (↑ Precision) but 
+miss more positives (↓ Recall)
+There is no “correct” threshold — it 
+depends on the cost of each type of 
+error.
+The Tradeoff
+
+
+With a measurement, how can we 
+balance 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 and 𝑅𝑒𝑐𝑎𝑙𝑙?
+
+
+Harmonic Mean
+Calculate the average speed a car travels on a round trip where outbound we travel 60 miles at 30 mph and on the 
+return trip, we travel 60 miles at 60 mph.
+Arithmetic Mean Geometric Mean Harmonic Mean
+30 + 60
+2  =  45 𝑚𝑝ℎ
+Predicted
+Total Time
+Average
+1
+45  ℎ𝑝𝑚 ⋅ 120 𝑚𝑖𝑙𝑒𝑠
+= 2.67 ℎ𝑜𝑢𝑟𝑠
+We can informally compute the total time and then the average speed.
+30 ⋅ 60 = 42.426 𝑚𝑝ℎ
+1
+42.426  ℎ𝑝𝑚 ⋅ 120 𝑚𝑖𝑙𝑒𝑠
+= 2.828 ℎ𝑜𝑢𝑟𝑠
+2
+1
+30 + 1
+60
+=  40.0 𝑚𝑝ℎ
+1
+40.0  ℎ𝑝𝑚 ⋅ 120 𝑚𝑖𝑙𝑒𝑠
+= 3.0 ℎ𝑜𝑢𝑟𝑠
+Speed is a rate
+𝑑𝑖𝑠𝑡𝑎𝑛𝑐𝑒
+𝑡𝑖𝑚𝑒 . When averaging 
+rates, we use the  harmonic mean.
+𝐻 = 𝑛
+1
+𝑟1
++ 1
+𝑟2
++ ⋯ 1
+𝑟𝑛
+𝐴𝑣𝑔 𝑠𝑝𝑒𝑒𝑑 = 𝑑𝑖𝑠𝑡𝑎𝑛𝑐𝑒
+𝑡𝑖𝑚𝑒 = 120𝑚𝑖𝑙𝑒𝑠
+3 ℎ𝑜𝑢𝑟𝑠 = 40𝑚𝑝ℎ𝑇𝑜𝑡𝑎𝑙 𝑡𝑖𝑚𝑒= 60𝑚𝑖𝑙𝑒𝑠
+30𝑚𝑝ℎ + 60𝑚𝑖𝑙𝑒𝑠
+60𝑚𝑝ℎ = 3ℎ𝑜𝑢𝑟𝑠
+Let us try different averaging mechanisms.
+
+𝐹1 Score
+𝐻 = 2
+1
+𝑃 + 1
+𝑅
+= 2
+𝑃 + 𝑅
+𝑃𝑅
+= 2𝑃𝑅
+𝑃 + 𝑅
+How can we average 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 (𝑃) and 𝑅𝑒𝑐𝑎𝑙𝑙 (𝑅)?
+Note, each of these values are rates (with no units).
+So, 
+Definition. The 𝑭𝟏 score of a binary classifier 𝑀 is the harmonic mean of precision and recall:
+𝐹1 𝑀 = 2 ⋅ 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 ⋅ 𝑅𝑒𝑐𝑎𝑙𝑙 𝑀
+𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 + 𝑅𝑒𝑐𝑎𝑙𝑙 𝑀  
+where 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 =
+𝑇𝑃
+𝑇𝑃+𝑭𝑷 and 𝑅𝑒𝑐𝑎𝑙𝑙 𝑀 =
+𝑇𝑃
+𝑇𝑃+𝑭𝑵.
+𝐹𝛽 𝑀 = 1 + 𝛽2 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 ⋅ 𝑅𝑒𝑐𝑎𝑙𝑙 𝑀
+𝛽2 ⋅ 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛𝑀 + 𝑅𝑒𝑐𝑎𝑙𝑙 𝑀  
+We can also give weight to 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 or 𝑅𝑒𝑐𝑎𝑙𝑙 using the 
+generalized 𝛽 version.
+When 𝛽 = 1 each have equal weight as defined above.
+𝛽 = 2 weights 𝑅𝑒𝑐𝑎𝑙𝑙 twice as much as 𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛 (since 
+𝛽2 is in the denominator). 
+
+
+Examples: 𝐹1 Score
+Calculate 𝐹1 for each confusion matrix.
+Spam Not
+Spam 47 3
+Not 47 3
+Actual
+Predicted
+Spam Not
+Spam 25 25
+Not 1 49
+Actual
+Predicted
+Spam Not
+Spam 45 5
+Not 5 45
+Actual
+Predicted
+𝑷𝒓𝒆𝒄𝒊𝒔𝒊𝒐𝒏
+𝑹𝒆𝒄𝒂𝒍𝒍
+𝑭𝟏
+47
+47 + 47 = 0.5
+47
+47 + 3 = 0.94
+2 ⋅ 0.5 ⋅ 0.94
+0.5 + 0.94 = 0.6528
+25
+25 + 1 = 0.9615
+25
+25 + 25 = 0.5
+2 ⋅ 0.9615 ⋅ 0.5
+0.9615 + 0.5 = 0.6579
+45
+45 + 5 = 0.9
+45
+45 + 5 = 0.9
+2 ⋅ 0.9 ⋅ 0.9
+0.9 + 0.9 = 0.9
+Too many false alarms. Misses too much spam. ‘Well’ balanced.
+
+Remember: Cross Entropy as an Evaluation Metric
+From our NLP discussion on entropy and 
+information theory... Cross Entropy measures 
+how well a model's predicted distribution 
+matches the true distribution.
+Definition. For two probability 
+distributions 𝑻 (ground truth distribution) 
+and 𝑴 (model distribution) over the same 
+set of outcomes 𝑐₁, 𝑐₂, … , 𝑐𝐾 , the cross 
+entropy of 𝑻 with respect to 𝑴 is given by
+𝐶𝑟𝑜𝑠𝑠𝐸𝑛𝑡𝑟𝑜𝑝𝑦 𝑻, 𝑴 = − ෍
+𝑖=1
+𝐾
+𝑝𝑐𝑖 log2 𝑞𝑐𝑖
+where 𝑝𝑐𝑖 is the true probability of outcome 
+𝑐𝑖 and 𝑞𝑐𝑖 is the predicted probability of 
+outcome 𝑐𝑖.
+Recall: Cross entropy measures how “surprised” a model is by 
+the actual outcomes.
+• Low CE → The model expected what actually happened
+• High CE → The model was surprised by reality
+• We sample from 𝑻 (reality)
+• We measure surprise using 𝑴's beliefs
+• log2 𝑞𝑐𝑖 is the model's surprise when 
+event 𝑐𝑖 occurs
+• We weight by 𝑝𝑐𝑖 how often 𝑐𝑖 actually 
+happens
+
+Why Confidence Matters
+Suppose two spam classifiers both achieve 80% accuracy. Are they equally good?
+Accuracy tells you what the model got right; however, cross entropy tells you how well the 
+model's probability estimates match reality.
+In some cases, cross 
+entropy reveals problems 
+that accuracy hides.
+Model A (Calibrated) Model B (Overconfident)
+When correct “Probably spam” “Definitely spam”
+When wrong “Not sure, maybe spam?” “Definitely spam”
+Why the difference?
+• Model B is confidently 
+wrong with its mistakes.
+• Cross entropy penalizes 
+confident mistakes more 
+heavily than hesitant ones.
+• Medical diagnosis: “90% vs 55% chance of cancer” require different follow-
+ups, even if both exceed a threshold
+• Weather forecasting: “90% vs 60% chance of rain” affects whether you 
+cancel the outdoor wedding.
+• ER triage: Must prioritize patients by actual risk level, not just “at risk” vs 
+“not at risk”
+Cross Entropy Lower Higher
+
+Cross Entropy vs. 
+Accuracy/𝐹1/Precision/Recall
+These metrics 
+answer different 
+questions.
+These metrics are complementary, not 
+competing: use accuracy/𝐹1/precision/recall 
+to evaluate decisions, use cross entropy to 
+evaluate confidence.
+Accuracy / F1 / Precision / Recall Cross Entropy
+Question "Did we decide correctly?" "Are our probabilities trustworthy?"
+Operates on Hard predictions (class labels) Soft predictions (probabilities)
+Evaluates Decision quality Probability quality
+Throws away Probability information Nothing
+Suppose we have predictions with probabilities
+𝑝 = 0.51 and 𝑝 = 0.99.
+These are identical to accuracy/𝐹1/precision/recall (both predict 
+positive classification), but they are very different to cross entropy.
+nano banana
+
+Beyond 𝐹1: True Negatives
+𝐹1 Score combines Precision and Recall, but ignores True Negatives.
+This matters as many applications, correctly identifying negatives is just as important as identifying positives.
+If you were designing an Airport Security Scanner, which box would you be most afraid of, and why?
+Predicted Threat Predicted Safe
+Actual Threat 40 60
+Actual Safe 200 700
+𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛= 40
+240 = 0.167
+Positive Negative
+Positive 𝑇𝑃 𝑭𝑵
+Negative 𝑭𝑷 𝑇𝑁
+Actual
+Predicted
+Predicted Threat Predicted Safe
+Actual Threat 35 65
+Actual Safe 10 890
+Classifier A Classifier B
+• Classifier A flags 200 innocent passengers compared to 
+10 for Classifier B
+• 200 more false positives means 200 fewer true negatives. 
+𝑅𝑒𝑐𝑎𝑙𝑙 = 40
+100 = 0.4 𝐹1 = 0.235
+The false positives are a critical operational 
+difference; the 𝐹1 scores slightly reveal this 
+cost.
+𝑃𝑟𝑒𝑐𝑖𝑠𝑖𝑜𝑛= 35
+45 = 0.777 𝑅𝑒𝑐𝑎𝑙𝑙 = 35
+100 = 0.35 𝐹1 = 0.4828
+
+How We Got Here
+Metric What It Tells Us What It Ignores Consequence
+Accuracy
+Overall correctness: percentage 
+of all predictions that are 
+correct
+Class distribution
+With imbalanced datasets, a naive 
+"always predict majority class" 
+classifier can achieve high accuracy
+MCC
+Overall correlation between 
+predictions and reality across all 
+four confusion matrix cells
+Different error costs
+Treats all errors equally; may not reflect 
+scenarios where one error type is much 
+more costly
+Precision
+Trust in positive predictions: 
+when we predict positive, how 
+often are we right?
+False negatives
+Can achieve perfect precision by being 
+extremely conservative and missing 
+most positives
+Recall
+Coverage of positives: of all 
+actual positives, how many did 
+we find?
+False positives Can achieve perfect recall by predicting 
+everything as positive
+𝑭𝟏
+Balance between precision and 
+recall for the positive class True negatives
+Does not account for the cost of 
+false positives when they create 
+operational burdens
+𝑇𝑃 + 𝑇𝑁
+𝑇𝑃 + 𝑇𝑁 + 𝑭𝑵 + 𝑭𝑷 
+
+Toward Matthews Correlation Coefficient (MCC)
+What would a truly balanced metric look like?
+Positive Negative
+Positive 𝑇𝑃 𝑭𝑵
+Negative 𝑭𝑷 𝑇𝑁
+Actual
+Predicted
+We need a metric that:
+• Considers all four confusion matrix cells (not just 𝑇𝑃, 𝑭𝑷, 𝑭𝑵)
+• Measures overall agreement between predictions and reality
+• Treats both classes symmetrically
+Can we measure agreement? Disagreement?
+𝑇𝑃 ⋅ 𝑇𝑁 𝑭𝑷 ⋅ 𝑭𝑵
+[Multiplication enforces an ‘and’ 
+(joint) condition with the 
+components.]
+We can thus compute the difference between how much we (dis)agree:
+ 𝑇𝑃 ⋅ 𝑇𝑁 − 𝑭𝑷 ⋅ 𝑭𝑵 Then, we need to normalize.
+
+Matthews Correlation Coefficient (MCC)
+MCC is a balanced correlation between predictions and truth, giving equal weight to 
+all four parts of the confusion matrix.
+Value Meaning
++1 Perfect prediction
+0 No better than random guessing
+-1 Total disagreement (perfectly wrong)
+𝑀𝐶𝐶 = 𝑇𝑃 ⋅ 𝑇𝑁 − 𝑭𝑷 ⋅ 𝑭𝑵
+(𝑇𝑃 + 𝑭𝑷)(𝑇𝑃 + 𝑭𝑵)(𝑇𝑁 + 𝑭𝑷)(𝑇𝑁 + 𝑭𝑵)
+MCC applies the same correlation idea to binary outcomes.
+Recall the correlation coefficient 𝑟 from statistics? That 
+is the Pearson Correlation Coefficient (PCC): a measure 
+of how two variables move together.
+Agreement - Disagreement
+: marginals
+Predicted 
+Positive
+Actual 
+Positives
+Actual 
+Negatives
+Predicted 
+Negatives
+
+
+MCC Example
+If you were designing an Airport Security Scanner, which box would you be most afraid of, and why?
+Classifier A Classifier B
+𝑀𝐶𝐶 = 40 ⋅ 700 − 𝟐𝟎𝟎 ⋅ 𝟔𝟎
+(40 + 𝟐𝟎𝟎)(40 + 𝟔𝟎)(700 + 𝟐𝟎𝟎)(700 + 𝟔𝟎)
+= 0.1249
+𝑀𝐶𝐶 = 35 ⋅ 890 − 𝟏𝟎 ⋅ 𝟔𝟓
+(35 + 𝟏𝟎)(35 + 𝟔𝟓)(890 + 𝟏𝟎)(890 + 𝟔𝟓)
+= 0.4904
+MCC clearly distinguishes the better classifier with greater granularity than 𝐹1 (0.235 vs 0.4828).
+Predicted Threat Predicted Safe
+Actual Threat 40 60
+Actual Safe 200 700
+Predicted Threat Predicted Safe
+Actual Threat 35 65
+Actual Safe 10 890
+
+Suppose we have three spam filters, each with 50 spam and 50 legitimate emails:
+Pred Spam Pred Not
+Actual Spam 47 3
+Actual Not 3 47
+Actual Spam 25 25
+Actual Not 1 49
+Actual Spam 48 2
+Actual Not 48 2
+• Filters B and C have identical 
+F1 scores but very different 
+behavior.
+• MCC correctly identifies both 
+as equally mediocre.
+MCC vs. 𝐹1: A Direct Comparison
+Precision Recall F1 MCC
+94% 94% 94% 0.88
+96% 50% 66% 0.53
+50% 96% 66% 0.53
+Best practice is to report both metrics: 𝐹1 for alignment with the existing literature, 
+and MCC to capture truly balanced performance.
+
+With MCC, all four cells of the confusion matrix contribute equally to the 
+result. This symmetry makes MCC particularly reliable for:
+• Imbalanced datasets
+• Cases where both classes matter equally
+• Comparing classifiers with different precision/recall tradeoffs
+MCC is Balanced
+𝑀𝐶𝐶 = 𝑇𝑃 ⋅ 𝑇𝑁 − 𝑭𝑷 ⋅ 𝑭𝑵
+(𝑇𝑃 + 𝑭𝑷)(𝑇𝑃 + 𝑭𝑵)(𝑇𝑁 + 𝑭𝑷)(𝑇𝑁 + 𝑭𝑵)
+
+Accuracy Precision Recall F1 MCC
+Handles class 
+imbalance?
+No Partial Partial Partial Yes
+Considers TN? Yes No No No Yes
+Needs Companion 
+Metrics?
+Yes Yes Yes Yes No
+Fully balanced? No No No Partial Yes
+Best for… Balanced 
+data
+Trust Coverage Positive focus Overall 
+balance
+Choosing Your Metric

@@ -1,0 +1,1367 @@
+Brief History of Logic in AI
+
+It has been the persistent backbone of AI, evolving to meet new challenges while 
+remaining central to how we build intelligent systems.
+Logic is not just a historical artifact.
+“Persistent backbone of AI” “Persistent backbone”
+
+Logic & AI: Historical Context
+Dartmouth Conference (Summer 1956)
+• Established symbolic reasoning as AI's core 
+approach: intelligence through manipulation of logical 
+symbols
+• Set the “logic can capture thinking” paradigm that 
+dominated AI for 30+ years
+• Created the research agenda focused on formal 
+reasoning, theorem proving, and rule-based systems
+Proposal
+"We propose that a 2-month, 10-person study of artificial intelligence be carried out... The study is 
+to proceed on the basis of the conjecture that every aspect of learning or any other feature of 
+intelligence can in principle be so precisely described that a machine can be made to simulate it."
+
+Key Logic-in-AI Milestones I
+Logic Theorist (1956) - Newell & Simon
+• First program to prove mathematical theorems using logical reasoning
+• Demonstrated that machines could perform formal logical deduction
+LISP (“List Processing”) (1958) - John McCarthy
+• Symbolic Processing: LISP was designed for manipulating symbols rather than numbers, making it ideal for AI 
+tasks like logical reasoning and language understanding.
+• Code-as-Data (Homoiconicity): LISP treats code and data interchangeably, allowing programs to manipulate 
+their own structure—a powerful feature for AI and metaprogramming.
+• Recursion-Friendly: LISP supports recursive functions naturally, which is essential for many AI algorithms.
+• Prefix Notation (Polish Notation): Uses fully parenthesized prefix notation, e.g., (+ 2 3) instead of 2 +  3.
+• Garbage Collection: One of the first languages to include automatic memory management.
+• Extensibility: Users can define new control structures and language features, making it highly adaptable.
+• Influence: It became the dominant language for symbolic AI research for decades.
+
+Key Logic-in-AI Milestones II
+Expert Systems Era (1970s-1980s)
+• Rule-based systems using “IF-THEN” 
+logical reasoning
+MYCIN: Stanford (1970s)
+• Purpose: Diagnose bacterial infections and recommend 
+antibiotics.
+• Rule-Based System: Used hundreds of “IF-THEN” rules 
+to simulate expert reasoning.
+• Knowledge Representation: Encoded medical expertise 
+as logical rules.
+• Inference Engine: Applied backward chaining to deduce 
+conclusions from symptoms.
+• Uncertainty Handling: Introduced certainty factors to 
+manage probabilistic reasoning.
+• Impact: Demonstrated expert-level decision-making in 
+real-world domains like medicine.
+DENDRAL: Stanford (1960s)
+• Purpose: Assist chemists in identifying molecular 
+structures from mass spectrometry data.
+• Domain-Specific Expert System: Focused on organic 
+chemistry, particularly structural analysis.
+• Rule-Based Reasoning: Used encoded chemical 
+knowledge and inference rules to generate 
+hypotheses.
+• Knowledge Engineering Breakthrough: Pioneered 
+techniques for capturing expert knowledge in a formal 
+system.
+• Impact: Demonstrated that expert systems could 
+outperform human experts in narrow domains.
+Proved logical reasoning could solve real-world problems; 
+established knowledge representation as encoding logical rules; 
+showed logic could capture expert human reasoning
+
+Key Logic-in-AI Milestones III
+Logic Programming with Prolog (1970s)
+• Programming language where you write logical facts and rules, computer ‘searches’ logical conclusions
+• Made logic itself the programming paradigm: showed computation as logical inference
+• Influenced AI knowledge representation
+inOrder([]).
+inOrder([A, B | T]) :- A =< B, inOrder([B|T]).
+inOrder([_]).
+Empty list is ordered.
+A list containing 1 element is sorted.
+Check if the first two list 
+elements are ordered.
+Check that the tail of the 
+original list is ordered.
+naiveSort(L1, L2) :- perm(L1, L2), inOrder(L2).
+
+Key Logic-in-AI Milestones IV
+The Logical Reasoning Challenge (1980s Crisis):
+• Problem: Pure logical systems couldn't handle uncertainty, incomplete information, or common-sense 
+reasoning
+• Forced development of fuzzy logic and probabilistic reasoning (expanding what “logic” means in AI)
+SAT/SMT Solvers (2000s-present)
+• Extremely efficient programs that solve logical satisfiability problems
+• Shows logical reasoning can scale to millions of variables; used in 
+software verification, planning, scheduling
+Automated Theorem Proving
+• AI systems that prove mathematical theorems using formal logic.
+• Demonstrates machine reasoning can surpass humans in formal domains; verifies critical software and 
+hardware
+SAT: Solving logical boolean formulas
+SMT: Boolean logic, but reasoning over integers.
+
+Symbolic (Logic-based)
+• “Top-Down” Approach: Intelligence through 
+manipulation of symbols and rules
+• Explicit knowledge representation: We tell the 
+computer what we know
+• Rule-based reasoning: Follows logical steps 
+humans can trace
+• Explainable decisions: Can precisely explain “why” 
+it reached a conclusion
+• Good for structured domains: Excels where rules 
+are clear (chess, theorem proving, legal reasoning)
+Core assumption: Intelligence is symbol manipulation
+Two Paradigms: Symbolic vs Connectionist Approaches
+We have two fundamentally different philosophies about how intelligence works.
+Connectionist (Neural Networks)
+• “Bottom-Up” Approach: Intelligence 
+emerges from learning patterns
+• Learning from data: Discovers patterns we 
+might not see
+• Pattern recognition: Excels at finding 
+subtle statistical regularities
+• Statistical inference: Makes decisions 
+based on learned associations
+• Good for perceptual tasks: Handles messy 
+real-world data (vision, speech, language)
+Core assumption: Intelligence emerges from 
+interconnected simple units
+Integrating paradigms: Neurosymbolic AI
+Reasoning
+Explanation Adaptation
+Learning
+ cat
+(Recent Trend)
+
+Key Logic-in-AI Milestones V
+Neurosymbolic AI (2020s)
+• Combining neural networks with logical reasoning (e.g., AlphaGeometry)
+• Merges pattern recognition with logical deduction; represents the future where logic remains essential 
+even in the neural age
+LLMs and Logical Reasoning
+• Large language models showing emergent logical reasoning abilities
+• Suggests statistical learning can acquire logical structure; raises questions about 
+whether logic is learned or programmed
+LRMs (Large Reasoning Models): designed for complex reasoning, combining symbolic 
+logic with neural networks.
+• Unlike LLMs, they focus on deductive, inductive, and mathematical reasoning
+• Provide explanations of each step taken facilitating analysis and human verification.
+
+Introduction to logic
+• Arguments, validity, soundness, entailment
+Propositional logic
+• Sentences, semantics, inference
+Inference methods
+• Enumeration
+• Fundamental rules: Modus ponens
+• Forward chaining (data-driven reasoning)
+• Backward chaining (goal-driven reasoning)
+• Resolution (CNF conversion and resolution rule)
+• Soundness and completeness of inference systems
+Topics in Logic and Propositional Logic
+
+Arguments
+Logic is the study of correct reasoning: how to 
+draw valid conclusions from given information.
+Our Challenge: How do we formalize “correct 
+reasoning”?
+Before we can automate reasoning, we must understand 
+three key concepts that define what makes reasoning correct.
+Definition. An argument is a set of sentences (premises) and a conclusion.
+Premises
+Sarah has a student ID.
+All students must have student 
+IDs to enter the library.
+Sarah entered the library.
+Conclusion Jake will be late for his 8am class.
+If you hit the snooze button more than 
+twice, you will be late for your 8am class.
+Jake hit the snooze button four times this 
+morning.
+
+Validity and Soundness
+Definition. An argument is valid if, assuming all its 
+premises are true, the conclusion must also be true.
+Premises
+My phone needs 
+charging.
+All smartphones need 
+charging. My phone is a 
+smartphone.
+Conclusion Dr. Alvin gives easy exams.
+All professors give easy exams.
+Dr. Alvin is a professor.
+ValidValid?
+Definition. An argument is sound if it 
+is valid and all premises are actually true.
+Sound means the conclusion is not only logically 
+guaranteed but also factually correct.
+Validity is about the form of the argument—not whether 
+the premises are actually true. Even an argument with false 
+premises can be valid if the conclusion logically follows.
+SoundSound?
+Valid
+No
+Jessica is a student.
+Some students have iPhones. 
+Jessica has an iPhone. 
+No
+No
+
+Entailment
+Definition. 𝐴 ⊨  𝐵 if and only 
+if in every interpretation 
+where 𝐴 is true, 𝐵 is also true.
+𝐴 It is raining heavily.
+𝐵
+(Whenever it rains heavily, 
+the ground must be wet.)
+𝐴 ⊨  𝐵
+𝐵 is a logical consequence of 𝐴; 
+i.e., the truth of 𝐴 guarantees 
+the truth of 𝐵 based on logical 
+structure and meaning.
+The ground is wet.
+Yes
+Jake hit snooze 4 times and 
+his class starts in 10 minutes.
+(There is a possible interpretation 
+where 𝐴 is true but 𝐵 is false: Jake 
+lives next door and can make it in 2 
+minutes.
+Jake will be late to class.
+No
+Sarah received an A on every assignment 
+and every quiz/exam in the course.
+Sarah will receive an A in the course.
+Yes
+All 
+interpretations
+𝑩 is true
+𝑨 is 
+true
+
+Propositional Logic
+
+Propositions
+Definition. A proposition is a phrase that is either True or False (but not 
+both). 
+I have an orange cat.
+2 + 2 = 4
+Go directly to jail.
+It is not true that 3 is an even integer or 7 is a prime number.
+Knock before entering!
+Examples. State whether each phrase is a proposition: yes / no.
+Yes
+Yes
+No
+Yes
+No
+
+Propositional Formula
+Definition. The following strings are valid (well-formed) propositional sentences:
+Symbols (atomic sentences)
+• A variable name: often a capitalized letter.
+Unary Operators
+• Negation: ~𝜙 where 𝜙 is a (valid) propositional sentence.
+Binary Operators
+For 𝜙 and 𝜓 being (valid) propositional sentences:
+• Conjunction: 𝜙 ∧ 𝜓
+• Disjunction: 𝜙 ∨  𝜓
+• Implication: 𝜙 ⇒  𝜓
+• Biconditional: 𝜙 ⇔  𝜓
+Other books/sources may 
+indicate negation as ¬𝜙 or 𝜙′.
+For example, P, Q, R.
+And
+Or
+How we formally state an assumption (𝜙) and statement to prove (𝜓). 
+𝜙: \phi 𝜓: \psi
+Constants
+• true, false
+How we formally state equivalence. 
+
+Propositional Sentence Examples
+Suppose:
+• 𝑃: “it is cold”
+• 𝑄: “it is raining”
+“If it is cold or it is raining, then I will wear a jacket” 𝑃 ∨ 𝑄 ⇒ 𝑅
+“I will not wear a jacket.” ~𝑅
+• 𝑅: “I will wear a jacket”
+• 𝑆: “It is hot”
+“If it is raining, then it is cold.” 𝑄 ⇒ 𝑃
+“If it is cold, then it is raining.” 𝑃 ⇒ 𝑄
+“I will wear a jacket if and only if it is cold and not hot.” 𝑅 ⇔ 𝑃 ∧ ~𝑆
+
+Precedence
+𝑃 ∧ Q ∨ 𝑆 ⇒ 𝑅In propositional logic, operator precedence matters. In 
+decreasing order of precedence (i.e, we evaluate in this 
+order):
+• Negation (~)
+• Conjunction (∧)
+• Disjunction (∨)
+• Biconditional (⇔) and Conditional (⇒)
+⇒
+𝑅
+𝑄
+∨
+𝑃
+∧ 𝑆
+𝑃 ⇒ Q ⇔ 𝑆 ∧ ~𝑅
+𝑃 ⇒ Q ⇒ 𝑆
+⇒
+𝑄
+𝑃 ⇒
+𝑆
+⇒ and ⇔ are right-associative:
+ 𝑃 ⇒ Q ⇒ 𝑆 is interpreted as 𝑃 ⇒ Q ⇒ 𝑆
+∧
+𝑅
+~𝑆
+⇒
+𝑄
+𝑃 ⇔Use parentheses to 
+guarantee well-formedness.
+
+Propositional Logic Semantics
+
+Semantics
+All of the previous work helped us establish the syntax of propositional sentences for 
+our language.
+Every variable stands for a primitive proposition that may be either true or false.
+Primitive Propositions
+𝑃 : “It is raining.”
+We construct compound sentences 
+containing more than one primitive 
+proposition:
+𝑄 : “My umbrella is open.”
+𝑅 : “I am singing.”
+𝑆 : “I am dancing.”
+𝑃 ∧ ~𝑄 ∧ (𝑅 ∨ 𝑆)
+This sentence evaluates to true if:
+It is raining and my umbrella is not open and
+furthermore I am singing or dancing (or both).
+Definition. The semantics are the compositional rules that define the meaning of 
+logical connectives and how to evaluate the truth of formulas.
+
+Models
+We call each possible configuration of true and 
+false values for a formula a model.
+Let 𝑃 ∧ 𝑄 be a compound propositional sentence.
+Consider configurations of true / false values for 
+primitives 𝑃 and 𝑄.
+𝑃 𝑄 𝑃 ∧ 𝑄
+T T T
+T F F
+F T F
+F F F
+Definition. Let 𝑆 be a set of variable names. A model 𝑀 is a function that assigns a truth 
+value to every variable name in 𝑆. That is, 𝑀 ∶ 𝑆 → 𝑇𝑟𝑢𝑒, 𝐹𝑎𝑙𝑠𝑒
+There are 4 possible models for 𝑃 ∧ 𝑄.
+Definition. A model 𝑀 satisfies sentence 𝛼 if 𝛼 is true under the assignment of truth values 
+given by 𝑀.
+A sentence 𝛼 is satisfiable if there exists at least one model that satisfies 𝛼 (makes the 
+sentence true).
+
+Example
+𝑃 : “It is raining.”
+𝑄 : “My umbrella is open.”
+𝑅 : “I am singing.”
+𝑆 : “I am dancing.”
+𝑃 ∧  ~𝑞  ∧  (𝑅 ∨ 𝑆)
+∧
+∧ ∨
+𝑅𝑃 ~
+𝑄
+𝑆
+𝑀𝑃=𝑡𝑟𝑢𝑒
+𝑀𝑄=𝑓𝑎𝑙𝑠𝑒
+𝑀𝑅=𝑡𝑟𝑢𝑒
+𝑀𝑆=𝑓𝑎𝑙𝑠𝑒
+It is raining and my umbrella is not 
+open and furthermore I am singing 
+or dancing (or both).
+∧
+∧ ∨
+𝑡𝑟𝑢𝑒 𝑡𝑟𝑢𝑒 𝑓𝑎𝑙𝑠𝑒𝑡𝑟𝑢𝑒
+∧
+𝑡𝑟𝑢𝑒 𝑡𝑟𝑢𝑒
+𝑡𝑟𝑢𝑒
+We can say that is sentence is satisfiable. (It 
+may evaluate to true for other models.)
+
+Example: Exclusive Or
+Exercise. For propositions 𝐴 and 𝐵, the exclusive or operation, denoted as 𝐴 ⊕ 𝐵, yields true if and only 
+if exactly one of the operands 𝐴 or 𝐵 is true. Define an equivalent logical expression for 𝐴 ⊕ 𝐵. 
+Demonstrate the equivalence with a truth table.
+𝐴 ∧ ~𝐵 ~𝐴 ∧ 𝐵
+F F
+T F
+F T
+F F
+Solution.
+𝐴 ∧ ~𝐵 ∨ ~𝐴 ∧ 𝐵
+F
+T
+T
+F
+𝐴 𝐵
+T T
+T F
+F T
+F F
+
+Associativity I
+Exercise. For propositions 𝐴, 𝐵 and 𝐶, are the operators ∨ and/or ∧ associative operators?
+𝐴 ∨ B ∨ 𝐶 ⇔ 𝐴 ∨ B ∨ 𝐶 𝐴 ∧ B ∧ 𝐶 ⇔ 𝐴 ∧ B ∧ 𝐶
+Solution.
+𝑨 𝑩 𝑪
+T T T
+T T F
+T F T
+T F F
+F T T
+F T F
+F F T
+F F F
+𝑨 ∨ 𝑩 ∨ 𝑪 𝑨 ∨ 𝑩 ∨ 𝑪
+T T
+T T
+T T
+T T
+T T
+T T
+T T
+F F
+𝑨 ∧ 𝑩 ∧ 𝑪 𝑨 ∧ 𝑩 ∧ 𝑪
+T T
+F F
+F F
+F F
+F F
+F F
+F F
+F F Clearly, yes. ∧ 
+and ∨ are 
+associative.
+
+Associativity II
+Exercise. Is ⇒ an associative operator?
+𝑨 𝑩 𝑨 ⇒ 𝑩 𝑪
+T T T T
+T T T F
+T F F T
+T F F F
+F T T T
+F T T F
+F F T T
+F F T F
+Solution.
+𝑨 ⇒ 𝑩 ⇒ 𝑪
+T
+F
+T
+T
+T
+T
+T
+T
+𝑨 ⇒ 𝑩 ⇒ 𝑪
+T
+F
+T
+T
+T
+F
+T
+F
+𝑩 ⇒ 𝑪
+T
+F
+T
+T
+T
+F
+T
+T
+⇒ is not associative.
+
+Implication 𝜙 𝜓 𝜙 ⇒ 𝜓 ~𝝓 ∨  𝝍
+T T T T
+T F F F
+F T T T
+F F T T
+𝜙 ⇒ 𝜓 would be 
+false only if 𝜙 is 
+true and 𝜓 is false. 
+A helpful interpretation 𝜙 ⇒ 𝜓 is “𝜓 is a logical consequence of 𝜙”.
+Example.
+In each scenario do I keep my promise?
+1. I am healthy, and I do go to class.
+3. I am not healthy, and I do go to class.
+2. I am healthy, and I do not go to class.
+4. I am not healthy, and I do not go to class.
+We often view implication as if 𝜙, then 𝜓.
+𝑡𝑟𝑢𝑒 ⇒ 𝑡𝑟𝑢𝑒  
+Did I keep my promise?
+Yes.
+𝑡𝑟𝑢𝑒 ⇒ 𝑓𝑎𝑙𝑠𝑒  
+Suppose I make a promise that, “If I am healthy, I will go to class.”
+No.
+𝑓𝑎𝑙𝑠𝑒 ⇒ 𝑡𝑟𝑢𝑒  Yes.
+Yes.𝑓𝑎𝑙𝑠𝑒 ⇒ 𝑓𝑎𝑙𝑠𝑒  
+𝜙: \phi
+𝜓: \psi
+
+Inference
+
+Knowledge Bases
+How can an AI agent store, organize, and reason with everything it knows about the 
+world?
+Definition. A knowledge base 𝐾𝐵 is a set of sentences
+𝐾𝐵 = 𝐴1, 𝐴2, … , A𝑛
+These sentences are typically (conceptually) connected by logical conjunctions:
+𝐾𝐵 = 𝐴1 ∧ 𝐴2 ∧ ⋯ ∧ A𝑛.
+Each sentence 𝐴𝑖 represents a fact or assertion about the world, expressed in a 
+formal logic language.
+
+Ultimately, our goal is to infer (discover) new sentences that logically follow from a 
+knowledge base.
+Knowledge Base Entailment and Inference
+Definition. In propositional logic, a sentence 𝑆 is entailed by a knowledge base 𝐾𝐵, 
+written as
+𝐾𝐵 ⊨ 𝑆
+if and only if S is true in every model where all sentences in 𝐾𝐵 are true.
+Entailment tells us what must be true given the facts and rules in the 𝐾𝐵; it is the foundation 
+for logical reasoning in AI systems.
+But, what else can we conclude from our 𝐾𝐵?
+
+Knowledge Base Operations
+Add new knowledge TELL(𝐾𝐵, sentence)
+Retrieve entailed information ASK(𝐾𝐵, query)
+
+Knowledge Base Operations: Example I
+Suppose 𝐾𝐵 = { P: Alex is a student,
+Q: Alex is enrolled in CSC-343
+S: Alex needs a textbook
+}
+In propositional logic notation, we have 𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑆
+TELL(𝐾𝐵, If Alex is enrolled in CSC-343, then Alex needs a textbook)
+𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑆 ∧ 𝑄 ⇒ 𝑆results in
+
+Knowledge Base Operations: Example II
+ASK(𝐾𝐵, 𝑆)
+Assume: 𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑄 ⇒ 𝑆
+= true
+𝐾𝐵 ⊨ 𝑆
+𝑷 𝑸
+T T
+T T
+T F
+T F
+F T
+F T
+F F
+F F
+𝑷 ∧ 𝑸 ∧ 𝑸 ⇒ 𝑺
+T
+F
+F
+F
+F
+F
+F
+F
+𝑺
+T
+F
+T
+F
+T
+F
+T
+F
+𝑸 ⇒ 𝑺
+T
+F
+T
+T
+T
+F
+T
+T
+𝑺
+T
+F
+T
+F
+T
+F
+T
+F
+Since 𝑆 is true in every model where 𝐾𝐵 
+is true (just this one model), we conclude:
+
+Knowledge Base Operations: Example III
+ASK(𝐾𝐵, 𝑄 ⇒ 𝑆)
+Assume: 𝐾𝐵 = 𝑃 ∧ 𝑄
+= false
+𝐾𝐵 ⊭ 𝑄 ⇒ 𝑆
+𝑷 𝑸
+T T
+T T
+T F
+T F
+F T
+F T
+F F
+F F
+𝑲𝑩 = 𝑷 ∧ 𝑸
+T
+T
+F
+F
+F
+F
+F
+F
+𝑺
+T
+F
+T
+F
+T
+F
+T
+F
+𝑸 ⇒ 𝑺
+T
+F
+T
+T
+T
+F
+T
+T
+𝑄 ⇒ 𝑆  is not true in every model where 
+𝐾𝐵 is true, we conclude:
+
+Knowledge Base Operations: Example IV
+ASK(𝐾𝐵, 𝑄 ⇒ 𝑆)
+Assume: 𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑆
+= true
+𝐾𝐵 ⊨ 𝑄 ⇒ 𝑆
+𝑷 𝑸
+T T
+T T
+T F
+T F
+F T
+F T
+F F
+F F
+𝑲𝑩 = 𝑷 ∧ 𝑸 ∧ 𝑺
+T
+F
+F
+F
+F
+F
+F
+F
+𝑺
+T
+F
+T
+F
+T
+F
+T
+F
+𝑸 ⇒ 𝑺
+T
+F
+T
+T
+T
+F
+T
+T
+𝑄 ⇒ 𝑆  is true in the only model where 
+𝐾𝐵 is true, we conclude:
+Caution: Implication (⇒) does not capture causation. While 
+𝐾𝐵 technically entails 𝑄 ⇒ 𝑆 (because 𝑆 is already true), this 
+does not mean 𝑄 is the reason for 𝑆. Propositional logic 
+cannot distinguish correlation from causation.
+We cannot conclude enrollment 
+causes the textbook need. Maybe 
+Alex needs it for another course!
+
+From Logic to Learning
+Extracting patterns from instances is a task that propositional logic was not 
+designed for.
+Given only facts in a knowledge base, searching for rules that relate them is 
+computationally expensive and yields only correlations, not meaningful 
+knowledge.
+This motivates machine learning: given ground truth data, can we automatically 
+induce the rules? 
+Neural networks and other ML methods address exactly this challenge: learning 
+patterns from examples rather than being told the rules explicitly.
+Approach Input Output Direction
+Logic / Knowledge Bases Rules + Facts New Facts Deduction
+Machine Learning Instances / Data Patterns / Rules Induction
+The Bridge
+The Limitation
+
+Inference
+Inference is the process of deriving new sentences that are entailed by a 𝐾𝐵. Fundamentally, it 
+allows us to answer queries, make decisions, and automate reasoning.
+Definition. Inference is the process of deriving a sentence 𝑆 from a knowledge base 𝐾𝐵, written 
+as
+𝐾𝐵 ⊢ 𝑆
+if and only if there exists a way for S to be derived from 𝐾𝐵 using a sound inference procedure*.
+Given a knowledge base (KB), we want to derive new sentences that logically follow 
+without checking every possible truth assignment (aka brute-force model checking).
+From our prior example with 𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑄 ⇒ 𝑆 , we can say 𝐾𝐵 ⊢ 𝑆.
+*we will talk about this
+
+Methods of Inference: Enumeration
+Enumeration is an inference procedure that checks whether a sentence is entailed by a knowledge base 
+by evaluating all possible truth assignments to the propositional symbols.
+Suppose 𝐾𝐵 = 𝑃 ∧ 𝑄 ∧ 𝑃 ⇒ 𝑆  and ASK(𝐾𝐵, 𝑆).
+𝑷 𝑸 𝑺
+T T T
+T T F
+T F T
+T F F
+F T T
+F T F
+F F T
+F F F
+𝐾𝐵 ⊨ 𝑆  ?
+Yes.
+Recall 𝐾𝐵 ⊨ 𝑆 if and only if 
+in every model where 𝐾𝐵 is 
+true, 𝑆 is also true.
+𝐾𝐵 ⊢ 𝑆  ?
+Yes.
+There exists a way to derive 
+𝑆 from 𝐾𝐵.
+𝑲𝑩 = 𝑷 ∧ 𝑸 ∧ 𝑷 ⇒ 𝑺
+T
+F
+F
+F
+F
+F
+F
+F
+𝑷 ⇒ 𝑺
+T
+F
+T
+F
+T
+T
+T
+T
+Enumeration is an 
+intractable procedure. Why? 2𝑛 models for 𝑛 variables.
+
+Methods of Inference: Syntactic Manipulation
+Inference rules provide precise, efficient steps for deriving conclusions: offering clarity and control 
+(explainability) compared to broader procedures like enumeration or resolution, which are more 
+exhaustive but less intuitive.
+Modus Ponens
+𝐴 ⇒ 𝐵, 𝐴 ⊢ 𝐵
+Premise 1:
+Premise 2:
+Conclusion: 
+𝐴 ⇒ 𝐵
+𝐴
+𝐵
+And-Elimination
+𝐴 ∧ 𝐵 ⊢ 𝐴, 𝐵
+Premise 1:
+Conclusion 1:
+Conclusion 2: 
+𝐴 ∧ 𝐵
+𝐴
+𝐵
+DeMorgan’s Laws
+~ 𝐴 ∧ 𝐵 ≡ ~ 𝐴 ∨ ~ 𝐵
+There are many others.
+~ 𝐴 ∨ 𝐵 ≡ ~ 𝐴 ∧ ~ 𝐵
+
+Logical Inference Example
+Example.
+Premises: ~ 𝑃 ∨ 𝑄
+~𝑃 ⇒ 𝑅
+𝑅 ⇒ 𝑆
+~ 𝑃 ∨ 𝑄 ≡ ~𝑃 ∧ ~𝑄 DeMorgan’s
+⇒ ~𝑃 ∧ ~𝑄
+⇒ ~𝑃
+And-Elimination
+⇒ ~𝑄
+~𝑃 ∧ ~𝑄
+⇒ 𝑅
+Modus Ponens~𝑃, ~𝑃 ⇒ 𝑅
+⇒ 𝑆
+Modus Ponens𝑅, 𝑅 ⇒ 𝑆
+
+
+Other Rules of Logical Inference
+Rule Equivalence
+Commutativity of ∧ 𝛼 ∧ 𝛽 ≡ 𝛽 ∧ 𝛼
+Commutativity of ∨ 𝛼 ∨ 𝛽 ≡ 𝛽 ∨ 𝛼
+Associativity of ∧ 𝛼 ∧ 𝛽 ∧ 𝛾 ≡ 𝛼 ∧ 𝛽 ∧ 𝛾
+Associativity of ∨ 𝛼 ∨ 𝛽 ∨ 𝛾 ≡ 𝛼 ∨ 𝛽 ∨ 𝛾
+Double-Negation Elimination ~ ~𝛼 ≡ 𝛼
+Contraposition 𝛼 ⇒ 𝛽 ≡ ~𝛽 ⇒ 𝛼
+Implication Elimination 𝛼 ⇒ 𝛽 ≡ ~𝛼 ∨ 𝛽
+Biconditional Elimination 𝛼 ⇔ 𝛽 ≡ 𝛼 ⇒ 𝛽 ∧ 𝛽 ⇒ 𝛼
+DeMorgan ~ 𝛼 ∧ 𝛽 ≡ ~𝛼 ∨ ~𝛽
+DeMorgan ~ 𝛼 ∨ 𝛽 ≡ ~𝛼 ∧ ~𝛽
+Distributivity of ∧ over ∨ 𝛼 ∧ 𝛽 ∨ 𝛾 ≡ 𝛼 ∧ 𝛽 ∨ 𝛼 ∧ 𝛾
+Distributivity of ∨ over ∧ 𝛼 ∨ 𝛽 ∧ 𝛾 ≡ 𝛼 ∨ 𝛽 ∧ 𝛼 ∨ 𝛾
+Absorption 𝛼 ∧ 𝛼 ∨ 𝛽 ≡ 𝛼 ≡ 𝛼 ∨ 𝛼 ∧ 𝛽
+
+Methods of Inference: Chaining
+A rule-based system has the following components:
+• Facts: A database of true statements (known information).
+• Rules: “If-then” statements that encode domain knowledge.
+• Inference Engine: Algorithms to apply rules to facts to derive new knowledge.
+There are two main approaches 
+in rule-based systems:
+• Data-driven reasoning with Forward Chaining.
+• Goal-driven reasoning with Backward Chaining.
+
+Forward Chaining
+FORWARD_CHAINING(KB, query):
+    facts = initial_facts
+    if query in facts: return True
+   new_facts = True
+   while new_facts:
+        new_facts = False
+        for each rule in KB:
+            if not rule.conditions_satisfied_by(facts):
+               continue
+            if rule.conclusion in facts:
+               continue
+            add rule.conclusion to facts
+           new_facts = True
+           if rule.conclusion == query: return True
+   return False
+Find rules whose conditions 
+match current facts
+A new fact has been derived 
+when all ‘conditions’ are 
+satisfied by database facts.
+(Data-driven reasoning.)
+Iterate exhaustively while 
+new facts are inferred.
+
+Forward Chaining: Example
+R1: 𝐴 ∧ 𝐵 ⇒ 𝐷
+R2: 𝐶 ⇒ 𝐸
+R3: 𝐷 ∧ 𝐸 ⇒ 𝐹
+R4: 𝐴 ∧ 𝐶 ⇒ 𝐺
+R5: 𝐺 ⇒ 𝐻
+R6: 𝐹 ∧ 𝐻 ⇒ 𝐼
+R7: 𝐷 ⇒ 𝐽
+R8: 𝐸 ∧ 𝐽 ⇒ 𝐾
+Rules
+𝐴, 𝐵, 𝐶Facts 𝐴, 𝐵, 𝐶
+𝐴 ∧ 𝐵 ⇒ 𝐷
+𝐶 ⇒ 𝐸
+𝐷
+𝐸
+𝐴 ∧ 𝐶 ⇒ 𝐺 𝐺
+𝐴, 𝐵, 𝐶, 𝐷, 𝐸, 𝐺
+𝐷 ∧ 𝐸 ⇒ 𝐹 𝐹
+𝐺 ⇒ 𝐻 𝐻
+𝐷 ⇒ 𝐽 𝐽
+𝐴, 𝐵, 𝐶, 𝐷, 𝐸, 𝐹, 𝐺, 𝐻, 𝐽
+𝐸 ∧ 𝐽 ⇒ 𝐾 𝐾
+𝐹 ∧ 𝐻 ⇒ 𝐼 𝐼
+∅
+𝐴, 𝐵, 𝐶, 𝐷, 𝐸, 𝐹, 
+𝐺, 𝐻, 𝐼, 𝐽, 𝐾
+Observe that the forward chaining algorithm as defined, is inefficient. We could easily optimize it using a 
+‘marking’ algorithm which tracks ‘used’ rules. Thus, we would not need to iterate over those same rules 
+repeatedly.
+
+Forward Chaining: Try It
+R1: 𝐴 ∧ 𝐵 ⇒ 𝐷
+R2: 𝐵 ∧ 𝐶 ⇒ 𝐸
+R3: 𝐴 ⇒ 𝐹
+R4: 𝐷 ∧ 𝐹 ⇒ 𝐺
+R5: 𝐸 ⇒ 𝐻
+R6: 𝐶 ∧ 𝐷 ⇒ 𝐼
+R7: 𝐺 ∧ 𝐻 ∧ 𝐼 ⇒ 𝐽
+R8: 𝐹 ∧ 𝐽 ⇒ 𝐾
+R9: 𝐷 ∧ 𝐿 ⇒ 𝑀
+Rules
+𝐴, 𝐵, 𝐶Facts
+
+Backward Chaining
+BACKWARD_CHAINING(KB, goal):
+    if goal in facts: return True
+    for each rule in KB:
+        if rule.conclusion == goal:
+            if PROVE_PREMISES(rule.conditions):
+                return True
+   return False
+PROVE_PREMISES(premises):
+    for each premise in premises:
+       if not BACKWARD_CHAINING(KB, premise):
+           return False
+   return True
+Think of the goal as being the root of a tree. Backward chaining is an inference technique that starts with a goal and 
+builds that tree downward using the rules set. Ultimately, if the leaves of that tree are all in the known set of facts, 
+we have deduced our goal from the knowledge base.  
+Does a rule’s 
+conclusion, match 
+our current goal?
+Must satisfy all premises for 
+a rule to infer its conclusion.
+Base case: goal is known.
+Check all premises 
+of matching rule.
+
+Backward Chaining: Example
+R1: 𝐴 ∧ 𝐵 ⇒ 𝐷
+R2: 𝐶 ⇒ 𝐸
+R3: 𝐷 ∧ 𝐸 ⇒ 𝐹
+R4: 𝐴 ∧ 𝐶 ⇒ 𝐺
+R5: 𝐺 ⇒ 𝐻
+R6: 𝐹 ∧ 𝐻 ⇒ 𝐼
+R7: 𝐷 ⇒ 𝐽
+R8: 𝐸 ∧ 𝐽 ⇒ 𝐾
+Rules
+𝐴, 𝐵, 𝐶Facts
+𝐴 ∧ 𝐵 ⇒ 𝐷
+𝐶 ⇒ 𝐸
+𝐷
+𝐸
+𝐷 ⇒ 𝐽 𝐽
+𝐸 ∧ 𝐽 ⇒ 𝐾 𝐾
+Backward chaining algorithm seems more efficient than forward training since it avoids unnecessary 
+inference focusing on what is needed to prove the goal. However, it requires a starting point.
+𝐶
+𝐴
+𝐵
+𝐾Goal
+
+Backward Chaining: Try It
+R1: 𝐴 ∧ 𝐵 ⇒ 𝐷
+R2: 𝐵 ∧ 𝐶 ⇒ 𝐸
+R3: 𝐴 ⇒ 𝐹
+R4: 𝐷 ∧ 𝐹 ⇒ 𝐺
+R5: 𝐸 ⇒ 𝐻
+R6: 𝐶 ∧ 𝐷 ⇒ 𝐼
+R7: 𝐺 ∧ 𝐻 ∧ 𝐼 ⇒ 𝐽
+R8: 𝐹 ∧ 𝐽 ⇒ 𝐾
+R9: 𝐷 ∧ 𝐿 ⇒ 𝑀
+Rules
+𝐴, 𝐵, 𝐶Facts 𝐾Goal
+
+Backward Chaining: Try It II
+R1: 𝐴 ∧ 𝐵 ⇒ 𝐷
+R2: B ∧ 𝐶 ⇒ 𝐷
+R3: 𝐸 ∧ 𝐹 ⇒ 𝐷
+R4: 𝐷 ∧ 𝐺 ⇒ 𝐻
+R5: 𝐻 ⇒ 𝐾
+Rules
+𝐶, 𝐺Facts 𝐻Goal
+
+Chaining Analogies
+Forward Chaining Backward Chaining
+• Start from known facts as the root of a tree.
+• Apply rules to derive all possible conclusions.
+• Explores every branch of a tree en route to 
+inferring any / all facts (leaves in the tree).
+• Goal: discovering everything that can be 
+inferred.
+• Start from a leaf (goal or query).
+• Backward hypergraph search: Work 
+backward tracing a path from the goal 
+leaf back to the root.
+• Goal: inferring a specific fact.
+Copilot 
+generated 
+images! Ug.
+
+
+Resolution
+
+A Motivating Example
+Problem. Prove that there are infinitely many prime numbers.
+Can we prove this statement directly?
+Doing so would require that we list or 
+characterize all prime numbers (e.g., 𝑝 
+is of the form 2𝑛 + 1 for 𝑛 > 1).
+Instead…consider a short and elegant proof.
+Proof by contradiction.
+Suppose there are a finite number of prime numbers, enumerated as 𝑝1, 𝑝2, … 𝑝𝑛. Now, construct 
+a value 𝑁 = 𝑝1 ⋅ 𝑝2 ⋅ … ⋅ 𝑝𝑛 + 1. Clearly, 𝑁 is not divisible by any prime 𝑝𝑖 (as 𝑁 % 𝑝𝑖 = 1 for all 
+𝑖). 
+∎
+So we can conclude that either (1) 𝑁 is prime itself or (2) it is divisible by a prime number not in 
+the list. In either case, we have a contradiction since all primes were in our enumerated list 
+𝑝1, 𝑝2, … 𝑝𝑛.
+
+Methods of Inference: Resolution 
+Resolution, as an inference procedure, uses the idea of proof by contradiction.
+Recall with proof by contraction, when proving 𝑝 ⇒ 𝑞, 
+we are instead attempting to prove: 𝑝 ∧ ~𝑞 ⇒ 𝑓𝑎𝑙𝑠𝑒
+𝒑 𝒒 𝒑 ⇒ 𝒒 𝒑 ∧ ~𝒒
+T T T F
+T F F T
+F T T F
+F F T F
+Instead of juggling multiple inference rules, resolution uses one uniform rule to derive contradictions.
+(The term refutation is often used in logic programming because 
+the method focuses on refuting the negation of the goal.)
+𝐾𝐵 ⊨ 𝑃 𝐾𝐵 ∧ ~𝑃 ⊨ 𝑓𝑎𝑙𝑠𝑒Direct inference
+Resolution via Refutation
+⇔
+
+Conjunctive Normal Form (CNF)
+A clause is a disjunction of literals (where a literal is an atomic proposition or its 
+negation) whereas a sentence in CNF is a conjunction of one or more clauses.
+~𝐴 ∨ 𝐵 ∨ 𝐶 ∧ ~𝐵 ∨ 𝐴 ∧ 𝐴 ∨ ~𝐶
+clause clause clause
+CNF
+
+Converting to CNF
+A clause is a disjunction of literals.
+A sentence in CNF is a conjunction of one or more clauses.
+Input: A sentence 𝑆.
+Output: A sentence in CNF.
+1. Eliminate implications:  ⇒ and ⇔.
+2. Move negation (~) inward.
+3. Apply distributive laws: ∨ over ∧.
+4. Remove duplicate literals in a clause.
+5. Remove tautologies.  
+Distributivity of ∨ over ∧
+𝛼 ∨ 𝛽 ∧ 𝛾 ≡ 𝛼 ∨ 𝛽 ∧ 𝛼 ∨ 𝛾
+
+Try It
+~ 𝑃 ⇒ 𝑄 ∧ 𝑅 ⇒ 𝑆
+𝑃 ∨ 𝑅 ∧ 𝑃 ∨ ~𝑆 ∧ ~𝑄 ∨ 𝑅 ∧ ~𝑄 ∨ ~𝑆
+Distributivity of ∨ over ∧
+𝛼 ∨ 𝛽 ∧ 𝛾 ≡ 𝛼 ∨ 𝛽 ∧ 𝛼 ∨ 𝛾
+
+Example: Converting to CNF I
+~ 𝑃 ⇒ 𝑄 ⇔ 𝑅 ∨ 𝑆
+~ 𝑃 ⇒ 𝑄 ⇒ 𝑅 ∧ 𝑅 ⇒ 𝑄 ∨ 𝑆
+~ ~𝑃 ∨ ~𝑄 ∨ 𝑅 ∧ ~𝑅 ∨ 𝑄 ∨ 𝑆
+𝑃 ∧ ~ ~𝑄 ∨ 𝑅 ∧ ~𝑅 ∨ 𝑄 ∨ 𝑆
+Eliminate ⇔
+Eliminate ⇒
+Move negation (~) inward
+𝑃 ∧ ~ ~𝑄 ∨ 𝑅 ∨ ~ ~𝑅 ∨ 𝑄 ∨ 𝑆
+Move negation (~) inward
+𝑃 ∧ 𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑄 ∨ 𝑆
+Move negation (~) inward
+𝑃 ∨ 𝑆 ∧ 𝑋 ∨ 𝑆
+Apply distributive laws: ∨ over ∧
+Let 𝑋 be 𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑄
+𝑃 ∧ 𝑋 ∨ 𝑆
+⇔
+⇔
+⇔
+⇔
+⇔
+⇔
+⇔
+Remember to 
+link expressions
+Distributivity of ∨ over ∧
+𝛼 ∨ 𝛽 ∧ 𝛾 ≡ 𝛼 ∨ 𝛽 ∧ 𝛼 ∨ 𝛾
+
+Example: Converting to CNF II
+𝑃 ∨ 𝑆 ∧ 𝑋 ∨ 𝑆
+Handle 𝑋:
+𝑋 ≡ 𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑄
+Apply distributive laws: ∨ over ∧
+𝑄 ∨ 𝑅 ∧ ~𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑄
+𝑄 ∨ 𝑅 ∧ 𝑄 ∨ ~𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑅 ∨ ~𝑄
+Apply distributive laws: ∨ over ∧
+𝑄 ∨ 𝑅 ∧ 𝑄 ∨ ~𝑄 ∧ ~𝑅 ∨ 𝑅 ∧ ~𝑅 ∨ ~𝑄
+Associativity of ∧
+𝑄 ∨ 𝑅 ∧ ~𝑅 ∨ ~𝑄
+Remove Tautologies
+𝑃 ∨ 𝑆 ∧ 𝑄 ∨ 𝑅 ∧ ~𝑅 ∨ ~𝑄 ∨ 𝑆
+𝑃 ∨ 𝑆 ∧ 𝑄 ∨ 𝑅 ∨ 𝑆 ∧ ~𝑅 ∨ ~𝑄 ∨ 𝑆
+Apply distributive laws: ∨ over ∧
+𝑃 ∨ 𝑆 ∧ 𝑄 ∨ 𝑅 ∨ 𝑆 ∧ ~𝑅 ∨ ~𝑄 ∨ 𝑆
+Associativity of ∧
+⇔
+⇔
+⇔
+⇔
+⇔
+⇔
+⇔
+Distributivity of ∨ over ∧
+𝛼 ∨ 𝛽 ∧ 𝛾 ≡ 𝛼 ∨ 𝛽 ∧ 𝛼 ∨ 𝛾
+
+The Resolution Rule
+𝐴 ∨ 𝐿 ∧ ~𝐿 ∨ 𝐵
+𝐴 ∨ 𝐵 resolvent
+parent clauses
+Suppose we have clauses 𝐴, 𝐿, and 𝐵.
+From a truth table:
+𝑨 𝑳 𝑩
+T T T
+T T F
+T F T
+T F F
+F T T
+F T F
+F F T
+F F F
+~𝑳 ∨ 𝑩
+T
+F
+T
+T
+T
+F
+T
+T
+𝐀 ∨ 𝑳
+T
+T
+T
+T
+T
+T
+F
+F
+𝑨 ∨ 𝑩
+T
+T
+T
+T
+T
+F
+T
+F
+Whenever the parent clauses are 
+both true, the resolvent is also true.
+This is proof that the Resolution rule 
+is sound: the resolvent is a logical 
+consequence of its parent clauses.
+
+Resolution Procedure
+1) Combine 𝐾𝐵 ∧ ~𝑄.
+2) Rename variables to avoid clashes. 
+3) Convert 𝐾𝐵 ∧ ~𝑄 to CNF. 
+Input:
+• Knowledge base: 𝐾𝐵
+• Query sentence: 𝑄
+𝐴 ∨ 𝐿 ∧ ~𝐿 ∨ 𝐵
+𝐴 ∨ 𝐵
+5) Repeat (4) until either:
+• Empty clause (⊥) is derived →
+• Contradiction: 𝐾𝐵 ∧ ~𝑄 is unsatisfiable
+• 𝐾𝐵 ⊨ 𝑄.
+• No new clauses can be generated →
+• 𝐾𝐵 ⊭ 𝑄 (Goal cannot be derived from 𝐾𝐵.)
+4) Apply the Resolution rule.
+Iterating: You are 
+basically trying to 
+prove the system 
+breaks: if it does, your 
+original idea was right.
+Iterating: It’s like solving a 
+puzzle: keep combining pieces 
+until you either finish it or 
+realize some pieces are missing.
+
+Resolution Procedure Example
+Input:
+• Knowledge base: 𝑃 ∨ 𝑄, ~𝑃 ∨ 𝑅, ~𝑄 ∨ 𝑅
+• Query sentence: 𝑅
+1. Combine 𝐾𝐵 ∧ ~𝑄.
+2. Rename variables to avoid clashes. 
+3. Convert 𝐾𝐵 ∧ ~𝑄 to CNF. 
+4. Apply the Resolution rule.
+5. Repeat until (⊥) or exhaustion
+The clauses are in CNF, so we have 𝐾𝐵 ∧ ~𝑅 ≡
+𝑃 ∨ Q ∧ ~𝑃 ∨ 𝑅 ∧ ~𝑄 ∨ 𝑅 ∧ ~𝑅
+Repeatedly apply the Resolution Rule to the existing 𝐾𝐵:
+𝑃 ∨ Q ∧ ~𝑃 ∨ 𝑅
+𝑄 ∨ 𝑅
+~𝑄 ∨ 𝑅 ∧ ~𝑅
+~𝑄
+𝑃 ∨ Q ∧ ~𝑄 ∨ 𝑅
+𝑃 ∨ 𝑅
+Using the computed clauses:
+𝑃 ∨ 𝑄 ∧ ~𝑄
+𝑃
+𝑄 ∨ 𝑅 ∧ ~𝑅
+𝑄
+We observe that we 
+derived Q ∧ ~𝑄 ⊢⊥.
+We conclude 𝐾𝐵 ⊨ 𝑅.
+𝐴 = 𝐴 ∨ 𝑓𝑎𝑙𝑠𝑒
+
+Resolution Example II
+Input:
+• Knowledge base: 𝐴 ∨ 𝐵 ∨ 𝐶, ~𝐴 ∨ 𝐷, ~𝐵 ∨ 𝐷, ~𝐶 ∨ ~𝐷
+• Query sentence: 𝐷
+1. Combine 𝐾𝐵 ∧ ~𝑄.
+2. Rename variables to avoid clashes. 
+3. Convert 𝐾𝐵 ∧ ~𝑄 to CNF. 
+4. Apply the Resolution rule.
+5. Repeat until (⊥) or exhaustion
+The clauses are in CNF, so we have 𝐾𝐵 ∧ ~𝐷 ≡
+𝐴 ∨ 𝐵 ∨ 𝐶 ∧ ~𝐴 ∨ 𝐷 ∧ ~𝐵 ∨ 𝐷 ∧ ~𝐶 ∨ ~𝐷 ∧ ~𝐷
+Repeatedly apply the Resolution Rule to the existing 𝐾𝐵:
+~𝐵 ∨ 𝐷 ∧ ~𝐷
+~𝐵
+~𝐴 ∨ 𝐷 ∧ ~𝐷
+~𝐴
+𝐴 ∨ 𝐵 ∨ C ∧ ~𝐴
+𝐵 ∨ 𝐶
+𝐵 ∨ 𝐶 ∧ ~𝐵
+𝐶
+~𝐶 ∨ ~𝐷 ∧ 𝐶
+~𝐷
+We have exhausted the 
+useful resolutions.
+We conclude 𝐾𝐵 ⊭ 𝐷.
+
+Soundness and Completeness
+
+Summary
+Soundness 𝐾𝐵 ⊢ 𝜙 ⇒ 𝐾𝐵 ⊨ 𝜙“Don't derive false conclusions.”
+Completeness 𝐾𝐵 ⊨ 𝜙 ⇒ 𝐾𝐵 ⊢ 𝜙“Can derive all true conclusions .”
+
+Goal
+Why?
+A Sound and Complete Inference System
+Syntactic derivation ⇔ Semantic validity
+Syntactic (𝐾𝐵 ⊢ 𝜙): Rule application, 
+symbol manipulation Semantic (𝐾𝐵 ⊨ 𝜙): Truth-based reasoning 
+about logical relationships
+In a sound and complete system, both approaches 
+always give the same answer.
+
+Soundness (of Propositional Logic)
+Definition. An argument is sound if it 
+is valid and all premises are actually true.Our general definition:
+Definition. An inference system is sound if and only if for all knowledge bases 𝐾𝐵 and all sentences 
+𝜙,
+𝐾𝐵 ⊢ 𝜙 ⇒ 𝐾𝐵 ⊨ 𝜙
+(If 𝜙 is derivable from 𝐾𝐵 using the inference rules, then 𝜙 is semantically entailed by 𝐾𝐵.)
+Soundness is a guarantee that our inference system never leads us astray: every derivable conclusion is logically 
+valid.
+Without a sound inference system, we cannot trust our proofs since we might derive 𝜙 from ~𝜙.
+
+Example: Not Sound
+Suppose we accidentally design a system 
+that includes an invalid rule: From 𝑃 ∨ 𝑄 we can derive 𝑃. 𝑃 ∨ 𝑄
+𝑃
+Consider a knowledge base 𝐾𝐵 = 𝑅, 𝑅 ⇒ 𝑆 ∨ 𝑇 .
+Using modus ponens, 𝐾𝐵 = 𝑅, 𝑅 ⇒ 𝑆 ∨ 𝑇 , we can derive 𝑆 ∨ 𝑇.
+𝑅, 𝑅 ⇒ 𝑆 ∨ 𝑇
+𝑆 ∨ 𝑇
+Using our invalid rule, we derive 𝑆. That is, 𝐾𝐵 ⊢ 𝑆. But to verify soundness, we need to show 𝐾𝐵 ⊨ 𝑆.
+Suppose 𝑅 = 𝑡𝑟𝑢𝑒, 𝑆 = 𝑓𝑎𝑙𝑠𝑒, and 𝑇 = 𝑡𝑟𝑢𝑒. Then,
+𝑅 = 𝑡𝑟𝑢𝑒
+Recall, sound systems require that every inference rule preserves truth in all models. 
+𝑅 ⇒ 𝑆 ∨ 𝑇
+ 𝑡𝑟𝑢𝑒 ⇒ 𝑓𝑎𝑙𝑠𝑒 ∨ 𝑡𝑟𝑢𝑒
+ 𝑡𝑟𝑢𝑒 ⇒ 𝑡𝑟𝑢𝑒⇔ 𝑡𝑟𝑢𝑒⇔
+𝑆 ∨ 𝑇 𝑓𝑎𝑙𝑠𝑒 ∨ 𝑡𝑟𝑢𝑒
+ 𝑡𝑟𝑢𝑒⇔
+𝑆 = 𝑓𝑎𝑙𝑠𝑒
+𝑆 is not semantically entailed: 𝐾𝐵 ⊭ 𝑆.
+
+Completeness (of Propositional Logic)
+Definition. An inference system is complete if and only if for all knowledge bases 𝐾𝐵 and all 
+sentences 𝜙,
+𝐾𝐵 ⊨ 𝜙 ⇒ 𝐾𝐵 ⊢ 𝜙
+(If 𝜙 is semantically entailed by 𝐾𝐵, then 𝜙 is derivable from 𝐾𝐵 using the inference rules.)
+Completeness is a guarantee that our inference system can find all valid conclusions (i.e., no 
+‘missing’ logical consequences).
+Without a complete inference system, some valid conclusions might be unprovable (since we would 
+miss important logical consequences).
+
+Example: Not Complete
+Suppose we have an inference system that only 
+includes one inference rule: modus ponens.
+From 𝑃 ⇒ 𝑄 and 𝑃, 
+we can derive 𝑄.
+𝑃 ⇒ 𝑄 ∧ 𝑃
+𝑄
+Consider a knowledge base 𝐾𝐵 = 𝑅 ∨ 𝑆, ~𝑅  with goal 𝑆.
+We first perform a semantic check: 𝐾𝐵 ⊨ 𝑆.
+𝑅 = 𝑡𝑟𝑢𝑒. Then, this is a  contradiction as 𝐾𝐵 ⊨ ~𝑅; 𝐾𝐵 cannot also entail 𝑅. 
+𝑅 = 𝑓𝑎𝑙𝑠𝑒. Then, from 𝑅 ∨ 𝑆, we know 𝑆 must be true.
+Definition [semantic entailment].
+𝐾𝐵 ⊨ 𝑄 means “In every model 
+where 𝐾𝐵 is true, 𝑄 is also true.”
+Thus, 𝐾𝐵 ⊨ 𝑆.
+Now, can we derive 𝑆? 𝐾𝐵 ⊢ 𝑆? Modus ponens requires a conditional format: 𝑃 ⇒ 𝑄. Our 
+knowledge base does not have any clauses of this form.
+Therefore, 𝐾𝐵 ⊬ 𝑆.
+Thus, this inference system is not complete.
+
+Theorem. Resolution for propositional logic is both sound and complete.
+
+Theorem. If 𝐾𝐵 ∧ ~𝜙 ⊢⊥ by Resolution, then 𝐾𝐵 ⊨ 𝜙.
+Proof. Suppose Resolution derives ⊥ from 𝐾𝐵 ∧ ~𝜙. 
+Define two clauses 𝐶1 = 𝐿 ∨ 𝐴  and 𝐶2 = ~𝐿 ∨ 𝐵  that are both satisfiable and also let 𝑅 = 𝐴 ∨ 𝐵  be 
+their resolvent.
+Let 𝑀 be a model that satisfies both 𝐶1 and 𝐶2. Then 𝑀 must assign some truth value to 𝐿.
+If 𝑀 𝐿 = 𝑓𝑎𝑙𝑠𝑒, then since 𝑀 satisfies 𝐶1 = 𝐿 ∨ 𝐴  , we must have 
+𝑀 𝐴 =  𝑡𝑟𝑢𝑒, which again makes 𝑀 𝑅 = 𝑀 𝐴 ∨ 𝐵 = 𝑡𝑟𝑢𝑒.
+First, we establish that the resolution rule is truth-preserving.
+Therefore, 𝑅 is satisfiable whenever both parent clauses are satisfiable.
+Since resolution preserves satisfiability, any clause derived through resolution can only be satisfiable if the 
+original clauses are satisfiable. Therefore, if we derive ⊥ (the empty clause, which is always unsatisfiable), from 
+𝐾𝐵 ∧ ~𝜙, this means 𝐾𝐵 ∧ ~𝜙 must be unsatisfiable.
+That is, there is no model that makes both 𝐾𝐵  and ~𝜙 simultaneously true. Thus, in every model where 𝐾𝐵 is 
+true, ~𝜙 must be false. Hence, 𝜙 must be true. It follows 𝐾𝐵 ⊨ 𝜙. ∎
+Sound
+If 𝑀 𝐿 =  𝑡𝑟𝑢𝑒, then since 𝑀 satisfies 𝐶2 = ~𝐿 ∨ 𝐵 , we must 
+have 𝑀 𝐵 =  𝑡𝑟𝑢𝑒, which makes 𝑀 𝑅 = 𝑀 𝐴 ∨ 𝐵 = 𝑡𝑟𝑢𝑒.
+
+Theorem. If 𝐾𝐵 ⊨ 𝜙, then Resolution derives ⊥ from  𝐾𝐵 ∧ ~𝜙.
+Proof. Suppose 𝐾𝐵 ⊨ 𝜙. Then 𝐾𝐵 ∧ ~𝜙 is unsatisfiable.
+Observe that for propositional logic there are finitely many distinct clauses. Thus, we know that 
+Resolution terminates with a finite clause set 𝑆.
+Therefore, Resolution must derive ⊥.∎
+Since Resolution did not derive ⊥, the final clause set 𝑆 must be satisfiable. We therefore can construct 
+a truth assignment that satisfies all clauses in 𝑆:
+• For each propositional variable 𝑃, if there exists a unit clause 𝑃 in 𝑆, assign 𝑃 = 𝑡𝑟𝑢𝑒;
+• If there exists a unit clause ~𝑃 in 𝑆, assign 𝑃 = 𝑓𝑎𝑙𝑠𝑒;
+• Otherwise, assign 𝑃 arbitrarily.
+Recall the Resolution procedure begins with 𝐾𝐵 ∧ ~𝜙. Since 𝑆 contains all clauses from the CNF 
+conversion of 𝐾𝐵 ∧ ~𝜙 (as well as possibly other derived clauses), the truth assignment we 
+constructed also satisfies 𝐾𝐵 ∧ ~𝜙. This is a contradiction.
+Complete
+Now, assume for the sake of contradiction that Resolution does not derive ⊥  from 𝐾𝐵 ∧ ~𝜙.
+
+Summary (Again)
+Soundness 𝐾𝐵 ⊢ 𝜙 ⇒ 𝐾𝐵 ⊨ 𝜙“Don't derive false conclusions.”
+Completeness 𝐾𝐵 ⊨ 𝜙 ⇒ 𝐾𝐵 ⊢ 𝜙“Can derive all true conclusions .”
+In practice:
+Real-World Example:
+No false negatives – the system will not miss valid conclusions.
+Our Goal: Sound and Complete systems.
+They ensure our AI is both trustworthy (no false conclusions) and comprehensive (no missed inferences).
+If a patient actually has cancer (and this entailed by the 
+symptoms), we want our system to identify it.
+No false positives – the inference system will not “hallucinate” false conclusions.
+If a medical diagnosis system says “a patient has cancer,” we 
+want to be confident it is correct.
+In practice:
+Real-World Example:

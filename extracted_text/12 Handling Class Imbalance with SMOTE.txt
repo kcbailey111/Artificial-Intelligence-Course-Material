@@ -1,0 +1,181 @@
+Handling Class Imbalance 
+with SMOTE
+
+
+What is Class Imbalance?
+A dataset where one class (the majority) vastly outnumbers another (the minority) is said to be class-
+imbalanced. In many real-world classification problems, one class is far more common than another.
+• Fraud detection: 0.1% of transactions are fraudulent
+• Medical diagnosis: 1–5% of patients have a rare disease
+• Spam filtering: Spam may be a small fraction of all email
+• Network intrusion detection: Malicious traffic is a tiny fraction of all network packets.
+• Defect detection in manufacturing: Most manufactured items are defect-free; defective cases may be 
+<0.5%.
+• Wildlife conservation / species detection: Camera traps show animals in only a small fraction of images; 
+rare species appear in <1%.
+• Earthquake early warning: True seismic events are extremely rare compared to non-events in continuous 
+sensor data.
+• Credit default prediction: Defaults occur in only a small % of loans.
+• Coastal water quality monitoring: Hypoxic events (dissolved oxygen ≤2.0 mg/L) are rare relative to normal 
+(normoxic) conditions, creating a highly imbalanced dataset for binary classification.
+
+What does Class Imbalance Matter?
+A classifier trained on imbalanced data is biased toward the majority class. Consider a dataset with 95% 
+positive and 5% negative examples:
+Strategy
+Predict everything as positve
+Actually learn the minority class
+High accuracy can be misleading.
+We saw this previously in Evaluation Metrics: A 
+classifier that predicts only the majority class gets:
+• High accuracy,
+• Recall of the minority class is 0,
+• Near-0 MCC.
+Accuracy
+95%
+Harder, but more useful
+Standard learning algorithms optimize overall error.
+That is equivalent to maximizing accuracy! 
+the metric we just agreed is broken under imbalance.
+The minority class is often the most important one to get right.
+That's exactly why Recall and F1 exist missing a rare but critical 
+case can be far more costly than a false alarm.
+
+Possible Solutions
+Oversample the Minority Class: Duplicate minority 
+class examples until classes are balanced
+• Creates a balanced training set
+• The risk is Overfitting: the model 
+memorizes the same minority examples.
+Two straightforward strategies address imbalance by 
+changing the training set:
+Both approaches are simple but come with real trade-offs. 
+Can we do better?
+Undersample the Majority Class: Remove majority 
+class examples until classes are balanced
+• Creates a balanced training set
+• We risk losing potentially useful information 
+from the majority class
+
+
+Synthetic Oversampling with SMOTE
+Instead of duplicating minority examples, what if we generated new, synthetic ones?
+• New examples should be similar to real minority instances
+• They should diversify the minority class, not just repeat it
+Synthetic Minority Over-sampling TEchnique (SMOTE)
+Chawla et al. (2002). SMOTE: Synthetic Minority Over-sampling Technique. Journal of Artificial Intelligence Research.
+This addresses the overfitting risk of naive oversampling.
+
+
+Interpolation: Motivation
+Interpolation is a blending of two values.
+Consider two points in the Euclidean Plane.
+If we move from 1, 4  to 5, 7 , using a linear function we might have to compute the 
+equation of the line using point-slope form:
+y − 𝑦0 = 𝑦1 − 𝑦0
+𝑥1 − 𝑥0
+x − 𝑥0 .
+For the two points, y − 7 =
+4−7
+1−5 x − 5
+ y − 7 =
+3
+4 x − 5 .
+5, 7
+1, 4
+We may then consider any 𝑥-value in the interval 1, 5 .
+For example, we might compute the midpoint as:
+𝑥𝑀, 𝑦𝑀 =
+1+5
+2 , 𝑓
+1+5
+2 = 3, 5.5
+where 𝑓 is the equation of the line.
+3, 5.5
+
+Interpolation: Motivation II
+To acquire a blending of points, we do not want to compute the function 𝑓 that passes through 
+the two points, we want to compute individual points along that line.
+5, 7
+1, 4
+Consider again computing the midpoint of the two points.
+We are well-aware of a formula for doing so: 
+𝑥𝑀, 𝑦𝑀 = 𝑥0 + 𝑥1
+2 , 𝑦0 + 𝑦1
+2 = 1 + 5
+2 , 4 + 7
+2 = 3, 5.5
+This technique is very specific to a single point. We should work to generalize 
+this notion to allow us to compute any point on the line segment between our 
+given points.
+𝑥𝑀, 𝑦𝑀 = 𝑥0 + 0. 5 ∗ 𝑥1 − 𝑥0 , 𝑦0 + 0. 5 ∗ 𝑦1 − 𝑦0
+𝑥1 − 𝑥0
+𝑦1−𝑦0
+3, 5.5
+For this example,
+𝑥𝑀, 𝑦𝑀 = 1 + 0. 5 ∗ 5 − 1 , 4 + 0. 5 ∗ 7 − 4 = 3, 5.5
+
+Interpolation: Motivation III
+Given two points in the plane*, we can compute any point on the line defined by two points as:
+𝑥𝑢, 𝑦𝑢 = 𝑥0, 𝑦0 + 𝑢 ∙ 𝑥1 − 𝑥0 , 𝑦1 − 𝑦0
+where 𝑢 is a constant and 𝑥0, 𝑦0  is the origination point.
+5, 7
+1, 4
+ 𝑥1 − 𝑥0
+𝑦1−𝑦0
+2, 4.75
+*This can easily be extended to 𝑛 dimensions.
+Example. Compute the point that is one-fourth distance away from 1, 4  
+toward 5, 7 .
+Solution.
+Here, 𝑢 = 0.25.
+𝑥.25, 𝑦.25 = 1, 4 + 0.25 ∗ 5 − 1 , 0.25 ∗ 7 − 4 = 2, 4.75
+
+Linear Interpolation and SMOTE
+What may look more familiar is an equivalent expression to our formula.
+𝑥𝑢, 𝑦𝑢 = 𝑥0, 𝑦0 + 𝑢 ∙ 𝑥1 − 𝑥0 , 𝑦1 − 𝑦0
+ = 𝑥0, 𝑦0 + 𝑢 ∙ 𝑥1, 𝑦1 − 𝑢 ∙ 𝑥0, 𝑦0
+ = 𝑢 ∙ 𝑥1, 𝑦1 + 1 − 𝑢 ∙ 𝑥0, 𝑦0
+ = 𝑢 ∙ 𝑃1 + 1 − 𝑢 ∙ 𝑃0
+where 𝑃0 and 𝑃1 are points in the plane and 𝑢 is a constant.
+𝑃1
+𝑃0
+𝑥1 − 𝑥0
+𝑦1−𝑦0
+𝑥𝑢, 𝑦𝑢
+• Take 2 (real) minority class examples: 𝑚1, 𝑚2.
+• Draw randomly 𝜆 ∈ 0,1 .
+• Create a synthetic example 𝑆 between 𝑚1 and 𝑚2, where 𝜆 controls its position along the segment.
+• Repeat for many examples to grow the minority class to the desired size
+The idea behind SMOTE:
+
+SMOTE Algorithm
+SMOTE generates synthetic minority examples by interpolating between existing ones.
+Observe: due to interpolation, synthetic examples lie between 
+real minority examples in feature space and not outside them.
+Input: Minority example 𝑥
+1. Find the 𝑘 nearest neighbors of 𝑥 among other minority examples (typically 𝑘 = 5)
+2. Randomly select one neighbor 𝑥′
+3. Generate a new synthetic example along the line segment between 𝑥 and x’:
+𝑥𝑛𝑒𝑤 = 𝑥 + 𝜆 ⋅ (𝑥′ − 𝑥), 𝜆 ∈ [0,1]
+4. Repeat until the desired class balance is reached
+Borderline-SMOTE: focuses synthesis near the decision boundary
+
+Questions
+In SMOTE, what is the role of λ?
+a) It determines how many neighbors to consider
+b) It controls where the synthetic example lies between two minority examples
+c) It sets the desired class ratio after oversampling
+d) It measures the distance between two minority examples
+SMOTE should be applied to:
+a) The full dataset before any split
+b) The test set only
+c) Both training and test sets equally
+d) The training set only
+Which of the following is a known limitation of SMOTE?
+a) It always undersamples the majority class
+b) It can generate noisy synthetic examples in regions of 
+class overlap
+c) It can only be applied when the minority class has at 
+least 100 examples
+d) It only works when 𝜆 = 0.5

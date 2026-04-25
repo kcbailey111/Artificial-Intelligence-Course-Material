@@ -1,0 +1,655 @@
+Uniformed Search
+Poppy is into it.
+
+A Motivating Example
+https://xkcd.com/1134/
+
+
+Search Example: Jugs
+5 2State Representation: 𝑓, 𝑡 = (#gallons in 5-gal, #gallons in 3-gal)
+Given: 5-gallon jug and 2-gallon jug
+Initial State: 5,0
+Transitions:
+𝑓, 𝑡 → 0, 𝑡Empty the 5-gallon jug
+𝑓, 𝑡 → 𝑓, 0Empty the 2-gallon jug
+𝑓, 2 → 𝑓 + 2,0 , where 𝑓 ≤ 3Pour 2-gallon jug into 5-gallon jug
+𝑓, 0 → 𝑓 − 2,2  , where 𝑓 ≥ 2Pour 5-gallon jug into 2-gallon jug
+1,0 → 0,1  Pour 1 gallon from 5-gallon jug into 2-gallon jug
+Goal: Acquire 1 gallon Goal States: ∗, 1  or 1,∗ , where ∗ refers to any amount in the jug.
+(These transitions imply you cannot measure or pour a specific amount of water from a jug.)
+
+BFS Search of Jugs
+5,0
+0,0 5,0 3,2
+T1
+T2
+T3
+T4
+T5 T1 T5
+Redundant 
+State
+No water!
+𝑓 = 5 ≰ 3
+T2
+T3 T4
+0,2 3,0
+T1 T2
+5,0
+Redundant 
+State
+T3
+0,0
+T2
+2,0
+T3
+No water!
++ 
+Redundant
+Oscillation: 
+Redundant 
+States
+0,0
+T1
+1,2
+T4
+No water!
++ 
+Redundant
+Does not apply
+
+Search is Almost Everywhere in AI
+Core Search Problems—These are 
+fundamentally about exploring 
+sequences of actions/choices to 
+reach a goal state.
+• Game Playing: How should I 
+move my chess piece?
+• Robotics: How should a robot 
+navigate a room?
+• Planning: How should I schedule 
+tasks?
+• Resource Allocation: How 
+should I assign tasks to 
+processors?
+• Automated Theorem Proving: 
+How do I prove this 
+mathematical statement?
+Hybrid/Search-Optional 
+Problems—These can be solved 
+with search or non-search 
+methods. Modern approaches 
+often blend techniques: search 
+for exploration plus learning for 
+evaluation.
+• Computer Vision: How should 
+I recognize objects in this 
+image?
+• Web Search: How should I 
+rank these millions of pages?
+• Recommendation Systems: 
+What movie should I suggest 
+next?
+• Drug Discovery: Which 
+molecular structure will treat 
+this disease?
+Search-Assisted Problems—
+These primarily use other 
+techniques (neural nets, 
+statistical learning) but may 
+incorporate search as a 
+component.
+• Natural Language: How 
+should I parse this 
+sentence? (May use a 
+beam search.)
+• Machine Learning: How 
+should I find optimal 
+parameters? (Gradient 
+descent in ML.)
+
+Formal Definition of Search
+For:
+𝑆: State space (set of all possible states) 𝑠0 ∈ 𝑆: Initial State
+Actions 𝑠 : Set of legal actions in a state 𝑠
+𝛿 𝑠, 𝑎 → 𝑠′ ∈ 𝑆: Transition function 𝛿 that applies action 𝑎 to state 𝑠 resulting in a state 𝑠′.
+Goals ⊆ 𝑆: Set of goal states
+𝑐 𝑠, 𝑎, 𝑠′ : an action cost function; cost of 𝛿 𝑠, 𝑎 → 𝑠′
+𝑔 𝑛 = ෍
+𝑖=1
+depth 𝑛
+𝑐 𝑠𝑖−1, 𝑎𝑖, 𝑠𝑖 for the path 𝑠0 → 𝑠1 → ⋯ → 𝑠𝑛
+𝑎1 𝑎2 𝑎𝑛
+A search algorithm finds a sequence of actions:
+𝑎1, 𝑎2, … , 𝑎𝑛  such that 𝛿 … 𝛿 𝛿 𝑠0, 𝑎1 , 𝑎2 … , 𝑎𝑛 ∈ Goals
+With a cost of:
+
+Formal Search Compared to DFAs
+Similarities
+• Graph structure: Both work with states and 
+transitions
+• Path concepts: Finding paths through state space
+• Goal-oriented:
+• DFAs check acceptance,
+• Search finds solutions
+• State-action pairs:
+• DFA transitions 𝛿 𝑞, 𝑎 → 𝑞′,
+• Search transitions 𝑠, 𝑎 → 𝑠′
+Key Differences
+• Input vs. Choice:
+• DFA reads string,
+• Search chooses actions
+• Determinism:
+• DFA usually deterministic,
+• Search often has multiple options
+• Costs:
+• DFA has no costs,
+• Search often optimizes path cost
+• Purpose:
+• DFA recognizes ("Is string in language?"),
+• Search constructs ("Find path to goal")
+Search problems are like “interactive DFAs” where instead of passively 
+consuming input, we actively choose actions to reach our goal states.
+
+State Space (𝑆): 
+Search Example: GPS Navigation
+All possible locations
+Some location (e.g., home)
+A Mexican Restaurant
+TurnLeft, TurnRight, GoStraight
+Given a location, 𝑠, follow a 
+direction to end up at 𝑠′
+Travel time, distance, gas cost, 
+environmental impact, etc.
+Sequence of directionsSolution:
+Initial State (𝛿):
+Goal Set (Goals):
+Actions(𝑠):
+Transition function: 𝛿 𝑠, 𝑎 → 𝑠′
+Path Cost:
+
+State Space Graph
+For a problem, a state space graph represents all 
+possible states as nodes, with edges as legal 
+actions between states.
+Each edge has cost 𝑐 𝑠, 𝑎, 𝑠′ , and multiple paths 
+may connect states. This graph captures the 
+complete space search algorithms explore.
+An optimal solution is the path from initial state 
+to goal with minimum total cost—not 
+necessarily the fewest actions. Some search 
+algorithms guarantee finding optimal solutions; 
+others do not.
+The goal of search algorithms is to navigate the 
+state space graph efficiently to find optimal (or 
+acceptable) solution paths.
+S A
+G
+B C
+D
+E
+7
+3
+5
+2
+3
+2
+4
+2
+1
+Paths to Goal:
+S → A → G 5 + 3 = 8
+Cost:
+S → B → C  → G 2 + 2 + 7 = 11
+S → A → C  → G 5 + 1 + 7 = 13
+S → B → D  → E → C → G 2 + 4 + 3 + 2 + 7 = 18
+Optimal means minimum 
+cost, not fewest actions.
+
+Search Trees
+Each node represents a state
+Each edge represents an action
+Each path represents a sequence of actions
+𝑠0
+𝑠2𝑠1 … 𝑠𝑛𝑠3
+𝑎1
+𝑎2 𝑎3
+𝑎𝑛
+𝑎𝑖
+𝑠𝑦𝑠𝑥 …
+𝑎11
+𝑎12
+𝑎1𝑗
+Given that the state space graph shows multiple paths to each state with different costs, search 
+algorithms use a tree representation where each node tracks the complete path taken to reach that state.
+
+Search by Environment Properties refers to what we know about the problem:
+• Observability: Can we see the current state completely?
+• Determinism: Do actions have predictable outcomes?
+Types of Search Problems I: Environment Properties 
+Types:
+Single-State Problems (Fully observable, deterministic):
+• 8-puzzle: See all tiles, moves are predictable
+• Route planning: Know current location, roads are fixed
+Multiple-State Problems (Partially observable, deterministic):
+• Robot localization: Limited sensors, do not know exact position
+• Sensorless planning: Robot vacuum with no position sensors
+Contingency Problems (Observable, nondeterministic):
+• Medical diagnosis: Can observe symptoms, treatment outcomes uncertain
+• Game against opponent: See game state, opponent's moves unpredictable
+Exploration Problems (Unknown state space):
+• Mars rover navigation: Don't know terrain beforehand
+• Web crawling: Discover links as you go
+
+Types of Search Problems II: Objective
+Search By Objective refers to what type of 
+solution we want:
+• Any valid solution vs. the best solution
+• One answer vs. exploring all possibilities
+• Final answer vs. improving answers over 
+time
+Types:
+Finding Any Solution:
+• Maze solving: Any path to exit
+• Satisfiability (SAT): Any assignment that satisfies clauses
+• Scheduling: Any valid assignment of tasks to resources
+Finding Optimal Solution:
+• Shortest path: GPS navigation finding fastest route
+• Traveling salesman: Minimum-cost tour visiting all cities
+• Resource allocation: Minimum cost assignment
+State-Space Search vs. Path-Cost Search:
+• Some problems care about reaching goal states (puzzles)
+• Others care about path taken (navigation, planning 
+sequences)
+Single Solution vs. All Solutions:
+• Chess: Find one good move
+• Constraint satisfaction: Sometimes need all valid 
+solutions
+• Game tree analysis: Explore all possible outcomes
+
+Uninformed Search (Blind Search)
+• No problem-specific knowledge 
+beyond definition
+• Only knows actions, goal test, and 
+action costs
+Search Strategies
+BFS: Explore level by level
+DFS: Go deep first, backtrack when stuck
+Uniform Cost Search: Always expand lowest-cost path
+A*: Combines actual cost + estimated remaining cost
+Greedy Best-First: Always move toward seemingly 
+closest goal
+Hill Climbing: Always take the best local step
+Informed Search (Heuristic Search)
+• Uses problem-specific knowledge 
+(heuristic function)
+• Estimates “goodness” of states
+Some search algorithms are like exploring a new city without a map (systematic but blind), while
+others are like having a compass pointing toward your destination (guided exploration).
+
+Tree Search:
+• Generates nodes without checking for duplicates
+• Can visit same state multiple times
+• Simpler implementation
+Tree Search vs. Graph Search
+Graph Search:
+• Maintains explored set to avoid repeated states
+• More efficient for state spaces with many paths to 
+same state
+• Higher memory requirements
+A
+B C
+D A DF B
+TS: Duplicate visits possible. GS: visit each state once
+Which approach would you use?
+Infinite state space?
+(Like a forgetful housekeeper who cleans 
+the same room multiple times.) (Like checking off rooms on a list as you clean them.)
+Graph Search - prevents revisiting same locations
+Graph Search - avoids revisiting solved positions
+Depends - Graph search if cycles exist, Tree search if linear paths
+Tree Search - unknown if cycles exist, save memory
+8-puzzle (many paths to same state)?
+Exploring unknown territory?
+Robot navigation in known environment?
+
+The Frontier in Search
+Definition. The frontier (sometimes called fringe) is the 
+set of all nodes that have been identified but not yet 
+expanded in a search algorithm: leaf nodes in a search 
+tree.
+(It represents a “boundary” between explored 
+and unexplored parts of the search tree.)
+frontier
+
+The General Search Algorithm
+# Generic search algorithm
+frontier = [initial_state]
+explored = set()
+while frontier:
+    node = frontier.pop()     # Central component to Search
+    if goal_test(node.state): return node   
+    explored.add(node.state)
+   for action in actions(node.state):
+       child = child_node(node, action)
+        if child.state not in explored and child not in frontier:
+            frontier.add(child)
+Data structure determines the search strategy
+
+BFS
+Goal
+BFS: Expand the shallowest node first
+• Examine states one step away from the initial states
+• Examine states two steps away from the initial states
+• … rippling outward
+BFS: Frontier = FIFO queue
+# Generic search algorithm
+frontier = [initial_state]
+explored = set()
+while frontier:
+    node = frontier.pop() # Central component to Search
+    if goal_test(node.state): return node   
+    explored.add(node.state)
+   for action in actions(node.state):
+       child = child_node(node, action)
+        if child.state not in explored and child not in frontier:
+            frontier.add(child) We need back pointers to 
+recover the solution path.
+
+Performance
+Completeness: Does the algorithm guarantee finding a solution if one exists? 
+(Not necessarily finding all solutions.)
+Four measures of search algorithms:
+Optimality: Does it find the best solution?
+Time complexity: How runtime scales with problem size.
+Space complexity: How much memory is required.
+
+BFS Performance
+• Back pointers for generated nodes: 𝑂 𝑏𝑑
+• Queue / fringe: smaller, but still 𝑂 𝑏𝑑
+Completeness: Does the algorithm guarantee finding a solution if one exists?
+Optimality: Does it find the best solution?
+Time complexity Space complexity
+Yes.
+Yes, if edges are positive and monotonically increasing in 
+depth: 
+𝑐𝑜𝑠𝑡(𝑝𝑎𝑡ℎ 𝑡𝑜 𝑑𝑒𝑝𝑡ℎ 𝑑)  ≤  𝑐𝑜𝑠𝑡(𝑝𝑎𝑡ℎ 𝑡𝑜 𝑑𝑒𝑝𝑡ℎ 𝑑 + 1).
+Otherwise, no.
+Worst case: goal is the last node at radius (depth) 𝑑.
+• Explore all nodes up to and at radius 𝑑:
+1 + 𝑏 + 𝑏2 + 𝑏3 + ⋯ + 𝑏𝑑 = 1 1 − 𝑏𝑑+1
+1 − 𝑏 ∈ 𝑂 𝑏𝑑 (bad)
+where 𝑏 is the branching factor.
+
+# Generic search algorithm
+frontier = [initial_state]
+explored = set()
+while frontier:
+    node = frontier.pop() # Central component to Search
+    if goal_test(node.state): return node   
+    explored.add(node.state)
+   for action in actions(node.state):
+       child = child_node(node, action)
+        if child.state not in explored and child not in frontier:
+            frontier.add(child)
+DFS
+BFS: Expand the deepest node first
+• Select a direction. Go deep until the end.
+• Slightly change the end.
+• Slightly change the end some more… fanning outward
+DFS: Frontier = LIFO stack
+Goal
+
+DFS Fringe
+Goal
+BFS space + time: 𝑂 𝑏𝑑
+Let 𝑚 be the maximum depth of the graph from Start.
+Space complexity 𝑚 ⋅ 𝑏 − 1 ∈ 𝑂 𝑚𝑏
+• The current path (up to depth 𝑚)
+• The siblings of nodes along that path (up to 𝑏 
+per level)
+• With backtracking using the system stack, we 
+do not explicitly use back-pointers.
+Time complexity For a finite tree, we 
+may visit all nodes: 𝑂 𝑏𝑚
+
+The Problem with DFS
+Finite tree:
+Goal
+Goal
+Complete
+Optimal
+Yes.
+No. Stops when the first goal is 
+reached which is not 
+guaranteed to be the best.
+Infinite tree:
+Complete
+Optimal
+No. May explore infinitely without 
+backtracking toward solution.
+No.
+BFS
+
+Questions
+You need to search a randomly generated state space graph 
+with one goal, uniform edge costs, depth of goal 𝑑 = 2, and 
+maximum graph depth 𝑚 = 100. Considering worst-case 
+performance, would you choose BFS or DFS for your search?
+DFS could waste enormous time 
+exploring deep, irrelevant paths: the 
+goal is very shallow (𝑑 = 2) compared 
+to maximum depth (𝑚 = 100).
+You need to search a randomly generated state space graph 
+with one goal, uniform edge costs, goal depth 𝑑 = 95, and 
+maximum graph depth 𝑚 = 100. The branching factor is 
+very large (𝑏 = 1000). Considering worst-case behavior, 
+would you choose BFS or DFS for your search?
+BFS is computationally infeasible:
+Space complexity: 𝑂 100095
+Time complexity: 𝑂 100095
+BFS
+DFS
+
+Uniform-Cost Search (UCS)
+• Expand the least-cost node first
+• Use a priority queue to take the least-cost item This sounds familiar.
+Suppose we have a graph in which each node has a path cost (i.e., sum of edge costs along the path) from the start 
+node. We want to find a least-cost path to a goal.
+UCS and Dijkstra Similarities:
+• Explore nodes in order of 
+lowest cumulative cost.
+• Use priority queues for 
+minimum-cost selection
+• Guarantee optimal paths
+Differences
+Dijkstra's Algorithm Uniform Cost Search
+Implementation Pre-load all vertices 
+in priority queue
+Lazy insertion - add nodes 
+dynamically
+Memory Usage Stores entire graph 
+upfront
+Memory-efficient, on-
+demand generation
+UCS is ideal for AI search problems with large or dynamically 
+generated state spaces that cannot be fully stored in memory.
+
+Example
+Start: S
+Goal: G 
+2
+S
+G
+5
+A
+D
+CB
+4
+E
+7
+2 8 4 5
+Consider successor nodes from 
+left to right when there is a tie.
+PQ
+S A E B D C G S B G
+S, 0
+A, 2 B, 5 C, 7
+D, 6 E, 4 G, 10
+G, 9
+Removed
+S
+A
+E
+B
+D
+C
+G
+Nodes visited: Path:
+
+Uniform-Cost Search
+Let:
+• 𝐶∗ be the cost of the least-cost goal node.
+• 𝜖 be the minimum edge cost in the graph: 𝑒𝑑𝑔𝑒-𝑐𝑜𝑠𝑡𝑠 ≥ 𝜖 >  0
+Space complexityTime complexity 𝑂 𝑏 Τ𝐶∗ 𝜖
+Complete?
+Optimal?
+Yes.
+Yes.
+𝑂 𝑏 Τ𝐶∗ 𝜖
+In the worst-case, UCS may need to explore paths that use many small-cost 
+edges. That is, to accumulate cost 𝐶∗ using only a minimum-cost number of 
+edges 𝜖, we need 
+𝐶∗
+𝜖  edges:
+𝐶∗ = 𝜖 ⋅ 𝑛𝑢𝑚(𝑒𝑑𝑔𝑒𝑠) 𝑛𝑢𝑚(𝑒𝑑𝑔𝑒𝑠) = 𝐶∗
+𝜖 ⇔ 
+UCS expands nodes by 
+cost, not depth, and may 
+follow deep low-cost paths 
+before reaching a shorter 
+but costlier goal path.
+1
+1
+S G
+4
+A
+B C
+D
+1
+1
+1
+UCS may explore all nodes up to depth Τ𝐶∗
+𝜖:
+1 + 𝑏 + 𝑏2 + 𝑏3 + ⋯ + 𝑏 Τ𝐶∗ 𝜖 ∈ 𝑂 𝑏 Τ𝐶∗ 𝜖
+
+Performance Measures for Search
+Complexity
+• 𝑏: Branching factor (maximum actions per state)
+• 𝑑: Depth of shallowest goal node
+• 𝑚: Maximum path length in state space
+Most algorithms have 
+exponential complexity.
+Algorithm Time Space Optimal? Complete?
+BFS O 𝑏𝑑 O 𝑏𝑑 Yes* Yes
+DFS O 𝑏𝑚 O 𝑏𝑚 No No
+UCS O 𝑏𝐶/𝜖 O 𝑏𝐶/𝜖 Yes Yes, assuming 𝜖 > 0
+Since no search algorithm excels in all measures of time, space, and optimality, choose based on problem-specific 
+constraints and priorities.
+Completeness Does it always find a solution if one exists?
+Optimality Does it find a least-cost solution?
+Time Complexity Number of nodes generated/expanded
+Space Complexity Maximum memory needed
+* Positive, monotonically 
+increasing edge weights.
+
+Why can we not always do brute-force exhaustive search?
+Questions to Consider
+Efficient search needs heuristics estimating goal distance, domain knowledge, cost estimates, and 
+constraint information - motivating informed search algorithms like A*.
+Problems become exponentially harder with high branching factors, deep solutions, massive state 
+spaces (like chess), and absence of good heuristics to guide search.
+What makes some search problems exponentially harder?
+Exhaustive search fails due to exponential growth 𝑂 𝑏𝑑 , memory constraints, prohibitive time 
+requirements, and the fact that finding any good solution often suffices.
+When might DFS be preferred over BFS?
+Balancing quality versus resources involves choosing appropriate algorithms, setting time/memory 
+limits, applying heuristics, and accepting suboptimal solutions when necessary.
+How do we balance solution quality vs. computational resources?
+What information would help guide our search efficiently?
+DFS is preferred when memory is limited (𝑂 𝑏𝑚  vs. 𝑂 𝑏𝑑 ), solutions are likely deep, any solution 
+suffices, or cycles are unlikely in tree-structured problems.
+
+Depth-Limited Search (DLS)
+What is the problem with DFS?
+Infinite state spaces
+Solution? Define a depth limit (ℓ) in which 
+nodes beyond depth ℓ are not expanded.
+What is the problem with depth-limited DFS?
+Incomplete if 𝑑𝑒𝑝𝑡ℎ(𝑔𝑜𝑎𝑙) > ℓ.
+Space complexity
+Time complexity
+𝑂 𝑏ℓ
+𝑂 𝑏ℓ
+Observe, DLS ≡ DFS when ℓ = ∞.
+What if we iterate by increasing the value of ℓ? 
+S
+G
+ℓ
+1
+𝑑𝑒𝑝𝑡ℎ = 0
+2
+…
+
+Iterative Deepening
+What if we had the best of DFS and BFS?
+Memory Efficiency of DFS: stores only 
+current path in memory thus linear 
+space complexity 𝑂 𝑏𝑑 .
+Completeness guarantee of BFS: 
+systematically explores all depths and will 
+not get stuck in infinite paths.
+Problem? What about all the redundancy in which we revisit nodes?
+
+IDS: Mathematically Reasonable Redundancy
+Iterative deepening performs depth-limited searches with limits 0, 1, 2, … , 𝑑.
+A node at depth 𝑗 will be visited each iteration from 𝑗 to 𝑑: exactly 𝑑 −  𝑗 +  1 times.
+Therefore, the total number of node visits for IDS is given by:
+𝑁 𝐼𝐷𝑆 = 𝑏0 ⋅ 𝑑 + 1 + 𝑏1 ⋅ 𝑑 + 𝑏2 ⋅ 𝑑 − 1 + ⋯ + 𝑏𝑑
+𝑁 𝑛𝑜𝑑𝑒𝑠 𝑢𝑝 𝑡𝑜 𝑑𝑒𝑝𝑡ℎ 𝑑 = 𝑏0 + 𝑏1 + ⋯ + 𝑏𝑑−2 + 𝑏𝑑−1 =
+𝑏𝑑−1
+𝑏−1 ∈ 𝑂 𝑏𝑑
+With exponential expansion, the deepest level dominates the computation:Intuition.
+∈ 𝑂 𝑏𝑑
+Asymptotically, the redundant work at shallow levels becomes 
+insignificant compared to the work done at the target depth. So IDS is 𝑂 𝑏𝑑 ; same as BFS.
+Iterative deepening is the preferred uninformed search method when the search state 
+space is larger than can fit in memory and the depth of the solution is not known.
+Suppose 𝑑 = 5.
+A node at depth 𝑗 = 2 
+appears in searches with 
+limits 2, 3, 4, 5 → 4 times.
+
+Example: Nodes Expanded by Search
+Start: S
+Goal: G 
+2
+S
+G
+5
+A
+D
+CB
+4
+E
+7
+2 8 4 5
+(UCS is the only uninformed 
+search that worries about costs.)
+Consider successor nodes from 
+left to right when there is a tie.
+Search Nodes Visited Solution Found
+BFS S A B C D E G S A G
+DFS S A D E G S A G
+IDS S S A B C S A D E G S A G
+UCS S A E B D C G S B G
+What nodes are visited and what solutions are found by the search technique?

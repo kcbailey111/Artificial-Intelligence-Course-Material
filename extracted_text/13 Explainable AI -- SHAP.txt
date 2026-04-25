@@ -1,0 +1,420 @@
+Explainable AI and SHAP: 
+Understanding and Explaining 
+Machine Learning Models
+
+The Stakes of AI Decisions
+AI systems now make high-stakes decisions.
+Domain Decision Impact
+Finance Loan approval, credit scoring Economic opportunity
+Healthcare Diagnosis, treatment recommendations Patient outcomes
+Criminal Justice Risk assessment, sentencing Liberty and fairness
+Hiring Resume screening, interview scoring Employment opportunity
+The question is not just:
+“What did the model predict?”
+Instead, we ask:
+• “Why?”
+• “Should we trust it?”
+
+What is Explainable AI?
+Explainable AI (XAI) refers to methods that make AI system outputs understandable to 
+humans.
+Goal Question
+Transparency How does the model work?
+What patterns did it learn?
+Interpretability Why did it make this prediction?
+Which features mattered?
+Trustworthiness Is the reasoning sound?
+Does it align with domain knowledge?
+XAI bridges the gap between model performance and human understanding.
+
+The XAI Landscape
+Different stakeholders ask different questions and require different types of explanations.
+Stakeholder Question Needs
+End User “Why was I denied?” Simple, actionable reasoning
+Data Scientist “Is this model learning 
+spurious correlations?”
+Debugging tools
+Regulator “Is this system fair?” Auditable decision logic
+Explanation methods differ in three main ways:
+Dimension Options Why it Matters
+Scope: What does it explain? Global (overall behavior) vs.
+Local (single prediction)
+Global: “Which features drive this model?”
+Local: “Why was this applicant denied?”
+Model Access: Does it need 
+access to model internals?
+Model-agnostic (any model) vs.
+Model-specific
+Agnostic works on any model; specific is faster but limited to certain 
+architectures.
+Timing: When is 
+interpretability added?
+Intrinsic (built-in) vs.
+Post-hoc (after training)
+Intrinsic models (e.g., linear regression) are simple to understand 
+directly but may be less accurate.
+Post-hoc methods let you use powerful models first, then explain 
+them afterward.
+
+The Problem with Simple Models
+We could just use interpretable models...
+Model How to Interpret Limitation
+Linear regression Coefficients are feature weights Can't capture nonlinear relationships
+Decision tree Follow the path from root to leaf Deep trees overfit; shallow trees underfit
+Rule lists Read the if-then rules Struggles with continuous features
+But we often need complex models (random forests, neural nets) for accuracy.
+Can we get the accuracy of complex models and still explain their predictions?
+(The post-hoc approach.)
+
+
+What We Want from an Explanation
+For a single prediction, we want to know:
+Is there a principled way to do this, not just a heuristic?
+• How much did each feature contribute?
+• Did it push the prediction up or down?
+• Do the contributions add up to the final prediction? (Nothing left unexplained.)
+Across many predictions, we want:
+• Which features matter most overall?
+• Consistent methodology: if a feature has the 
+same effect in two different predictions, it 
+should receive the same credit in both.
+Features
+
+
+Revisiting Game Theory
+The feature attribution problem looks like a fair 
+division problem.
+A prediction is like a team's total earnings.
+Features are like team members.
+We want to divide credit fairly.
+Fair Division
+How a shared outcome is split among 
+contributors, so each gets credit 
+proportional to what they actually added.
+Shapley (1953) solved the fair division problem in economics; Lundberg 
+& Lee (2017) applied it to machine learning.
+SHAP = SHapley Additive exPlanations
+A principled, theoretically grounded method for feature attribution.
+Game Theory → SHAP
+Players → Features
+Payout → Prediction
+Fair share → SHAP value
+
+SHapley Additive exPlanations 
+(SHAP)
+
+An Analogy from Cooperative Game Theory
+THE GAME
+Three friends (Alice, Bob, Carol) collaborate and earn $100. How should they split it fairly?
+SHAPLEY’S INSIGHT (1953):
+Pay each player their average marginal contribution 
+across all possible orderings of team formation.
+If Alice joins first and earns $40, then Bob joins (+$30), then Carol (+$30)…
+but what if Bob joined first? Average over all arrival orders.
+Marginal is being used in the economics 
+sense:
+marginal ≡ “the incremental value of 
+adding this player/feature to what is 
+already there”
+
+
+The SHAP Decomposition
+𝑓(𝐱) = 𝜙0 + 𝜙1 + 𝜙2 + ⋯ + 𝜙𝑛
+The model's average output over 
+all training examples: baseline
+Feature 𝑖’s SHAP value 
+(𝜙𝑖) contribution
+Final prediction SHAP value for a single instance 𝐱. This formula defines a local scope by 
+explaining one prediction. 
+Assume the average applicant in the training data 
+had 50% approval. What about this applicant 
+pushed them to 78%?
+Income Credit 
+Score
+Debt 
+Ratio
+Model 
+Prediction
+85K 720 35% 78% 
+Approval
+𝜙𝑖 0.19 0.115 -0.025𝑓 𝐱 = 0.5 + 0.19 + 0.115 − 0.025 = 0.78
+How much did this feature push the 
+prediction up or down from the baseline?How do we compute 𝜙𝑖?
+
+Why Not Just Measure Each Feature Independently?
+This fails because features are rarely 
+independent.
+A 720 (out of 800) credit score has a different 
+effect depending on income: a high credit 
+score may add little to the approval when an 
+applicant may already have a high income 
+which adds significantly.
+Measuring in isolation assumes no interaction 
+among features, producing a main effect that 
+ignores how features combine in actual 
+predictions.
+“Measure each feature's effect in isolation”: 
+hold all other features at neutral values (e.g., 
+their averages), vary only one feature, and 
+see how the prediction changes.
+Add features one at a time, tracking the changes.
+Consider an ordering of features to add in sequence:
+Credit → Income → Debt
+Step Add Feature Prediction Marginal
+0 (none) 0.50 —
+1 Credit 0.65 +0.15
+2 Income 0.72 +0.07
+3 Debt 0.78 +0.06
+The problem is that the order matters. Credit arrives 
+first and absorbs all shared effects. Income and Debt only 
+get attribution for what remains after Credit Score already 
+claimed the correlated impact.
+If we used a different ordering we would get different 
+attributions. Which ordering of features is “right”?
+Idea #1 Idea #2
+
+The Shapley Insight: Average Over All Orderings
+What if we tried every possible ordering and averaged?
+Ordering Credit’s
+marginal
+Income’s
+Marginal
+Debt’s
+marginal
+C → I → D +0.15 +0.07 +0.06
+C → D → I +0.15 +0.18 -0.05
+I → C → D +0.14 +0.08 +0.06
+I → D → C +0.26 +0.08 -0.06
+D → C → I +0.18 +0.18 -0.08
+D → I → C +0.26 +0.10 -0.08
+With 3 features how many 
+orderings do we have? 𝑛 features?
+𝑃 3,3 = 3! = 6 𝑛! Average: 
+Shapley 
+Value (𝜙𝑖)
++0.19 +0.115 -0.025
+IDEA: Average each column to get that feature's Shapley 
+value thus no feature gets positional advantage: each 
+features is measured fairly across all possible contexts.
+𝚺
++0.28
++0.28
++0.28
++0.28
++0.28
++0.28
+
+Toward the SHAPley Value Formula
+Let 𝑁 enumerated as 1, 2, … , 𝑛  be a set of features.
+How many possible orderings are there for 𝑁? 𝑁 !
+Suppose 𝑆 is a subset of features that arrived before 
+feature 𝑖. State the number of orderings of 𝑆. 𝑆 !
+Give an expression for the number of features that arrived 
+after feature 𝑖. State the number of corresponding 
+orderings.
+𝑁 − 𝑆 − 1 𝑁 − 𝑆 − 1 !
+For a model 𝑓, express the marginal contribution of feature 
+𝑖: how much 𝑖 contributes comparatively to the model’s 
+prediction when considering 𝑆. 
+𝑓(𝑆 ∪ {𝑖}) − 𝑓(𝑆)
+What does the expression 𝑆 !⋅ 𝑁 − 𝑆 −1 !
+𝑁  represent? The proportion of orderings where exactly 
+the features in 𝑆 arrive before feature 𝑖. 
+What does the expression 𝑆 ! ⋅ 𝑁 − 𝑆 − 1 ! represent?
+The number of orderings where exactly 
+the features in 𝑆 arrive before feature 𝑖.
+𝑆 is sometimes 
+called a coalition.
+
+The SHAPley Value Formula
+If we combine the expressions to obtain the 
+expression on the right, we observe that it computes
+𝑆 ! ⋅ 𝑁 − 𝑆 − 1 !
+𝑁 ⋅ 𝑓(𝑆 ∪ {𝑖}) − 𝑓(𝑆) 
+the marginal contribution of 𝒊 scaled by a fractional weight: 
+the number of sets with the number of orderings where 
+exactly the features in 𝑆 arrive before feature 𝑖. 
+If we sum the result of allowing feature 𝑖 to sequentially arrive in each position in the ordering, 
+we have the following definition.
+Definition. Let 𝑁 be a set of features enumerated by 1, 2, … , 𝑛 . Then, the Shapley value 
+for feature 𝒊, 𝜙𝑖, is defined as:
+𝜙𝑖 = ෍
+𝑆⊆𝑁\{𝑖}
+|𝑆|! (|𝑁| − |𝑆| − 1)!
+|𝑁|! ⋅ 𝑓(𝑆 ∪ {𝑖}) − 𝑓(𝑆)
+
+Coalition 𝑆
+(before 
+Credit)
+𝑺 Orderings Count Weight
+𝑪𝒐𝒖𝒏𝒕
+𝟔
+Weights
+Consider a case where we have 𝑁 = 3 features we will refer to as 𝑁 = 𝐶, 𝐼, 𝐷 .
+This means 𝑃 3,3 = 3! = 6 orderings.
+0 𝐶 → 𝐼 → 𝐷
+𝐶 → 𝐷 → 𝐼
+2 1
+3
+1 𝐼 → 𝐶 → 𝐷 1 1
+6
+1 𝐷 → 𝐶 → 𝐼 1 1
+6
+1 𝐼 → 𝐷 → 𝐶
+𝐷 → 𝐼 → 𝐶
+2 1
+3
+We will compute the weights for Credit score; Credit can arrive first, second or third. 
+∅
+𝐼
+𝐷
+𝐼, 𝐷
+0! (3 − 0 − 1)!
+3! = 1
+3
+1! (3 − 1 − 1)!
+3! = 1
+6
+1! (3 − 1 − 1)!
+3! = 1
+6
+2! (3 − 2 − 1)!
+3! = 1
+3
+|𝑆|! (|𝑁| − |𝑆| − 1)!
+|𝑁|!
+
+Computing 𝜙𝐼
+For SHAP , we have to retrain a model for each coalition. We then can compute a prediction score for a single 
+record in our data. 
+Coalition 𝑺 𝒇 𝑺
+∅ 0.50
+𝐼 0.58
+𝐶 0.65
+𝐷 0.42
+𝐼, 𝐶 0.72
+𝐼, 𝐷 0.52
+𝐶, 𝐷 0.60
+𝐼, 𝐶, 𝐷 0.78
+Suppose we then have the following prediction 
+scores for a single applicant:
+Income = $85K, Credit = 720, Debt Ratio = 35%
+For example, 𝑓 𝐶 =  0.65 means: “For this 
+applicant, using only their Credit Score (720), the 
+model predicts 0.65 approval probability.” 
+Computing 𝜙𝐼
+Coalition 𝑺 𝒇 𝑺 𝑺 ∪ 𝑰 𝒇 𝑺 ∪ 𝑰
+∅ 0.50 𝐼 0.58
+𝐶 0.65 𝐼, 𝐶 0.72
+𝐷 0.42 𝐼, 𝐷 0.52
+𝐶, 𝐷 0.60 𝐼, 𝐶, 𝐷 0.78
+1
+6 ⋅ 0.52 − 0.42 + 1
+3 ⋅ 0.78 − 0.60 = 0.115
+𝜙𝐼 = 1
+3 ⋅ 0.58 − 0.5 + 1
+6 ⋅ 0.72 − 0.65 +
+
+Computing 𝜙𝐶
+Coalition 𝑺 𝒇 𝑺
+∅ 0.50
+𝐼 0.58
+𝐶 0.65
+𝐷 0.42
+𝐼, 𝐶 0.72
+𝐼, 𝐷 0.52
+𝐶, 𝐷 0.60
+𝐼, 𝐶, 𝐷 0.78
+Compute 𝜙𝐶 = 0.19 and 𝜙𝐷 = −0.025.
+1
+6 ⋅ 0.6 − 0.42 + 1
+3 ⋅ 0.78 − 0.52 = 0.19
+𝜙𝐶 = 1
+3 ⋅ 0.65 − 0.5 + 1
+6 ⋅ 0.72 − 0.58 +
+1
+6 ⋅ 0.6 − 0.65 + 1
+3 ⋅ 0.78 − 0.72 = −0.025
+𝜙𝐷 = 1
+3 ⋅ 0.42 − 0.5 + 1
+6 ⋅ 0.52 − 0.58 +
+Altogether, (𝜙𝐶 = +0.19, 𝜙𝐼 = +0.115) move this applicant from the 
+0.50 baseline to 0.78 approval probability. The poor Debt ratio did not 
+help with approval (𝜙𝐷 = −0.025).
+Observe in terms of overall explainability of this score for this applicant:
+𝑓 𝐼, 𝐶, 𝐷 − 𝑓 ∅ = 0.78 − 0.50 = 0.28 = 𝜙𝐼 + 𝜙𝐶 + 𝜙𝐷
+
+Properties of SHAP
+Shapley values are the unique solution satisfying:
+*Shapley (1953) proved 
+a uniqueness theorem.
+Axiom Property
+Efficiency SHAP values sum to 𝑓 𝐱 − 𝑏𝑎𝑠𝑒. All credit distributed.
+Symmetry Equal contributors receive equal values.
+Dummy Non-contributing features receive zero.
+Additivity For 𝑓 + 𝑔: 𝜙𝑖(𝑓 + 𝑔) = 𝜙𝑖(𝑓) + 𝜙𝑖(𝑔)
+Shapley values are the unique attribution method satisfying all 
+four properties. Any other method must violate at least one.*
+
+The SHAP Process and Its Cost
+To compute the SHAP value for one feature of 𝑁  features on one prediction:
+• Enumerate all coalitions 𝑆 (subsets of other features)
+• For each coalition, train or evaluate a model using only the features in 𝑆
+• Compute 𝑓(𝑆) and 𝑓(𝑆 ∪ {𝑖}) for each coalition
+• Calculate the marginal contribution: 𝑓(𝑆 ∪ {𝑖}) −  𝑓(𝑆)
+• Weight each marginal by 
+𝑆 ! 𝑁 − 𝑆 −1 !
+𝑁 !
+• Sum the weighted marginals: 𝜙𝑖
+For 𝑁  features, the set of all coalitions is 
+the powerset: 2 𝑁  subsets. Each requires 
+either training a separate model or 
+simulating absent features by marginalizing 
+over their values.
+Exact SHAP is exponential in the number of 
+features. For real-world models, we need 
+approximations — KernelSHAP, TreeSHAP, 
+DeepSHAP — that estimate Shapley values 
+without exhaustive enumeration.
+
+From Local to Global: SHAP Across a Dataset
+Locally we ask: “Why was this applicant denied?”
+Globally we ask: “What drives approvals in general?”
+Definition. Let 𝜙𝑖
+𝑗 denote the SHAP value of feature 𝑖 for 
+sample 𝑗 in a dataset of 𝑛 samples. The global importance of 
+feature 𝑖 is defined as: 
+𝐼𝑖 = 1
+𝑛෍
+𝑗=1
+𝑛
+𝜙𝑖
+𝑗
+Intuitively, 𝐼𝑖 measures how much a single feature matters across all samples.
+Low 𝐼𝑖 → feature 𝑖 rarely influences predictions.
+High 𝐼𝑖 → feature 𝑖 consistently moves predictions away from the baseline, regardless 
+of direction, across the dataset.
+Interested in SHAP magnitude: 
+features pushing predictions away 
+from baselines regardless of sign. 
+
+Visualizing Global SHAP: Beeswarm Plot
+image credit
+𝑋-axis: SHAP value (impact on prediction)
+𝑌-axis: Features (ranked by importance: 𝐼𝑖)
+Adult income dataset (classification task to predict if people made 
+over $50k in the 1990s).
+Each dot represents one sample's SHAP value, 𝜙𝑖
+𝑗 : 
+how much feature 𝑖 contributed for sample 𝑗.
+Color indicates whether that sample had a low (blue) 
+or high (red) value for the feature. 
+Age Red dots ≡ older individuals
+Blue dots ≡ younger individuals
+Age affects many samples moderately (spread of dots)
+Capitol Gain affects few samples, but those 
+few see a large effect (tight cluster + long tail)
+Most people have little or no capital gain, so 
+the feature does not affect their prediction. 
+But for those who do have high capital gains, 
+the impact is dramatic.

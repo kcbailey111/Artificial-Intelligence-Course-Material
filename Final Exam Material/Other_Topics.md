@@ -1,0 +1,1461 @@
+# Other Topics (outside the three exam themes)
+
+This document was generated from text extracted from the **Final Exam Material** folder. Slide PDFs may have imperfect reading order; formulas and diagrams appear as plain text. Material that does not map cleanly to **Logic and Search**, **Reinforcement Learning and Language Models**, or **Machine Learning**.
+
+## Games and Game Theory
+
+*Extracted from PDF: `7 Games and Game Theory.pdf`*
+
+```
+Games and Game Theory
+
+General, Traditional AI Model
+Learning Goal: Maximize the total cumulative reward σ 𝑟𝑡
+Environment (World)
+Action (𝑎)
+Agent
+• Observes State
+• Select Action
+• Learn & Update
+What To Do
+• Process Action
+• Update State
+• Compute Reward
+Reward (𝑟)
+How good / bad
+State (𝑠)
+What I See
+(This is a setup for decision theory, 
+reinforcement learning, planning.)
+
+
+Game Theory: Multiple Agents
+Learning Goal: Maximize the total cumulative reward σ 𝑟𝑡
+How good / bad
+Environment (World)
+Action (𝑎)
+Player 1
+• Observes State
+• Select Action
+• Learn & Update
+What To Do
+• Process Action
+• Update State
+• Compute Reward
+Reward (𝑟)
+State (𝑠)
+What I See
+Player 2
+Player 3
+Player 4
+Now that we have interactions among agents, strategic decision making becomes essential.
+Most real-world AI systems operate in multiagent environments where success depends on 
+strategic reasoning about other intelligent agents.
+
+Why Study Games in AI? 
+The future of AI is not just about making smarter individual agents—it is about understanding what happens when 
+multiple intelligent systems interact strategically.
+The Challenge: Other agents are intelligent, 
+adaptive, and have their own goals!
+• Bid in an online auction against other AI agents
+• Navigate traffic with autonomous vehicles making strategic decisions
+• Allocate cloud computing resources among competing users
+• Defend against cyber attacks where attackers adapt to your strategy
+• Negotiate deals in automated trading systems
+• Coordinate drone swarms where each drone must anticipate others' movements
+• Design recommendation algorithms that compete for user attention on social platforms
+• Manage cryptocurrency mining pools where miners can strategically join/leave
+• Price products dynamically against competitors who also use AI pricing
+• Allocate bandwidth in 5G networks with competing service requests
+• Manage energy grids with multiple producers and consumers making strategic decisions
+• Optimize supply chains where suppliers, manufacturers, and retailers have different goals
+• Deploy security patrols against adaptive adversaries who learn your patterns
+Traditional AI Game Theory
+Agent vs. Static Environment Agent vs. Intelligent opponents who react to your actions.
+This changes everything - optimal strategies 
+must account for strategic interaction.
+
+From Optimization to Strategy
+Optimal strategies must account for strategic interaction.
+Traditional AI Game Theory
+Solution Concept Find the objectively “best” action Find the best action given what others will do
+Optimization Target Maximize your own utility Maximize your utility while others are trying to 
+maximize theirs
+Predictability Environment is static or follows known 
+patterns
+Environment adapts and responds to your 
+strategy
+Strategy Complexity “If I do X, outcome Y will happen” "If I do X, others will do Z, so outcome Y might 
+happen"
+Equilibrium vs. Optimality Seek optimal solutions Seek stable solutions (Nash equilibrium) that 
+may be suboptimal
+This is the fundamental shift. We cannot optimize in isolation anymore. We must reason about the 
+strategic interactions and feedback loops created by multiple intelligent decision-makers.
+
+Modeling Games: Properties
+Just as we classify search problems by their properties (observable, deterministic, 
+episodic), we must characterize games by their strategic structure.
+Game Property Category 1 Category 2 Example
+Number of players Single player Multiple players Chess (2), Poker (multiple)
+Action space Finite Infinite Rock-Paper-Scissors vs. Tennis
+Outcome Deterministic Random/Stochastic Chess vs. Poker (card dealing)
+Payoff structure Zero-sum General-sum Chess vs. Prisoner's Dilemma
+Move timing Sequential Simultaneous Chess vs. Rock-Paper-Scissors
+Information visibility Perfect information Imperfect information Chess vs. Poker (hidden cards)
+Knowledge of rules Complete information Incomplete 
+information Chess vs. Sealed-bid auction
+
+
+Properties I
+• 1 or more players; however, we are usually interested in ≥ 2 players
+• Typically, a finite number of players.
+1. Number of Players
+2. Action Space: set of possible actions an agent can choose from.
+Finite:
+• Tic-tac-toe (9 squares),
+• Checkers (piece movements)
+• Chess (finite, but large: ∼ 10120. 
+Infinite:
+• Price setting ($0.01, $0.02, $0.03...),
+• Robot navigation (continuous coordinates)
+Finite action spaces allow exhaustive analysis; infinite spaces require approximation techniques.
+
+Properties II
+3. Deterministic or Random: Is there chance in the game?
+4. Sum of Payoffs
+Deterministic:
+• Chess
+• Checkers
+• Go
+• Connect Four
+• Azul
+• Splendor
+Non-Deterministic:
+• Scrabble
+• Poker
+• Backgammon
+• Bridge
+• Machi Koro
+• Settlers of Catan
+Zero-Sum Games General-Sum Games
+ One player's win = 
+other's loss
+ Players can both win or both 
+lose
+Pure competition Mixed cooperation/competition
+Examples: Rock-paper-
+scissors, Chess
+Examples: Prisoner's dilemma, 
+Traffic coordination
+Easier to solve using minimax 
+algorithm Requires Nash equilibrium concepts
+
+Example: Prisoner’s Dilemma
+Two suspects are arrested and held in separate cells. They 
+cannot communicate with each other. 
+• If one betrays and one stays silent: Betrayer goes free, Silent gets 3 years
+• If both stay silent: Both get 1 year
+• If both betray: Both get 2 years
+Payoffs (years in prison)
+The prosecutor offers each prisoner a deal:
+Rational choice for each prisoner: Betray
+Best outcome for both together: Stay Silent
+This shows how individual rationality can lead to collectively 
+irrational outcomes. Each prisoner, acting in their own self-
+interest, creates a worse result for everyone.
+Real-World Examples:
+• Price wars between companies
+• Traffic congestion (everyone takes 
+“faster” route)
+Stay Silent Betray
+Stay Silent −1, −1 −3, 0
+Betray 0, −3 −2, −2
+
+Properties III
+5. Sequential or Simultaneous Moves?
+Sequential:
+• Chess
+• Checkers
+• Go
+• Connect Four
+• Azul
+• Splendor
+Simultaneous:
+• Rock-Paper-Scissors
+• Red Light, Green Light
+• Musical Chairs
+• Tennis Serves
+• Real-time strategy games
+• Wordle
+All players take action at the same time: Simultaneous
+Players take turns: Sequential
+(Payoff is often only revealed at end of game.)
+Property Sequential Games Simultaneous Games
+Timing Players take turns, one after 
+another All players act at the same time
+Information Can observe opponents' 
+previous moves
+Must choose without seeing 
+others' choices
+Strategy React and adapt to what 
+others have done
+Must anticipate what others 
+will do
+Representation Game trees, extensive form Payoff matrices, normal form
+Solution 
+Method
+Backward induction, 
+minimax Nash equilibrium, dominance
+Commitment Can change strategy based 
+on observations
+Must commit before seeing 
+others' actions
+AI Algorithms Game trees and Minimax-
+style algorithms
+Normal form representation 
+and equilibrium concepts
+
+Properties IV
+6. Perfect vs. Imperfect Information
+Perfect:
+• Chess
+• Checkers
+• Go
+• Tic-Tac-Toe
+• Connect Four
+Imperfect:
+• Poker
+• Battleship
+• Bridge
+• Magic: The Gathering
+• Clue / Cluedo
+Each player knows the complete game state at all times: Perfect
+Imperfect
+Perfect Information Imperfect Information
+All information visible Some information hidden
+Pure strategy/logic Strategy + psychology
+Deterministic optimal play Probabilistic reasoning
+No bluffing possible Bluffing and deception
+Complete game tree analysis Belief-based decision making
+Minimax, Game tree search 
+work well
+ (Deep Blue, AlphaGo)
+Need probabilistic models, 
+opponent modeling, game theory 
+(poker bots)
+Players have hidden or private information:
+
+Properties IV
+7. Complete vs. Incomplete Information
+Complete:
+• Chess
+• Poker
+• Rock-Paper-Scissor
+• Prisoner’s Dilemma
+Incomplete:
+• Mafia (game)
+• Job interviews
+• Sealed-bid auctions
+• Dating Apps
+All players know the rules, payoffs, and possible strategies of all players Complete
+Incomplete
+Complete Information Incomplete Information
+Know all players' payoffs Don't know opponents' payoffs
+Understand all strategies Uncertain about opponents' 
+capabilities
+Fixed, known game rules May not know opponents' constraints
+Can predict rational responses Must guess opponents' motivations
+Standard game theory applies Need Bayesian game theory
+Nash equilibrium, dominance 
+analysis work directly
+Need mechanism design, signaling 
+theory, auction theory
+Players do not know other players' payoffs, types, or capabilities
+
+
+Sequential-Move Games
+
+Game Tree Example
+...
+X X X
+X
+X
+...X X X X X
+O O O
+O
+O
+...X X X X X
+O O O OOX X
+X X
+X
+X’s Turn
+O’s Turn
+X’s Turn
+O’s Turn
+…
+∼ 255168 possible games
+Nodes: Game states
+Edges: Available moves
+Leaves: Terminal states with payoffs
+Strategy: Complete plan for all possible situations
+
+2-Nim
+Game Rules
+Setup: Two piles of sticks, each with 2 sticks. Initial State: (|| , ||)
+Move: Each player takes one or more sticks from one pile.
+Losing condition: The player who takes the last stick loses.
+Players: Max (maximizing) and Min (minimizing)
+Scoring: Max wins → +1, Max loses → -1
+This is a zero-sum game as Min-score ∶= −Max-score.
+|| , ||
+Max takes 
+1
+| , ||
+Min takes 2
+| , 
+Max takes last
+, 
+Max-score ∶=  −1
+Sample 
+Playthrough
+
+2-Nim Game Tree
+|| , || Max
++1
+|| , | Min , || Min| , || Min || , MinSymmetries
+Max wants the largest score.
+Min ‘wants’ the smallest score.
+|| , Max |, | Max , | Max , | Max , Max
+| , Min , Min
+−1
++1
+, Max
+, Min
+−1
+| , Min
++1
+, Max
+, | Min , Min
+−1
+
+Minimax
+Algorithm
+Complexity
+Payoff Function
+Time:
+Space:
+Let 𝑏 be branching 
+factor and 𝑚 be the 
+maximum depth.
+𝑂 𝑏𝑚
+𝑂 𝑏𝑚
+(depth-first)
+Track Min's best choice (lowest score)
+Compare current best 
+with this move's outcome
+
+Simple Example
+MAX
+MIN
+12 3 8 2
+3
+Result: Optimal play leads to value of 4.
+2
+4
+Visit is via DFS and values propagate bottom-up:
+4 5
+4
+Do we need to 
+evaluate this node?
+
+2-Nim Game Tree
+|| , || Max
++1
+|| , | Min , || Min| , || Min || , Min
+Max wants the largest score: on Max’s turn, take max of children.
+Min ‘wants’ the smallest score: on Min’s turn, take min of children.
+|| , Max |, | Max , | Max , | Max , Max
+| , Min , Min
+−1
++1
+, Max
+, Min
+−1
+| , Min
++1
+, Max
+, | Min , Min
+−1+𝟏 +𝟏 +𝟏
+−𝟏 −𝟏+𝟏+𝟏
+−𝟏 −𝟏 −𝟏 −𝟏
+−𝟏
+Take 𝑚𝑎𝑥
+Take 𝑚𝑖𝑛
+Take 𝑚𝑎𝑥
+The first player always loses if the 
+second player plays optimally!
+
+Questions
+We are playing a game where Player A goes first
+and has 4 possible moves.
+Player B goes next and has 3 possible moves.
+Player A goes next and has 2 possible moves.
+Player B then has one possible move.
+How many nodes are there in the minimax tree, 
+including termination nodes?
+1 + 4 + 4 ⋅ 3 + 4 ⋅ 3 ⋅ 2 + 4 ⋅ 3 ⋅ 2 = 65
+root leaves
+Solution.
+During minimax tree search, 
+must we examine every node? No.
+ MAX
+MIN
+ MIN
+4 12 2 ?
+4
+1 3 5 13
+1 2 2 2
+other other other other
+Consider layer 𝑘, where we take the max of 
+all the mins of its children at layer 𝑘 + 1.
+If the current value of a min node at 𝑘 + 1 
+already smaller than the current max, we do 
+not need to continue the minimization.
+
+Can We Do Better Than Strict Minimax?
+Downside: we examined the entire tree. An idea to speed things up: pruning
+• If we can identify "bad" branches early, we can skip exploring them
+• Goal: want the same minimax value, but faster
+Minimax Complexity
+Time:
+Space:
+𝑂 𝑏𝑚
+𝑂 𝑏𝑚
+(depth-first)
+Game Branching 
+Factor
+Average Game 
+Length
+Total 
+Positions
+Chess ≈ 35 ≈ 40 moves ≈ 1050
+Go ≈ 250 ≈ 150 moves ≈ 10170
+Checkers ≈ 10 ≈ 70 moves ≈ 1020
+For complex games, this is 
+computationally prohibitive:
+Alpha-beta pruning can reduce the effective branching factor significantly:
+Best case: 𝑂 𝑏𝑚/2 , a square root improvement.
+Real example: Deep Blue reduced branching from 35 − 40 to ~6.
+
+Alpha-Beta Pruning
+Pass around 𝛼 and 𝛽.
+Cutoff Decisions
+If value ≥ 𝛽, prune remaining children.
+If value ≤ 𝛼, prune remaining children.
+Update 𝛼 at MAX nodes
+Update 𝛽 at MIN nodes
+𝛼: MAX’s best option so far
+𝛽: MIN’s best option so far
+
+
+Example
+MAX
+2
+ MIN
+Compute the 
+minimax in the 
+following tree. 
+Identify any branches 
+that can be pruned in 
+the computation.
+MAX
+MIN
+4 12
+2
+ 4
+ 6
+2
+ 1
+ 4
+ 6
+ 1
+5 7 86 1
+X
+X
+𝛼 = −∞, 𝛽 = ∞
+𝛽 = ∞
+𝛼 = −∞
+𝛼 = −∞
+𝛼 = 2
+𝛼 = 2
+𝛽 = 2
+𝛼 = −∞
+4
+𝛽 = ∞
+𝛼 = 2 𝛼 = 6
+X
+6
+62
+MIN prunes if 𝑣 ≤ 𝛼
+MAX prunes if 𝑣 ≥ 𝛽
+1 < 2
+2 < 4
+1 < 6
+
+
+Move Ordering Matters!
+• Best moves first → Maximum pruning opportunities
+• Use domain heuristics to prioritize promising moves
+• Iterative deepening improves move ordering over time: Save / use best 
+moves from shallow searches to order moves at deeper depths.
+• Killer moves and history tables guide search
+Alpha-Beta Effectiveness: Order Matters
+MAX
+MIN
+5 6 3
+5 3
+5
+1
+1
+1 2 3 4
+1 3
+5
+5 6
+5
+X X
+
+Minimax with Heuristics
+The Challenge: Even with alpha-beta pruning, complete game trees are often too computationally large:
+Chess: ∼ 1050 possible games
+Go: ∼ 10170 possible games.
+ We need to limit the search depth to a depth 𝑑.
+What to do at depth 𝑑, but have 
+not yet terminated?
+Use a heuristic evaluation 
+function 𝑒 𝑥
+
+Heuristic Evaluation Functions
+𝑒 𝑥 can be any computable function of 𝑥:
+𝑒 𝑥 = 𝑤1𝑓1 𝑥 + 𝑤2𝑓2 𝑥 + ⋯ + 𝑤𝑛𝑓𝑛 𝑥
+General Principles for 𝑒 𝑥 :
+• Must be fast to compute
+• Should correlate with winning probability
+• Often linear combination of features
+• Domain-specific knowledge crucial
+Feature Engineering: The art of choosing good features that capture important aspects of game positions. 
+Modern approaches use machine learning to learn evaluation functions automatically! Instead of manually 
+designing features, modern chess engines (like AlphaZero) use machine learning to:
+• Automatically learn which features matter most.
+• Build their own evaluation functions by training on millions of positions and outcomes.
+• Use neural networks to capture complex patterns that humans might miss.
+
+Heuristic Evaluation Function Example
+𝑒 𝑔𝑎𝑚𝑒_𝑠𝑡𝑎𝑡𝑒 = 9 ⋅ 𝑄𝑤ℎ𝑖𝑡𝑒 − 𝑄𝑏𝑙𝑎𝑐𝑘 +
+5 ⋅ 𝑅𝑤ℎ𝑖𝑡𝑒 − 𝑅𝑏𝑙𝑎𝑐𝑘 +
+3 ⋅ 𝐵𝑤ℎ𝑖𝑡𝑒 − 𝐵𝑏𝑙𝑎𝑐𝑘 +
+3 ⋅ 𝐾𝑤ℎ𝑖𝑡𝑒 − 𝐾𝑏𝑙𝑎𝑐𝑘 +
+1 ⋅ 𝑃𝑤ℎ𝑖𝑡𝑒 − 𝑃𝑏𝑙𝑎𝑐𝑘 + 𝑚𝑜𝑏𝑖𝑙𝑖𝑡𝑦+ 𝑘𝑖𝑛𝑔_𝑠𝑎𝑓𝑒𝑡𝑦+ ⋯ 
+Material Balance: Calculates the difference in piece count 
+between White and Black.
+Mobility: Rewards positions with more legal moves 
+(greater flexibility).
+King Safety: Penalizes exposed or vulnerable kings.
+Interpretation:
+• Positive score → Advantage for White
+• Negative score → Advantage for Black
+• Zero → Balanced board state
+For Chess, we might evaluate the current state of the board and an overall player’s position in the game using:
+There are other factors (represented by ⋯):
+• Control of the center
+• Pawn structure (e.g., doubled, isolated)
+• Piece activity (e.g., rooks on open files)
+• Tactical threats (e.g., forks, pins)
+
+Beyond Minimax: Monte Carlo Tree Search (MCTS)
+• Designing evaluation functions is challenging – 
+It's difficult to define what makes a Go position 
+strong or advantageous.
+• Massive branching factor – Each turn in Go 
+offers around 250 possible legal moves, making 
+decision trees extremely complex.
+• Strategic depth exceeds tactical calculation– 
+Purely tactical analysis often fails to capture the 
+broader strategic elements of the game.
+• Expert knowledge is essential for effective 
+heuristics – Crafting good evaluation rules 
+requires deep domain expertise.
+• Bypass traditional evaluation functions – Rely 
+on simulated gameplay to assess positions 
+instead.
+• Learn through experience – Develop intuition 
+by playing numerous randomized games.
+• Navigate the exploration–exploitation trade-
+off – Balance trying new moves with focusing 
+on those that show promise.
+• Minimal domain knowledge required – The 
+approach works effectively even without deep 
+subject expertise.
+Traditional Alpha-Beta Limitations MCTS
+
+The Idea Behind Monte Carlo Tree Search
+Idea
+Process
+Learn which moves are good by playing out random games.
+• Selection: Select a promising path through the game tree
+• Expansion: Expand the tree by adding a new node
+• Rollout: Simulate a random game from that position
+• Backpropagation: Backpropagate the result up the tree
+Result
+Nodes visited more often in winning simulations get higher priorities.
+We will repeat these 
+operations (‘in sequence’); 
+usually time is the limiting 
+factor for the search.
+
+MCTS Selection Operation
+We will navigate from the root to a leaf using the selection policy based on Upper Confidence Bound 1:
+𝑈𝐶𝐵1 𝑛  = 𝑤𝑖𝑛𝑠𝑛
+𝑣𝑖𝑠𝑖𝑡𝑠𝑛
++  𝐶 ⋅ ln 𝑝𝑎𝑟𝑒𝑛𝑡_𝑣𝑖𝑠𝑖𝑡𝑠𝑛
+𝑣𝑖𝑠𝑖𝑡𝑠𝑛
+• 𝑛: a node (state) in the search tree
+• 𝑤𝑖𝑛𝑠𝑛: number of wins when passing through node 𝑛
+• 𝑣𝑖𝑠𝑖𝑡𝑠𝑛:  number of times 𝑛 has been visited
+• 𝑝𝑎𝑟𝑒𝑛𝑡_𝑣𝑖𝑠𝑖𝑡𝑠𝑛: number of times the parent of 𝑛 has been visited
+• 𝐶: a (tunable) positive constant
+where:
+Exploitation Exploration
+* To avoid division by 0, most implementations have 𝑈𝐶𝐵1 = ∞ for any unvisited 
+node ensuring that every node is visited at least once, promoting exploration.
+
+MCTS Selection Example
+Let 𝐶 = 0.5
+X Y
+ Z
+After several iterations…
+5 / 10 8 / 12 2 / 8
+A
+0 / 1
+𝑈𝐶𝐵1 𝑋  = 5
+10 + 0.5 ⋅ ln 31
+10 ≈ 0.793
+𝑈𝐶𝐵1 𝑌  ≈ 0.934 𝑈𝐶𝐵1 𝑍 ≈ 0.578
+𝑈𝐶𝐵1 𝐴 = 0
+1 + 0.5 ⋅ ln 31
+1 ≈ 0.927
+0 < 𝐶 < 1 𝐶 = 1 𝐶 > 1
+Exploitation ExplorationEqual
+
+MCTS Expansion
+X Y
+ Z
+5 / 10 8 / 12 2 / 8
+A
+0 / 1
+Once a leaf is encountered, we expand:
+• Add one new child to the selected leaf node
+• Choose an untried move from the current 
+position
+
+
+MCTS Simulation (Rollout)
+X Y
+ Z
+5 / 10 8 / 12 2 / 8
+A
+0 / 1
+The Rollout operation simulates the rest of the game 
+from the new node using random moves until it ends 
+in a win, loss, or draw — the randomness here is 
+what gives MCTS its Monte Carlo character.
+win, loss, or draw 
+15 / 31
+
+MCTS Backpropagation
+X Y
+ Z
+5 / 10 8 / 12 2 / 8
+A
+0 / 1
+win, loss, or draw 
+15 / 31
+9 / 13
+When a result is achieved from Rollout, we 
+backpropagate the result by:
+• Update all nodes on the path from root 
+to new leaf
+• Increment visit count for each node
+• Update win totals based on simulation 
+result
+16 / 32
+The process then repeats, starting with the 
+selection of a new path to a leaf node—
+guided by 𝑈𝐶𝐵1 at each step along the way.
+
+MCTS, In Summary
+The key: MCTS does not need a 
+heuristic evaluation function—
+just simulation statistics!
+Advantages Disadvantages
+No evaluation function needed Requires many simulations
+Self-improving over time May miss precise combinations 
+that dramatically change the game
+Handles high branching factors Slower convergence
+Easy to parallelize Memory intensive
+Domain-independent Statistical (not exact)
+Alpha-Beta MCTS
+Evaluation Hand-crafted function Random simulations
+Search Deterministic, exhaustive Probabilistic, selective
+Domain Knowledge High requirement Minimal requirement
+Branching Factor Struggles with high 
+branching factor
+Handles high branching 
+factor well
+Parallelization Difficult Natural
+Convergence Exact (given time) Asymptotic
+MCTS is like “adaptive iterative 
+deepening”—it automatically decides 
+where to spend computational effort based 
+on what looks most promising, rather than 
+systematically deepening everywhere.
+
+Simultaneous-Move Games:
+Normal Form Games
+
+From Game Trees to Payoff Matrices
+We have analyzed sequential games using game trees and minimax. But what about simultaneous games 
+where players act at the same time?
+Sequential Games Simultaneous Games
+Game tree Payoff matrix
+Players alternate Players act simultaneously
+Minimax / backward induction Equilibrium analysis
+Can observe opponent's moves Must anticipate opponent's choice
+Any sequential game can also be converted to matrix form by enumerating all complete strategies—connecting 
+these two representations.
+We do not have a tree structure: players cannot observe and react 
+to each other's moves.Problem
+Represent the game as a payoff matrix listing all strategy 
+combinations and their outcomes.Solution
+
+Normal Form Game
+We have seen that strategic interactions are everywhere. But how do we analyze these complex 
+situations systematically?
+Our goal is a mathematical description of simultaneous games (e.g., Prisoner’s Dilemma).
+Definition Example: Prisoner’s Dilemma
+Players
+(or Agents) Decision-makers: 𝑁 = 1, 2, … , 𝑛 Two prisoners
+Action Sets For all 𝑝 ∈ 𝑁, 𝐴𝑝 defines a set of actions. 𝐴1 = 𝑆𝑡𝑎𝑦 𝑆𝑖𝑙𝑒𝑛𝑡, 𝐵𝑒𝑡𝑟𝑎𝑦
+𝐴2 = 𝑆𝑡𝑎𝑦 𝑆𝑖𝑙𝑒𝑛𝑡, 𝐵𝑒𝑡𝑟𝑎𝑦
+Strategy Profile A combination of one action from each 
+player 𝑆 = 𝑎1, 𝑎2, … 𝑎𝑛  where 𝑎𝑝 ∈ 𝐴𝑝.
+What both prisoners actually do; 
+for example, 𝐵𝑒𝑡𝑟𝑎𝑦, 𝐵𝑒𝑡𝑟𝑎𝑦 .
+Payoff Functions Reward for player 𝑝 depends on everyone's 
+choices: 𝑢𝑝 𝑆 .
+Years in prison (negative numbers 
+because prison is bad); e.g., 
+𝑢1 𝑆𝑡𝑎𝑦 𝑆𝑖𝑙𝑒𝑛𝑡, 𝐵𝑒𝑡𝑟𝑎𝑦 = −3
+A normal form game consists of:
+
+Normal Form Game Representation
+The game is typically displayed as a matrix (for two-player games) or higher-dimensional 
+table (for games with more players). In a two-player game:
+In a two-player game:
+• Rows represent Player 1’s (𝑃1) strategies
+• Columns represent Player 2's (𝑃2) strategies
+• Cell contains the payoffs for both players, 
+written: (𝑃1 payoff, 𝑃2 payoff)
+Stay Silent Betray
+Stay Silent −1, −1 −3, 0
+Betray 0, −3 −2, −2
+Assumption for Normal Form Games: Players choose strategies simultaneously, without knowing what 
+the other players will choose; players must commit to their decisions before observing others' actions.
+Prisoner’s Dilemma 
+
+Example
+Pepsi and Coca-Cola must decide whether to launch major advertising campaigns. 
+Both companies compete for the same soft drink customers worldwide.
+(in billions) Coke: Advertise Coke: Don’t
+Pepsi: Advertise 1,1 8, 2
+Pepsi: Don’t 2, 8 6, 6
+The Strategies:
+• When Coke advertises and Pepsi does not, Coke 
+can gain market share.
+• When both advertise, they spend money but 
+maintain their relative positions.
+• When neither advertises, both save money but 
+keep existing market shares.
+Coke vs. Pepsi: Payoff Matrix 
+Each company has two choices:
+Advertise: TV commercials, celebrity endorsements, and marketing campaigns
+Don't Advertise: Skip the campaigns and save advertising costs
+If both companies think this way, they end 
+up in the worst outcome for both.
+Strong temptation to advertise: potential gain is 
+enormous.
+
+Dominant Strategies
+A dominant strategy is one that yields the highest payoff regardless of what other players do.
+Definition. Let 𝐺 be a normal form game with players 𝑁 = 1, 2, … , 𝑛 , 𝑆𝑖 as the 
+strategy set for player 𝑖 and a utility function for player 𝑖 defined as
+𝑢𝑖: 𝑆1 × 𝑆2 × ⋯ × S𝑛 → ℝ.
+For player 𝑖, strategy 𝑠𝑖 ∈ 𝑆𝑖 with 𝑠𝑖 ≠ 𝑠𝑖′ is strictly dominant if and only if:
+𝑢𝑖 𝑠𝑖, 𝑠−𝑖 > 𝑢𝑖 𝑠𝑖′, 𝑠−𝑖
+for all 𝑠𝑖′ ∈ 𝑆𝑖 ∖ 𝑠𝑖  and for all 𝑠−𝑖 ∈ 𝑆−𝑖. 
+𝑠−𝑖
+denotes the strategy profile of all 
+players except player 𝑖
+𝑆−𝑖 = 𝑆1 × ⋯ × 𝑆𝑖−1 × 𝑆𝑖+1 × ⋯ × 𝑆𝑛
+is the set of all possible strategy 
+combinations for players other than 𝑖
+Notation:
+Sometimes a dominant 
+strategy does not exist!
+
+Example: Dominant Strategy?
+(in billions) Coke: Advertise Coke: Don’t
+Pepsi: Advertise 1,1 8, 2
+Pepsi: Don’t 2, 8 6, 6
+Don’t Advertises
+Advertises
+ Don’t
+2 1
+Don’t Advertises
+6 8
+No 
+dominant 
+strategy
+Don’t Advertises
+Advertises
+ Don’t
+2 1
+Don’t Advertises
+6 8
+No 
+dominant 
+strategy
+
+Iterated Elimination of Dominated Strategies
+When analyzing games, we can eliminate strategies that are 
+dominated by others, since rational players would never choose them.
+This process can be done iteratively:
+1. Identify and eliminate strictly dominated strategies. 
+Compare ALL pairwise combinations of strategies for each 
+player. A strategy is strictly dominated if there exists another 
+strategy that always yields higher payoffs regardless of 
+opponents' choices.
+2. Recalculate the reduced game. Remove all dominated 
+strategies from the payoff matrix.
+3. Repeat until no more eliminations are possible. Continue 
+identifying and eliminating dominated strategies in each 
+successive reduced game.
+This process helps narrow down the set of reasonable strategy 
+combinations.
+For a player with 𝑛 strategies, how 
+many comparisons are required?
+𝑛 𝑛−1
+2  comparisons for all pairs.
+Expand the tree in its entirety but 
+only consider combinations of 
+strategies.
+
+Example: Identifying a Dominated Strategy I
+(in billions) Advertise Don’t Moderate
+Advertise 1,1 8, 2 4, 3
+Don’t 2, 8 6, 6 5, 7
+Moderate 3, 4 7, 5 6, 4
+Advertise
+ Don’t
+8 6
+ 7 4
+Consider an expanded advertising game with Pepsi and Coca-Cola by introducing a 
+selective amount of advertising: ‘moderate’.
+Coke 
+Pepsi
+5 6
+Moderate
+1 2
+ 3
+Don’tAdvertise Moderate Don’tAdvertise Moderate Don’tAdvertise Moderate
+Pepsi
+Don’t vs. Moderate
+Moderate dominates; 
+eliminate Don’t for Pepsi
+
+Example: Identifying a Dominated Strategy II
+(in billions) Advertise Don’t Moderate
+Advertise 2,2 8, 1 5, 3
+Moderate 3, 5 6, 3 4, 4
+Advertise
+2 1
+ 3 5
+For strict domination, we simplify the game / matrix, by remove Don’t for Pepsi.
+Coke 
+Pepsi
+3 4
+Moderate
+Don’tAdvertise Moderate Don’tAdvertise Moderate
+Coke
+Advertise vs. Moderate
+Neither dominates
+
+Example: Identifying a Dominated Strategy III
+(in billions) Advertise Don’t Moderate
+Advertise 2,2 8, 1 5, 3
+Moderate 3, 5 6, 3 4, 4
+Advertise
+2 1
+ 3 5
+We try another combination.
+Coke 
+Pepsi
+3 4
+Moderate
+Don’tAdvertise Moderate Don’tAdvertise Moderate
+Coke
+Advertise vs. Don’t
+Advertise dominates; 
+eliminate Don’t for Coke
+
+Absolute Best Response = Dominant Strategy
+Absolute best response and dominant strategy are equivalent terms that describe a strategy that 
+maximizes a player's payoff regardless of what opponents do.
+Definition. For player 𝑖, strategy 𝑠𝑖 is an absolute best response (dominant strategy) if:
+𝑠𝑖 = argmax
+𝑎∈𝑆𝑖
+𝑢𝑖 𝑎, 𝑠−𝑖
+for all possible 𝑠−𝑖. (Recall 𝑠−𝑖 refers to all other players' strategy combinations.)
+
+Dominant Strategy Notation Example
+Example.
+argmax
+𝑎∈ 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒, 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒
+𝑢𝑷𝒆𝒑𝒔𝒊 𝑎, 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒 =
+argmax
+𝑎∈ 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒, 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒
+𝑢𝑷𝒆𝒑𝒔𝒊 𝑎, 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒 =
+= 𝑠𝑷𝒆𝒑𝒔𝒊
+argmax
+𝑎∈ 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒, 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒
+2, 3
+argmax
+𝑎∈ 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒, 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒
+5, 4 = 𝑠𝑷𝒆𝒑𝒔𝒊
+≠
+Since 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒 ≠  𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒, there is no single strategy 𝑠𝑷𝒆𝒑𝒔𝒊 that satisfies the definition for all 
+values of = 𝑠𝑪𝒐𝒌𝒆. Therefore, Pepsi has no dominant strategy.
+Similarly, Coke does not have a dominant strategy.
+= 𝑀𝑜𝑑𝑒𝑟𝑎𝑡𝑒
+= 𝐴𝑑𝑣𝑒𝑟𝑡𝑖𝑠𝑒
+
+Elimination to Equilibrium
+(in billions) Advertise Moderate
+Advertise 2,2 5, 3
+Moderate 3, 5 4, 4
+We eliminated the bad strategies and we are left with this 2 × 2 game. Now what? How do we predict 
+what will actually happen?"
+Coke 
+Pepsi
+We know rational players will not choose dominated 
+strategies, but we still have 4 possible outcomes. 
+Which one will actually occur?
+When both players have dominant strategies, 
+we have what is called a dominant strategy 
+equilibrium. This makes the game easy to 
+predict because each player has an obvious best 
+choice regardless of what the opponent does.
+In this reduced game, neither company has a 
+dominant strategy. Each company's best choice 
+depends on what the other company does.
+We need a different approach.
+
+Nash Equilibrium
+Consider each company's perspective and anticipate their 
+strategic moves. What might the other company do?
+Check each possible outcome and ask: “Would either company want to change their mind?”
+(Advertise, Advertise) = 2, 2
+Pepsi: Switching to Moderate: 2 → 3
+switch
+(Advertise, Moderate) = 5, 3
+Pepsi: Switching to Moderate: 5 → 4
+Coke: Switching to Advertise: 3 → 2
+(Moderate, Advertise) = 3, 5
+Pepsi: Switching to Advertise: 3 → 2
+Coke: Switching to Moderate: 5 → 4
+(Moderate, Moderate) = 4, 4
+Coke: Switching to Advertise: 4 → 5
+switch
+A situation where both companies are 
+content with their choices, given the 
+other's actions, are considered stable.
+A mutually reinforcing outcome is known as a 
+Nash equilibrium, and it serves as our solution 
+concept in the absence of dominant strategies.
+
+Nash Equilibria
+A Nash equilibrium occurs when both players are simultaneously playing their best response (argmax) to each other's 
+strategies. It is the natural solution when no player has an absolute best response!
+When we cannot find a single strategy that is always optimal (absolute best responses), we instead look for situations 
+where each player's strategy is optimal given the other player's choice. This shifts us from seeking absolute best 
+responses to finding mutual conditional best responses.
+That is exactly what Nash equilibrium captures.
+Definition. A strategy profile 𝒔 is a Nash Equilibrium 
+if no player has an incentive to unilaterally deviate:
+∀𝑖, ∀𝑎 ∈ 𝑺𝒊: 𝑢𝑖 𝑠𝑖
+∗, 𝑠−𝑖
+∗ ≥ 𝑢𝑖 𝑎, 𝑠−𝑖
+∗ .
+Equivalently, for each player 𝒊, each player's strategy 
+is a best response to others' equilibrium strategies:
+𝑠𝑖
+∗ ∈ 𝑩𝑹𝒊 𝑠−𝑖
+∗ = argmax
+𝑎∈𝑆𝑖
+𝑢𝑖 𝑎, 𝑠−𝑖
+∗ .
+𝒔: any arbitrary strategy profile from the strategy 
+spaces
+𝒔∗: equilibrium strategy profile (the specific 
+combination we are analyzing)
+𝒔𝒊
+∗: player 𝒊's equilibrium strategy (what they actually 
+play in equilibrium)
+𝒔−𝒊
+∗ : other players' equilibrium strategies (fixed at 
+equilibrium values)
+𝒂: any alternative strategy player 𝒊 might deviate to
+𝑩𝑹𝒊: Best Response function for player 𝒊
+𝑺𝒊: Strategy set for player 𝒊 (all available strategies)
+
+Nash Equilibria vs. Dominant Strategy Equilibrium:
+• Player 𝒊's strategy is optimal given the specific 
+strategies others choose in equilibrium
+• Conditional optimality: “My strategy is optimal 
+given what you are actually doing.”
+• Player 𝒊's strategy is optimal against every 
+possible strategy combination by others
+• Unconditional optimality: “My strategy is 
+optimal no matter what you do.”
+𝑠𝑖
+∗ = 𝑩𝑹𝒊 𝑠−𝑖 , ∀𝑠−𝑖𝑠𝑖
+∗ = 𝑩𝑹𝒊 𝑠−𝑖
+∗
+DSE is more restrictive: it requires optimality against ALL possible opponent behaviors.
+Nash Equilibrium Dominant Strategy Equilibrium
+Every DSE is automatically a Nash equilibrium, but Nash equilibria 
+can exist without dominant strategies (as in our Coke-Pepsi game).
+
+Computing Pure Nash Equilibria
+A pure Nash equilibrium is an equilibrium where every player uses a pure strategy: each player picks 
+exactly one action and sticks to it deterministically. A mixed Nash equilibrium involves at least one 
+player randomizing between strategies.
+Computing (pure) Nash Equilibria:
+A mixed strategy involves randomizing over 
+multiple actions according to some probability 
+distribution. For example, “advertise 60% of 
+the time, do not advertise 40% of the time.”
+Find (and highlight) their best response to each of the opponent's strategies.
+• As player 1, identify the highest payoff in each column.
+• As player 2, identify the highest payoff in each row.
+A pure Nash equilibrium exists where both players are simultaneously playing best 
+responses to each other: where both players have highlighted.
+1
+2
+
+Example: Pure Nash Equilibria
+Reconsider the Pepsi vs Coke advertising game we saw earlier. Each had three strategies.
+1. Identify best responses 
+(P1) column- and (P2) 
+row-wise.
+2. Any overlap?
+There is no pure Nash 
+Equilibrium here (no 
+overlapping marks).
+Pure Nash Equilibrium: betraying is a dominant strategy. 
+Nash equilibrium 
+represents stability (no 
+incentive to change), 
+not optimality.
+
+
+When Nash Equilibrium Does Not Exist
+Rock Paper Scissors
+Rock 0, 0 −1, 1 1, −1
+Paper 1, −1 0, 0 −1, 1
+Scissors −1, 1 1, −1 0, 0
+Rock-Paper-Scissors has no pure Nash Equilibrium.
+So we have pure strategy: each player picks a 
+deterministic strategy.
+What happens when no pure strategy Nash 
+equilibrium exists?
+Some competitive situations inherently require 
+unpredictability.
+Many zero-sum games lack pure Nash equilibria 
+since one player's gain is another player's loss.
+This creates inherent conflict that prevents stable, 
+pure strategies.
+Nash’s Key Insight
+Even when pure Nash equilibria do not exist, 
+we can find equilibria using mixed strategies.
+
+Mixed Strategies
+A mixed strategy refers to assigning probabilities to each 
+pure strategy in a player's strategy set.
+Pure strategy:
+Choose one action with 100% probability “Always play Heads”
+Mixed strategy:
+Randomize over actions according to probabilities
+“Play Heads 60% of the time, Tails 
+40% of the time”
+Example
+Recall, we are talking about simultaneous move games, so:
+• randomization is private and
+• opponents will not know the outcome until after you play.
+
+
+Mixed Strategies II
+Definition. A mixed strategy for player 𝒊 is a probability distribution 𝜎𝑖 over player 𝒊's pure strategy set 
+𝐴𝑖, where:
+𝜎𝑖: 𝑺𝒊 → 0,1  such that σ𝑎𝑖∈𝑺𝒊 𝜎𝑖 𝑎𝑖 = 1
+where 𝜎𝑖 𝑎𝑖  represents the probability that player 𝒊 chooses pure strategy 𝑎𝑖.
+Example.
+𝜎1: 𝑺𝟏 → 0,1  where 𝑺𝟏 = 𝑅𝑜𝑐𝑘, 𝑃𝑎𝑝𝑒𝑟, 𝑆𝑐𝑖𝑠𝑠𝑜𝑟𝑠 with
+𝜎1 𝑅𝑜𝑐𝑘 = 𝜎1 𝑃𝑎𝑝𝑒𝑟 = 𝜎1 𝑆𝑐𝑖𝑠𝑠𝑜𝑟𝑠 = 1
+3
+𝜎2: 𝑺𝟐 → 0,1  where 𝑺𝟐 = 𝑅𝑜𝑐𝑘, 𝑃𝑎𝑝𝑒𝑟, 𝑆𝑐𝑖𝑠𝑠𝑜𝑟𝑠 with
+𝜎2 𝑅𝑜𝑐𝑘 = 5
+10 𝜎2 𝑃𝑎𝑝𝑒𝑟 = 3
+10 𝜎2 𝑆𝑐𝑖𝑠𝑠𝑜𝑟𝑠 = 2
+10
+With Rock, Paper, Scissors, suppose Player 1 has a uniform strategy profile and player 2 does not:
+
+Expected Utility Under Mixed Strategies
+Definition [Expected utility under mixed strategies]. Given a mixed strategy profile (one for each of the 
+𝑛 players) 𝛔 = 𝜎1, 𝜎2, … 𝜎𝑛 , player 𝒊's expected utility is:
+𝑢𝑖 𝜎𝑖, 𝜎−𝑖 = σ𝑎𝑖∈𝑆𝑖 σ𝑎−𝑖∈𝑆−𝑖 𝜎𝑖 𝑎𝑖 ⋅ 𝜎−𝑖 𝑎−𝑖 ⋅ 𝑢𝑖 𝑎𝑖, 𝑎−𝑖       where:
+𝜎−𝑖 denotes the mixed strategy profile of all players except 𝒊
+𝑺−𝒊 denotes the Cartesian product of all other players' strategy sets
+𝜎−𝑖 𝑎−𝑖 = ς𝑗≠𝑖 𝜎𝑗 𝑎𝑗  is the probability that other players choose action profile 𝑎−𝑖
+𝑢𝑖 𝑎𝑖, 𝑎−𝑖  is player 𝒊's payoff from the pure strategy profile 𝑎𝑖, 𝑎−𝑖
+Alternatively,
+ 𝑢𝑖 𝜎𝑖, 𝜎−𝑖 = 𝐸 𝑎𝑖~𝜎𝑖 𝑢𝑖 𝑎𝑖, 𝑎−𝑖
+where the expectation is taken over the random draws from each player's mixed strategy.
+~ means “drawn from”: 𝑎𝑖~𝜎𝑖 means “𝑎𝑖 is drawn from distribution 𝜎𝑖”.
+
+Example: Expected Utility Under Mixed Strategies 
+Example continued.
+𝑢1 𝜎1, 𝜎−1 = 𝜎1 𝑅 ⋅ 𝜎−1 𝑅 ⋅ 𝑢1 𝑅, 𝑅 + 𝜎1 𝑅 ⋅ 𝜎−1 𝑃 ⋅ 𝑢1 𝑅, 𝑃 + 𝜎1 𝑅 ⋅ 𝜎−1 𝑆 ⋅ 𝑢1 𝑅, 𝑆 +
+ 𝜎1 𝑃 ⋅ 𝜎−1 𝑅 ⋅ 𝑢1 𝑃, 𝑅 + 𝜎1 𝑃 ⋅ 𝜎−1 𝑃 ⋅ 𝑢1 𝑃, 𝑃 + 𝜎1 𝑃 ⋅ 𝜎−1 𝑆 ⋅ 𝑢1 𝑃, 𝑆 +
+ 𝜎1 𝑆 ⋅ 𝜎−1 𝑅 ⋅ 𝑢1 𝑆, 𝑅 + 𝜎1 𝑆 ⋅ 𝜎−1 𝑃 ⋅ 𝑢1 𝑆, 𝑃 + 𝜎1 𝑃 ⋅ 𝜎−1 𝑃 ⋅ 𝑢1 𝑃, 𝑃
+= 1
+3
+5
+10 0 + 1
+3
+3
+10 −1 + 1
+3
+2
+10 1 +
+1
+3
+5
+10 1 + 1
+3
+3
+10 0 + 1
+3
+2
+10 −1 +
+1
+3
+5
+10 −1 + 1
+3
+3
+10 1 + 1
+3
+2
+10 0
+= 0
+Player 1's expected utility:
+𝑢2 𝜎2, 𝜎−2 = 0
+Similarly, Player 2's expected utility:
+Both players have expected utility 0, even with Player 2's non-uniform strategy.
+This means we have a fair game: no player has a net advantage.
+Or, as a zero-sum game:
+ 𝑢2 𝜎2, 𝜎−2 = −𝑢1 𝜎1, 𝜎−1 = 0 
+
+Finding Mixed NE in 2-Player, 2-Action Zero-Sum Game
+Even / Odd 2-finger Morra is a game of chance and strategy, typically played by two people.
+Objective: To correctly guess whether the sum of fingers shown by both players is even or odd.
+How to Play:
+1. Choose Roles: One player is “Even,” the other is “Odd.”
+2. Simultaneous Play:
+• Each player throws out one or two fingers.
+• The total number of fingers is summed.
+3. Determine Winner: If the total is even, the “Even” player wins; otherwise, the “Odd” 
+player wins.
+1 finger 2 fingers
+1 finger 2, −2 −3, 3
+2 fingers −3, 3 4, −4
+Assume the payoff matrix:
+Odd
+Even
+No pure NE.
+
+Even / Odd Morra
+Let 𝜎𝑜𝑑𝑑 be the mixed strategy:
+𝜎𝑜𝑑𝑑 1 , 𝜎𝑜𝑑𝑑 2 = 𝑞, 1 − 𝑞
+𝑞 is the probability that the odd 
+player selects “1 finger”: 𝑓1.
+Let 𝜎𝑒𝑣𝑒𝑛 be the mixed strategy:
+𝜎𝑒𝑣𝑒𝑛 1 , 𝜎𝑒𝑣𝑒𝑛 2 = 𝑝, 1 − 𝑝
+𝑝 is the probability that 
+the even player selects 𝑓1.
+By definition of best response, 𝑝 is the conditional best response to 
+𝑞. That is,
+By the definition of expected utility for mixed utility games (for Player 1): 
+𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 = 𝑝 ⋅ 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑓1 + 𝑝 ⋅ 1 − 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑓2 + 1 − 𝑝 ⋅ 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑓1 + 1 − 𝑝 ⋅ 1 − 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑓2
+= 𝑝 ⋅ 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑓1 + 1 − 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑓2 + 1 − 𝑝 ⋅ 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑓1 + 1 − 𝑞 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑓2
+Player 1 plays 𝑓1 against mixed strategy 𝑞: 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞
+= 𝑝 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 + 1 − 𝑝 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞
+Player 1 plays 𝑓2 against mixed strategy 𝑞: 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞
+𝑢1 𝑝, 𝑞 ≥ 𝑢1 𝑝′, 𝑞
+for all 𝑝’ in the set of all possible 
+mixed strategies for Player 1.
+Applying Nash equilibrium to Morra: 
+Player 1 = Even, Player 2 = Odd.
+
+Even / Odd Morra II
+1. We have 𝑝 is the optimal strategy for the even player:
+𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 = 𝑝 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 + 1 − 𝑝 ⋅ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞
+𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 ≥ 𝑢𝑒𝑣𝑒𝑛 𝑝′, 𝑞 , ∀𝑝′
+2. With expected utility for the even player, we have a 
+weighted average of two utility values:
+Since 𝑝 is optimal, it must do at least as well as the 
+pure strategies 𝑓1 and 𝑓2:
+𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 ≥ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 ≥ 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞
+A weighted average can 
+only be greater than or 
+equal to both of its 
+components if those 
+components are equal.
+Therefore, suppose: 
+ 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 = 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞 = 𝑘 
+where 𝑘 is a payoff value.
+Then, 𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 = 𝑝 ⋅ 𝑘 + 1 − 𝑝 ⋅ 𝑘 = 𝑘.
+Thus, 𝑢𝑒𝑣𝑒𝑛 𝑝, 𝑞 = 𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 = 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞 .
+We conclude: the even player gets the same expected payoff whether they play 1 finger, 2 fingers, or mix between them.
+
+Even / Odd Morra III
+Recall, the expected utility under mixed strategies:
+Combining, we have: 
+Also recall we showed,
+𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 = 2 ⋅ 𝑞 + −3 1 − 𝑞 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞 = −3 𝑞 + 4 1 − 𝑞
+=
+2 ⋅ 𝑞 + −3 1 − 𝑞 = −3 𝑞 + 4 1 − 𝑞Solving, 𝑞 = 7
+12
+𝑢𝑜𝑑𝑑 𝑝, 𝑓1 = 𝑢𝑜𝑑𝑑 𝑝, 𝑓2Similarly, 𝑝 = 7
+12⇔
+Thus, for 𝑞 =
+7
+12,
+Similarly, for 𝑝 = 7
+12, 𝑢𝑜𝑑𝑑 𝑝, 𝑞 = −2 ⋅ 𝑝 + 3 ⋅ 1 − 𝑝 = 3 ⋅ 𝑝 + −4 ⋅ 1 − 𝑝 = 1
+12
+𝑢𝑒𝑣𝑒𝑛 𝑝, 7
+12 = 2 ⋅ 7
+12 + −3 1 − 7
+12 = − 1
+12
+Even though both players play optimally, the game's structure gives 
+the odd player an inherent advantage of 
+1
+12 per round on average.
+𝑢𝑒𝑣𝑒𝑛 𝑓1, 𝑞 = 𝑢𝑒𝑣𝑒𝑛 𝑓2, 𝑞 .
+⇔
+Observe, mixed equilibrium 
+probabilities depend only 
+on opponent’s payoffs, not 
+your own!
+
+The Indifference Principle
+If a strategy yielded higher expected payoff a player would use only that strategy→
+→ all pure strategies in the mix must yield equal 
+expected payoffs
+Counterintuitive 
+You choose probabilities to make your 
+opponent's strategies equally good
+Not
+Probabilities that directly maximize 
+your own expected payoff
+When odd uses a mixed strategy ( 7
+12 for 1-finger), 
+even's pure actions both yield −
+1
+12 expected payoff.
+Process / Intuition with 2-Finger Morra
+This is a mutual dependency since each player's 
+mixing creates the other's willingness to mix.
+Since both pure actions are equally good, even is 
+indifferent and could mix in any proportion
+But for equilibrium, even must choose the specific 
+mix ( 7
+12 for 1-finger) that makes odd indifferent.
+Recall, a mixed strategy 
+refers to a probabilistic 
+combination of pure actions 
+For optimal mixing
+When even uses this mix, odd’s pure actions both 
+yield +
+1
+12 expected payoff.
+In mixed strategy equilibrium, deviating from your 
+optimal mixing probabilities does not directly hurt 
+your payoff, but it breaks your opponent's 
+indifference and destroys the equilibrium. (Thus 
+your opponent would move to a pure strategy.)
+
+Defining The Indifference Principle
+Definition. The indifference principle is the method for finding mixed strategy equilibria (where no 
+player wants to change their strategy). In these equilibria, each player gets equal expected payoffs 
+from all pure actions in their optimal mix.
+Each player's mixing probabilities are determined by making their opponent's strategies equally 
+attractive
+We saw an example of the process in the previous slide.
+Player A gets equal payoffs (indifference)
+Player B gets equal payoffs (indifference)
+determines Player B's optimal mixing probabilities
+determines Player A's optimal mixing probabilities
+→
+→
+In other words, players do not maximize their own payoff directly; instead, 
+they choose probabilities that make their opponent indifferent.
+
+The Breakthrough of John Nash
+John Nash's Breakthrough (1951)
+• Ph.D. from Princeton at age 22, completed in two years
+• His 1950 PNAS paper: just one page, revolutionized game theory
+• Initially dismissed by von Neumann; now one of the most widely used tools in economics
+Mathematical innovation. Nash used Kakutani's fixed-point theorem to prove existence:
+• Maps points to sets of points (not single points)
+• Essential because players often have multiple equally good strategies
+• Guarantees at least one stable equilibrium exists in every finite game
+Von Neumann & Morgenstern Nash
+Zero-sum games only All finite games
+One player's gain = other's loss Players can both win or both lose
+Limited real-world application Applicable to competition and 
+cooperation
+The Revolution
+
+Nash's Existence Theorem
+Theorem [Nash Equilibrium Existence]. Every game with a finite number of 
+players and a finite number of strategies per player has at least one Nash 
+equilibrium in pure or mixed strategies.
+Existence guarantees:
+• At least one equilibrium exists
+• A stable solution where no player wants to deviate
+For a 2-player zero-sum game, the equilibrium is 
+where 𝑚𝑖𝑛𝑖𝑚𝑎𝑥= 𝑚𝑎𝑥𝑖𝑚𝑖𝑛: Player A can't 
+climb higher, Player B can't push lower. Neither 
+can improve unilaterally.
+Existence does NOT guarantee:
+• Uniqueness (multiple equilibria possible)
+• Pareto efficiency (both players could be better off, but aren’t)
+• Finding equilibria is computationally challenging for general games
+
+Question
+Which of the following are true?
+i. Nash equilibria require each player to 
+know other players' possible strategies
+ii.  Nash equilibria require rational play
+1. Neither
+2. (i) but not (ii)
+3. (ii) but not (i)
+4. Both
+Nash equilibrium assumes players know all 
+available strategies (complete information)
+Nash equilibrium assumes rational, utility-
+maximizing players
+Which of the following are false?
+i. Rock-paper-scissors has a dominant pure strategy
+ii. There is a Nash equilibrium for rock-paper-scissors
+1. Neither
+2. (i) but not (ii)
+3. (ii) but not (i)
+4. Both
+RPS has no dominant strategy: each 
+option loses to one and beats another
+RPS has a mixed Nash equilibrium where 
+each player plays (1/3, 1/3, 1/3)
+
+
+Connection to AI Search
+The Fundamental Shift
+Search: Find the best sequence of actions to reach a goal
+Games: Find the best strategy assuming opponents play 
+optimally against you
+Single-Agent Search Game Theory
+A* algorithm Minimax algorithm
+Optimal path Optimal strategy
+Heuristic functions Evaluation functions
+State space Game tree
+Goal state Payoff / utility
+When the environment becomes an 
+intelligent adversary with its own 
+objectives, optimization becomes 
+strategic reasoning:
+Search → Game Theory.
+
+A Blast From the Past: Binary Search Tree 
+Give linear time algorithm to determine if a binary search tree maintains the symmetric ordering property (i.e., left 
+subtree values < root < right subtree values).
+7
+12
+16
+4
+ 9
+ 18
+3
+ 5
+ 6
+ 10
+ 17
+−∞, ∞
+−∞, 12
+−∞, 7
+−∞, 4 4, 7 7, 9
+12, ∞
+16, ∞
+16, 189, 12
+7, 12
+7
+14
+20
+4
+ 9
+ 24
+3
+ 5
+ 8
+ 15
+−∞, ∞
+−∞, 14
+−∞, 7
+−∞, 4 4, 7 7, 9
+14, ∞
+20, ∞
+24, ∞14, 16
+7, 14
+16
+14, 20
+30
+22
+20, 24
+Consider a “bounds propagation” approach in which each node must be between: 𝑙𝑒𝑓𝑡, 𝑟𝑖𝑔ℎ𝑡 .
+As we traverse:
+• Go left: update the 𝑟𝑖𝑔ℎ𝑡 bound with node.val (nodes in the left subtree must be less than or equal node.val)
+• Go right: update the 𝑙𝑒𝑓𝑡 bound with node.val (nodes in the right subtree must be greater than node.val)
+Solution.
+```

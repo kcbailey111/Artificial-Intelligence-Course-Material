@@ -1,0 +1,1240 @@
+Natural Language Processing 
+(Before LLMs)
+
+What is NLP?
+Natural Language Processing (NLP) is a field at the intersection 
+of computer science, artificial intelligence, and linguistics that 
+focuses on enabling computers to understand, interpret, 
+generate, and respond to human language in a meaningful way.
+AICS
+Linguistics
+NLP
+Three reasons for computers to do NLP:
+Communicate with humans.
+To learn.
+Advance scientific understanding of 
+languages and language use.
+It is  more convenient for humans to communicate with 
+machines using natural language rather than a formal 
+language like a first-order predicate calculus.
+Knowledge is stored as natural language and not in a formal 
+logic.
+
+Goals / Challenge
+Goals
+Understanding: Extract 
+meaning from text
+Generation: Produce coherent, 
+meaningful text
+Translation: Convert between 
+languages
+Question Answering: Retrieve 
+information from text
+Dialogue: Interact naturally 
+with humans
+Challenge
+Natural language is ambiguous, context-dependent, 
+and highly variable
+The chicken is ready to eat.
+Ambiguous Is the chicken hungry, or is it 
+cooked and ready to be eaten?
+Variable
+Context-Dependent In a restaurant (food), on a 
+farm (animal behavior)
+“The cooked chicken is ready to be consumed”
+“The chicken is prepared”
+“The chicken is done”
+one expression → many meanings
+Multiple expressions → one meaning
+one expression; meanings depend on the situation
+
+
+World Knowledge
+Understanding language often requires knowledge about how the world works, not just linguistic knowledge.
+Pronoun Resolution
+“The trophy didn't fit in the suitcase 
+because it was too big”
+We need to understand that objects must 
+be smaller than their containers
+“The trophy didn't fit in the suitcase 
+because it was too small”
+Physical Constraints
+“I poured water from the bottle into 
+the cup until it was empty”
+We need to understand that liquids flow 
+from source to destination
+“I poured water from the bottle into 
+the cup until it was full”
+Social/Biological Knowledge
+“Bob and Joe are brothers” Same grammatical structure, but different 
+relationship implications“Bob and Joe are fathers”
+Temporal/Causal Reasoning
+“The ice melted so I was hot” We need to understand “because” indicates 
+cause, “so” indicates consequence“The ice melted because it was hot”
+
+Historical Approaches to NLP
+1950s-1980s
+Symbolic/Rule-Based
+• Hand-crafted grammars and rules
+• Parse trees, formal grammars, logic-based reasoning
+• Limitation: Limited coverage, brittle (breaks on unexpected input)
+• Required enormous manual effort to handle linguistic variation
+1990s-2010s
+Statistical/Probabilistic
+2010s-Present
+Neural Networks
+• Deep learning: learn multiple levels of representation automatically
+• Word embeddings (2013), Recurrent Neural Networks, Transformers (2017)
+• Modern Large Language Models: GPT, BERT, Claude, ChatGPT
+• Breakthrough: Can learn complex patterns from massive amounts of text
+• Requires large datasets and computational resources
+• Learn patterns from data rather than hand-code rules
+• Use probability theory to handle uncertainty and variation
+• N-gram models, Hidden Markov Models (HMMs), 
+Probabilistic Context-Free Grammars (PCFGs)
+• Advantage: Robust, handles unseen cases better
+Focus of 
+these slides.
+Example
+
+Language Models: Motivation
+Problem How do we assign probability to sentences (or subsequent words)?
+Many NLP tasks require assessing how “likely” or “fluent” a sentence is:
+Speech recognition: “I saw a van” versus “Eyes awe of an”
+Homophones.
+Machine translation: “strong tea” versus “powerful tea”
+Both are possible, but which is more natural?
+Spelling correction: “I ate dessert” versus “I ate desert”
+Text generation: What word should come next?
+Complete the phrase:
+Take me out to the … ballgame
+In due … time
+I forgot my … No clear successor word.
+
+
+Naïve Language Model
+Definition. A language model is a function that assigns probabilities to finite sequences of words for a 
+vocabulary 𝑉. For a sequence 𝑊 = 𝑤1, 𝑤2, … 𝑤𝑛 where each 𝑤𝑖 ∈ 𝑉:
+𝑃 𝑊 = 𝑃 𝑤1, 𝑤2, … 𝑤𝑛 ∈ 0,1 .
+The probabilities of all finite sequences must sum consistently with probability theory as follows:
+෍
+𝑛=0
+∞
+෍
+𝑤1,𝑤2,…𝑤𝑛∈𝑉∗
+𝑃 𝑤1, 𝑤2, … 𝑤𝑛 = 1
+Observe many sequences may have 𝑃 𝑊 = 0, 
+creating practical challenges for NLP systems.
+High 𝑃(𝑊): 𝑊 is a fluent, likely sentence
+Low 𝑃(𝑊): 𝑊 is unusual or ungrammatical
+𝑃("I", "love", "dogs")  =  0.00015
+𝑃("dogs", "love", "I")  =  0.000001
+𝑃("the", "the", "the")  =  0.0
+Examples (different sequence, different probability)
+(ungrammatical, zero probability)
+
+Reconsidering the Language Model Definition
+Our original definition for a language model used a joint 
+probability computation: 
+How many possible sequences?
+𝑃 𝑤1, 𝑤2, … 𝑤𝑛
+How do we even estimate 
+𝑃("the", "dog", "barked")?
+(Joint probability refers to the likelihood that 
+two or more events occur simultaneously.)
+For 𝑛 ≤ 5 and vocabulary 𝑉 = 20000:
+Infinite considering all possible lengths!
+෍
+𝑛=1
+5
+𝑉 𝑛 = 𝑉 𝑛 + ⋯ + 𝑉 5 ≈ 3.2 ⋅ 1021
+We cannot possibly enumerate or store all probabilities.
+“What is the probability of word 𝒘𝒊 given 
+all previous words (𝒘𝟎, … , 𝒘𝒊−𝟏)?”
+Instead, why not ask the question:
+
+Language Model Version II
+Definition. A language model is a function that assigns probabilities to words conditioned on their 
+context (history). For a sequence 𝑤1, 𝑤2, … 𝑤𝑛, the language model specifies:
+𝑃(𝑤𝑖 ∣ 𝑤1, 𝑤2, … , 𝑤𝑖−1).
+For each position 𝑖, where:
+෍
+𝑤∈𝑉
+𝑃 𝑤 ∣ 𝑤1, 𝑤2, … , 𝑤𝑖−1 = 1
+This gives a valid probability distribution over the vocabulary 𝑉 for every possible history.
+Any joint probability can be decomposed (using the Chain Rule of Probability):
+𝑃 𝑤1, 𝑤2, … , 𝑤𝑛 = 𝑃 𝑤1 ⋅ 𝑃 𝑤2 𝑤1 ⋅ 𝑃 𝑤3 𝑤1, 𝑤2 ⋅ … ⋅ 𝑃(𝑤𝑛 ∣ 𝑤1, … , 𝑤𝑛−1)
+Generally:
+𝑃(𝑤1
+𝑛) = ෑ
+𝑖=1
+𝑛
+𝑃(𝑤𝑖 ∣ 𝑤1
+𝑖−1)
+
+Markov Assumption
+Challenge: From data (text corpus), we cannot 
+estimate reliably for long histories due to data 
+sparsity.
+Modern Large Language Models (LLMs) 
+overcome this challenge using neural 
+networks to learn abstract patterns and 
+representations rather than memorizing 
+exact sequences, enabling them to generalize 
+to unseen contexts and handle histories of 
+thousands of words through Transformer 
+architectures with attention mechanisms.
+Consider a 𝑘-th order Markov Model (order refers to the number of 
+previous states it conditions on):
+𝑃 𝑤𝑖 ∣ 𝑤1
+𝑖−1 ≈ 𝑃 𝑤𝑖 ∣ 𝑤𝑖−𝑘
+𝑖−1
+Solution: Limit the context window!
+Markov Assumption: The probability of a word depends 
+only on a fixed number of previous words.
+This is the idea behind 𝑛-gram models where 𝑛 = 𝑘 + 1.
+
+𝑛-gram Models
+Markov Order Conditions On 𝑛-gram Name Formula 
+𝑃 𝑤𝑖 ∣ 𝑤1
+𝑖−1 ≈
+Notes
+0th 0 previous words Unigram 𝑃 𝑤𝑖 Words chosen independently 
+from a distribution
+1st 1 previous words Bigram 𝑃 𝑤𝑖 ∣ 𝑤𝑖−1
+2nd 2 previous words Trigram 𝑃 𝑤𝑖 ∣ 𝑤𝑖−2, 𝑤𝑖−1
+𝑘th  𝑘 previous words 𝑘 + 1 -gram 𝑃 𝑤𝑖 ∣ 𝑤𝑖 −𝑘
+𝑖−1
+Definition. A 𝒌-th order Markov Model assumes that the probability of the current word 
+depends only on the 𝑘 most recent previous words, not the entire history.
+𝑃 𝑤𝑖 ∣ 𝑤1, 𝑤2, … 𝑤𝑖−1 = 𝑃 𝑤𝑖 ∣ 𝑤1
+𝑖−1 ≈ 𝑃 𝑤𝑖 ∣ 𝑤𝑖−𝑘
+𝑖−1
+where 𝑤𝑖−𝑘
+𝑖−1 denotes the sequence of 𝑘 words from position 𝑖 − 𝑘  to 𝑖 − 1 .
+
+Example: Unigram Model
+Some generated sentences from a unigram model:
+• fifth, an, of, futures, the, an, incorporated, a, a, the, 
+inflation, most, dollars, quarter, in, is, mass
+• thrift, did, eighty, said, hard, 'm, july, bullish
+• that, or, limited, the
+Training: Count word frequencies in corpus
+𝑃 𝑤𝑖 = count 𝑤𝑖
+𝑁
+where 𝑁 is the total number of words in corpus.
+• Individual words seem reasonable
+• No coherence or grammatical structure
+• Words appear with roughly correct frequencies
+Jurafsky Slides Sample probability 
+distribution for a corpus.
+
+Example: Bigram Model
+Some generated sentences from a bigram model:
+• texaco, rose, one, in, this, issue, is, pursuing, growth, 
+in, a, boiler, house, said, mr., gurria, mexico, 's, motion, 
+control, proposal, without, permission, from, five, 
+hundred, fifty, five, yen
+• outside, new, car, parking, lot, of, the, agreement, 
+reached
+• this, would, be, a, record, november
+For Bigram models, the present 
+depends on the immediate past.
+• Local coherence (pairs make sense)
+• Some grammatical structure
+• Still incoherent globally
+Jurafsky Slides
+Training: Count word pairs in the corpus
+𝑃 𝑤𝑖 ∣ 𝑤𝑖−1 = count 𝑤𝑖−1,𝑤𝑖
+count 𝑤𝑖−1
+.
+
+Bigram Example
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I do not like green eggs and ham </s>
+<s> I am Sam do not like green eggs and ham </s> TOTAL
+<s> 0 2 0 1 0 0 0 0 0 0 0 0 3
+I 0 0 2 0 1 0 0 0 0 0 0 0 3
+am 0 0 0 1 0 0 0 0 0 0 0 1 2
+Sam 0 1 0 0 0 0 0 0 0 0 0 1 2
+do 0 0 0 0 0 1 0 0 0 0 0 0 1
+not 0 0 0 0 0 0 1 0 0 0 0 0 1
+like 0 0 0 0 0 0 0 1 0 0 0 0 1
+green 0 0 0 0 0 0 0 0 1 0 0 0 1
+eggs 0 0 0 0 0 0 0 1 0 1 0 0 1
+and 0 0 0 0 0 0 0 0 0 0 1 0 1
+ham 0 0 0 0 0 0 0 0 0 0 0 1 1
+</s> 0 0 0 0 0 0 0 0 0 0 0 0 0
+TOTAL 0 3 2 2 1 1 1 1 1 1 1 3 17
+Example corpus
+Pairwise 
+Count 
+Matrix
+𝑤𝑖−1
+𝑤𝑖
+𝑃( I ∣ <s>) =
+2
+3
+
+Example (continued)
+For Bigrams: 𝑃 𝑤𝑖 ∣ 𝑤𝑖−1 = count 𝑤𝑖−1,𝑤𝑖
+count 𝑤𝑖−1
+<s> I am Sam </s>
+<s> Sam I am </s>
+<s> I do not like green eggs and ham </s>
+𝑃( Sam ∣ <s>) = 𝑃( am ∣ I ) = 𝑃(</s> ∣ Sam) =
+𝑃( <s> ∣ Sam ) = 𝑃( do ∣ I ) = 𝑃( green ∣ not ) =
+1
+3
+2
+3
+1
+2
+0
+1
+3 0
+𝑃( Sam ∣ am) = 1
+2
+
+Example: Trigram Model
+Some generated sentences from a trigram model:
+• neural network that perfectly fits a finite dataset
+• statistical learning cannot justify parameter counts from 
+interpolation alone in the same way
+• any first order theory with an infinite model also has a 
+countable model compression knowledge distillation 
+generalization theory the epistemology of deep learning 
+and the criticism of the bigger is better doctrine
+• Better local coherence
+• More grammatical
+• Still lacks long-range coherence
+Training: Count word triples in the corpus
+𝑃 𝑤𝑖 ∣ 𝑤𝑖−2, 𝑤𝑖−1 = count 𝑤𝑖−2,𝑤𝑖−1,𝑤𝑖
+count 𝑤𝑖−2
+.
+
+Question
+Which of the following are bigrams from the sentence
+ “It is cold outside today”?
+A. “It is”
+B. “cold today”
+C. “is cold”
+D. Both A and C
+Bigrams from this sentence:
+• (It, is)
+• (is, cold)
+• (cold, outside)
+• (outside, today)
+In a bigram model, what assumption do we make?
+A. All words are independent
+B. Each word depends on all previous words
+C. Each word depends only on the immediately previous word
+D. Words are chosen uniformly at random
+
+
+Maximum Likelihood Estimation (MLE)
+𝜃:
+𝜃∗ = arg max
+𝜃
+𝑃 observed data∣ 𝜃
+Assume our training corpus is a sample from some population 
+with unknown parameters 𝜃. MLE finds the 𝜃 that maximizes 
+the probability of observing this particular sample.
+For  𝑛-gram language models, the counting 
+formula is the MLE estimator:
+By the Law of Large Numbers, as training data size increases (toward ∞), MLE estimates converge to true probabilities.
+The parameters we want to estimate 
+(e.g., all bigram probabilities)
+𝑃 observed data∣ 𝜃 :
+𝜃∗:
+arg max
+𝜃
+:
+The best parameter estimate.
+𝑃 observed data∣ 𝜃 : “If 𝜃 were the true parameters, how 
+probable is the data we actually saw?
+"The argument (value of θ) that maximizes..."
+𝑃 𝑤𝑖 ∣ 𝑤𝑖−𝑘
+𝑖−1 = count 𝑤𝑖−k, … , 𝑤𝑖−1, 𝑤𝑖
+count 𝑤𝑖−k, … , 𝑤𝑖−1
+
+Practical Issues: Log Probability Space
+As a workaround we could work in log space:
+With large vocabularies (10,000+ words), individual word probabilities are 
+small (e.g., P(word) ≈ 0.0001). For long sequences, we must multiply many 
+such small probabilities together. This may result in underflow.
+𝑃(𝑤1
+𝑛) = ෑ
+𝑖=1
+𝑛
+𝑃 (𝑤𝑖|𝑤𝑖−1)
+log 𝑃(𝑤1
+𝑛) = ෍
+𝑖=1
+𝑛
+log 𝑃(𝑤𝑖|𝑤𝑖−1)
+This helps avoid underflow since addition is faster than multiplication.
+It is also order preserving: 𝑃 𝐴 > 𝑃 𝐵 ⇔ log 𝑃 𝐴 > log 𝑃 𝐵 .
+
+Zero Probability Problem
+The entire sentence would then have probability 0:
+What if we encounter an 𝑛-gram never seen in training?
+𝑃(word𝑖|word𝑖−1) = count(word𝑖−1, word𝑖)
+count(word𝑖−1) = 0
+. . . = 0
+In the NLP setting, test data will always contain unseen 𝑛-grams. Thus, the model will 
+become useless for unseen events.
+Theoretically, real probabilities should be small, not zero.
+𝑃 𝑤1
+𝑛 = ෑ
+𝑖=1
+𝑛
+𝑃 𝑤𝑖 𝑤𝑖−1 = ⋯ ⋅ 0 ⋅  ⋯ = 0
+Smoothing is a solution to this problem where we redistribute 
+probability mass from the ‘seen’ data to the ‘unseen’.
+
+
+Smoothing: Add One
+𝑃 𝑤𝑖 ∣ 𝑤𝑖−𝑘
+𝑖−1 = count 𝑤𝑖−k, … , 𝑤𝑖−1, 𝑤𝑖
+count 𝑤𝑖−k, … , 𝑤𝑖−1
+What if we pretend every 𝑛-gram has been observed at least one time?
+• Simple to implement
+• No zero 𝑛-gram probabilities
+• Warning: Often reduces probability of 
+seen events too much (over-smoothing)
+Unsmoothed
+Add-one Smoothing
+𝑃 𝑤𝑖 | 𝑤𝑖−k
+𝑖−1 = count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 + 1
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 + 𝑉Why is 𝑉  (where 𝑉  is vocabulary size) in the denominator?
+෍
+𝑤∈V
+𝑃 𝑤𝑖|𝑤𝑖−k
+𝑖−1 = ෍
+𝑤∈V
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 + 1
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 + 𝑉
+= 1
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 + 𝑉 ෍
+𝑤∈V
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 + 1
+= 1
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 + 𝑉 ෍
+𝑤∈V
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 + ෍
+𝑤∈V
+1
+෍
+𝑤∈V
+𝑃 𝑤𝑖|𝑤𝑖−k
+𝑖−1 = 1
+Observe, count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 = σ𝑤∈V count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 .
+Also observe, σ𝑤∈𝑉 1 = 𝑉 . So,
+# Constant denominator
+# All words that follow 𝑤𝑖−𝑘, … , 𝑤𝑖−1  
+
+Generalized Smoothing: Add 𝛼
+We can generalize smoothing by integrating a constant 0 < 𝜶 < 1 where 𝜶 represents how many 
+imaginary observations we add to each 𝑛-gram (pseudo-counts).
+General Smoothing
+𝑃 𝑤𝑖 | 𝑤𝑖−k
+𝑖−1 = count 𝑤𝑖−𝑘, … , 𝑤𝑖−1, 𝑤𝑖 + 𝜶
+count 𝑤𝑖−𝑘, … , 𝑤𝑖−1 + 𝜶 𝑉
+• More flexible than add-one: α is a tunable hyperparameter
+• Less over-smoothing: Reduces probability of seen events less dramatically
+• Better empirical performance: 𝜶 < 1 typically works better than 𝜶 = 1.
+• Tunable on held-out data: Optimize 𝜶 on a validation set for best performance
+• Controls bias-variance tradeoff:
+• Smaller α → lower bias, higher variance;
+• larger α → higher bias, lower variance
+Other benefits
+Bias–variance tradeoff is the balance between 
+underfitting (too simple, high bias) and overfitting (too 
+complex, high variance) to minimize prediction error.
+
+Smoothing Matters for Large 𝑛
+Suppose 𝑉 = 20000 and let 𝑘 refer to a sequence of consecutive terms: 𝑘-grams.
+How many 𝑘-grams are possible? 𝑉 𝑘
+Now suppose we have a corpus of size 𝑁 = 1,000,000.
+What is the maximum number of distinct 𝑘-grams that 
+would be observable in the corpus? On the other of 𝑁
+We can compute a 
+sparsity ratio: 𝑆𝑝𝑎𝑟𝑠𝑖𝑡𝑦= 𝑉𝑘
+𝑁
+𝒌-gram 𝑽𝒌 Corpus (𝑵) Sparsity Fraction Unseen
+𝑘 = 1 (unigram) 20,000 1,000,000 0.02 0.02
+𝑘 = 2 (bigram) 400M 1,000,000 400 > 0.997
+𝑘 = 3 (trigram) 8T 1,000,000 8M > 0.9999
+𝑘 = 4 (4-gram) 160 quadrillion 1,000,000 160B ≈ 1.0
+lim
+𝑘→∞
+𝑉𝑘
+𝑁 =
+Since 𝑉𝑘 grows exponentially while the corpus is fixed, larger 𝑘-grams are almost never observed. 
+Smoothing is essential to handle the inevitable unseen sequences in test data.
+∞
+
+Question
+Smoothing is increasingly useful for n-grams when:
+A. 𝑛 gets larger
+B. 𝑛 gets smaller
+C. Always the same
+D. 𝑛 larger than 10
+Larger 𝑛 implies:
+• more possible 𝑛-grams
+• More sparsity in training data
+• More zero counts
+There is a greater need to handle unseen events with more zero counts.
+
+Language Model Evaluation
+Extrinsic Evaluation (End-to-End)
+Approach: Embed model in application 
+(translation, speech recognition) and measure 
+task-specific performance (accuracy, error rate, 
+quality scores)
+Example: Compare language models by their 
+impact on spelling correction accuracy
+Intrinsic Evaluation (Standalone)
+Method: Evaluate language model in isolation on 
+held-out test data
+Measure: Perplexity—how well the model predicts 
+test sequences
+Example: Compute perplexity on test corpus, lower 
+is better
+• Directly meaningful - measures what we 
+care about
+• Task-relevant and realistic
+• Gold standard for model selection
+• Expensive: requires full application pipeline
+• Slow: each evaluation takes significant time
+• Confounded: improvements could be from 
+other system components, not the language 
+model
+Positives
+Negatives
+• May not correlate with downstream 
+performance
+• Lower perplexity ≠ better application results
+• Disconnected from real end-to-end goals
+• Fast: no need to build full application
+• Easy to compare: single numeric metric
+• Reproducible: standard benchmark datasets
+
+Entropy, Cross Entropy, and 
+Perplexity
+
+Measuring Uncertainty
+How do we measure how uncertain (‘surprised’) we are by an outcome?
+We need a mathematical way to quantify this uncertainty.
+Flipping a fair coin
+NLP Example: Sentiment analysis
+Examples Rolling a weighted die that 
+almost always shows 6.Extremely Uncertain (50/50)
+High Certainty
+“This movie was terrible!”
+ “This is the best movie ever!”“The film had some good moments 
+but overall disappointing.”
+High certainty High uncertainty High Certainty
+
+Information Content
+Definition. The information content (or self-information) of an event 𝑥 with probability 𝑝 𝑥  is 
+given by:
+𝐼 𝑥 = − log2 𝑝 𝑥 = log2
+1
+𝑝 𝑥
+measured in bits.
+Information content refers to the number of bits required in an optimal binary encoding to represent an event.
+How many yes/no questions does it 
+take to identify which event occurred?
+When there are…
+1 possibility?
+2 possibilities?
+4 possibilities?
+8 possibilities?
+0
+1
+2
+3
+More AbstractlyIntuition
+For 𝑛 equally likely outcomes, the number of bits 
+required is log2 𝑛.
+Also observe that the probability of each outcome is 
+𝑝 =
+1
+𝑛.
+If we combine these two observations, we have:
+log2 𝑛 = log2
+1
+𝑝
+
+Binary Entropy
+Definition. For a binary random variable 𝑋 with outcomes positive ⨁ and negative ⊝ over a 
+collection 𝑆, the entropy is given by
+𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = −𝑝⨁ log2 𝑝⨁ − 𝑝⊝ log2 𝑝⊝
+Consider a biased coin with 𝑃 𝐻𝑒𝑎𝑑𝑠 = 0.8 and 𝑃 𝑇𝑎𝑖𝑙𝑠 = 1 − 𝑃 𝐻𝑒𝑎𝑑𝑠 = 0.2.
+In terms of information content of each outcome: 
+𝐼 𝐻𝑒𝑎𝑑𝑠 = − log2 0.8 ≈ 0.32
+𝐼 𝑇𝑎𝑖𝑙𝑠 = −log2 0.2 ≈ 2.32
+What is the average information per coin flip?
+If we want to find the average information 
+content per flip of the coin, we can compute the 
+expected value:
+0.8 ⋅ 0.32 + 0.2 ⋅ 2.32 = 0.72
+For simplicity, we define 0 ⋅ log2 0 = 0.
+
+Binary Entropy
+Tom Mitchell, Machine Learning, page 57. 
+Entropy measures the average 
+information content per trial.
+𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = 0
+Complete certainty
+All observations in our data are the same classification.
+𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = 1
+Maximum uncertainty
+All observations are 50% one class and 50% the other.
+Exercise
+Estimate 𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝐻𝑒𝑎𝑑𝑠= 0.9, 𝑇𝑎𝑖𝑙𝑠 = 0.1
+
+Extending Entropy to C Classes
+Definition. For a random variable 𝑋 with 𝐾 possible outcomes (𝑐1, 𝑐2, … , 𝑐𝐾) over a collection 𝑆, 
+the entropy is given by
+𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = − ෍
+𝑖=1
+𝐾
+𝑝𝑐𝑖 log2 𝑝𝑐𝑖
+where 𝑝 𝑐𝑖 is the proportion of examples in 𝑆 with outcome 𝑐𝑖.
+Consider the entropy of a collection with 3 classes visualized at the 
+right.
+𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = − 1 log2 1 + 0 log2 0 + 0 log2 0 = 0All Class 1:
+Uniform: 𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = −3 ⋅ 1
+3 log2
+1
+3 = 1.585
+
+Model Comparison
+How well does 𝑴 approximate 𝑻?
+Recall that a model is a system that assigns probabilities to possible outcomes.
+Also recall that we discussed language models 
+(e.g., 𝑛-grams) output a probability distribution 
+𝑸 over possible next words, but …
+but the words that actually occur 
+follow some true distribution 𝑷.
+𝑻𝑴
+Ground Truth LabelsPredicted Distribution
+
+
+Cross Entropy
+Entropy measures uncertainty when we know the true distribution. 𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑆 = − ෍
+𝑖=1
+𝐾
+𝑝𝑐𝑖 log2 𝑝𝑐𝑖𝑻
+Definition. For two probability distributions 𝑻 and 𝑴 over the same set of outcomes 𝑐₁, 𝑐₂, … , 𝑐𝐾 , the 
+cross entropy of 𝑻 with respect to 𝑴 is given by
+𝐶𝑟𝑜𝑠𝑠𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑻, 𝑴 = − ෍
+𝑖=1
+𝐾
+𝑝𝑐𝑖 log2 𝑞𝑐𝑖
+where 𝑝𝑐𝑖 is the true probability of outcome 𝑐𝑖 and 𝑞𝑐𝑖 is the predicted probability of outcome 𝑐𝑖.
+This formula can be interpreted as:
+• Events occur with true probabilities 𝑝𝑐𝑖 according to 𝑻
+• A model 𝑴 assigned probabilities 𝑞𝑐𝑖 to each event
+• When event 𝑐𝑖 occurs, the information content is given by log2 𝑞𝑐𝑖.
+Cross entropy is thus the average information content across all events when using model 𝑴 to 
+predict events that actually occur according to distribution 𝑻.
+
+Example
+Suppose we are building a POS tagger with 4 classes: {noun, verb, adjective, adverb}.
+Consider the sentence: “The quick fox jumps over the lazy dog.”
+Our goal is to ‘tag’ the word jumps.
+We know the word jumps can be represented using the tagging vector: 𝑻: 0, 1, 0, 0
+Suppose our model predicts a tagging vector: 𝑴: 0.1, 0.7, 0.05, 0.15
+𝐶𝑟𝑜𝑠𝑠𝐸𝑛𝑡𝑟𝑜𝑝𝑦𝑴, 𝑻 = − 0 ⋅ log2 0.1 + 1 ⋅ log2 0.7 + 0 ⋅ log2 0.05 + 0 ⋅ log2 0.15
+≈ 0.51
+Observe: lower cross entropy → better prediction
+
+Question
+Consider two events: 𝑃 𝐴 =
+1
+2 and 𝑃 𝐴 =
+1
+8 . What are their information contents?
+A. 𝐼 𝐴 = 2, 𝐼 𝐵 = 8
+B. 𝐼 𝐴 = 1, 𝐼 𝐵 = 3
+C. 𝐼 𝐴 = 3, 𝐼 𝐵 = 1 
+D. 𝐼 𝐴 = 0.5, 𝐼 𝐵 = 0.125
+E.  𝐼 𝐴 = 𝐼 𝐵
+𝐼 𝐴 = − log2
+1
+2 = 1
+𝐼 𝐵 = − log2
+1
+8 = 3
+Suppose we are interested in modeling a fair coin flipping task. However, our model 𝑀 finds 𝑃 𝑀
+= 0.53,0.47 . What is the binary cross entropy?
+A. 0.5
+B. 0.72
+C. 1.00
+D. 1.50
+𝐶𝐸 𝑻, 𝑴 = − 1
+2 log2 𝑝 0.53 − 1
+2 log2 𝑝 0.47 ≈ 1.00
+If the ground truth itself is uncertain, even a 
+perfect model will have “high” cross entropy.
+
+
+Perplexity
+Definition. For two probability distributions 𝑻 and 𝑴 over the same set of outcomes, the cross entropy 
+of 𝑻 with respect to 𝑴 is given by
+𝑃𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦 𝑻, 𝑴 = 2𝐶𝐸 𝑻,𝑴
+where 𝐶𝐸 𝑻, 𝑴 = − ෍
+𝑖=1
+𝐾
+𝑝𝑐𝑖 log2 𝑞𝑐𝑖.
+Perplexity is a transformation of the measurement 
+into a more intuitive scale. It is widely used for 
+evaluating language models in NLP .
+𝐶𝐸
+𝑃𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦
+Co-domains (ranges)
+[0, ∞)
+[1, ∞)
+
+Perplexity (for NLP)
+Definition. Given a sequence of tokens 𝑊 = 𝑤1, 𝑤2, … , 𝑤𝑛  and a language model 
+that assigns conditional probabilities 𝑃 𝑤𝑖 ∣ 𝑤1, … , 𝑤𝑖−1 , the perplexity of the 
+model on this sequence is given by:
+𝑃𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦 𝑊 = 2𝐶𝐸 𝑊
+where the cross entropy 𝐶𝐸 𝑊  is defined as:
+𝐶𝐸 𝑊 = − 1
+𝑛෍
+𝑖=1
+𝑛
+log 𝑃(𝑤𝑖|w1, … 𝑤𝑖−1)
+I thought we defined cross entropy and hence perplexity using two 
+distributions? A ground truth 𝑻 and model 𝑴 for prediction.
+
+Cross Entropy (for NLP)
+The sequence formulation is actually applying our cross 
+entropy definition at each position: 𝑤1, … , 𝑤𝑛.
+The true distribution 𝑻𝑖 is a one-hot distribution in which the actual next word 𝑤𝑖 has probability 1, 
+while all other words (𝑤1, … , 𝑤𝑖−1, 𝑤𝑖+1 … , 𝑤𝑛) have probability 0.
+The model's predicted probability distribution over the vocabulary is 𝑴𝑖. The cross entropy at 
+position 𝑖 is:
+𝐶𝐸 𝑻𝑖, 𝑴𝑖 = − ෍
+𝑤∈vocab
+𝑁
+𝑝𝑖 𝑤 log2 𝑞𝑖 𝑤
+Then we average over all 𝑛 positions in our sequence.
+𝐶𝐸 𝑊 = 1
+𝑛෍
+𝑖=1 
+𝑛
+𝐶𝐸 𝑻𝑖, 𝑴𝑖 = − 1
+𝑛෍
+𝑖=1
+𝑛
+log 𝑃(𝑤𝑖|w1, … 𝑤𝑖−1)
+= −1 ⋅ log2 𝑞𝑖 𝑤𝑖 = − log2 𝑃 𝑤𝑖 ∣ 𝑤1
+𝑖−1
+
+Perplexity (for NLP)
+Perplexity is essentially the average uncertainty the model has when choosing the next word.
+Think of perplexity as a branching factor: the effective number of choices the model has at each step.
+Perfect certainty; only 
+one choice.
+Low perplexity → Model is confident:
+assigns high probabilities to actual words in the sequence.
+High perplexity → Model is “confused”:
+Assigns low probabilities to the correct words.
+High uncertainty. Like having 1000 
+equally likely options for the next word.
+The model has 50 equally probable 
+options for the next word.
+𝑝𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦= 1000𝑝𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦= 50𝑝𝑒𝑟𝑝𝑙𝑒𝑥𝑖𝑡𝑦= 10
+
+
+Question
+Two language models are evaluated on the same test set:
+Model A: Cross Entropy = 6 bits Model B: Cross Entropy = 4 bits
+Which statement is true?
+A. Model A has lower perplexity and is better
+B. Model B has lower perplexity and is better
+C. Both models have the same perplexity
+D. We cannot determine which is better without knowing the vocabulary size
+Lower cross entropy →
+ lower perplexity →
+  better model.
+What is the relationship between cross entropy 𝐶𝐸 𝑻, 𝑴  and the entropy 𝐶𝐸 𝑻  of the true distribution?
+A. 𝐶𝐸 𝑻, 𝑴  is always less than 𝐶𝐸 𝑻  
+B. 𝐶𝐸 𝑻, 𝑴  is always greater than or equal to 𝐶𝐸 𝑻
+C. 𝐶𝐸 𝑻, 𝑴  is always equal to 𝐶𝐸 𝑻
+D. There is no consistent relationship between them
+𝐶𝐸 𝑻, 𝑴 ≥ 𝐶𝐸 𝑻  always, with equality if and only if 𝑻 = 𝑴 (the model perfectly matches the true distribution)
+
+Perplexity: Example Results
+Wall Street Journal corpus (40M words):
+Model Perplexity
+Unigram 962
+Bigram 170
+Trigram 109
+Some Observations:
+Jurafsky, D., & Martin, J. H. 
+Speech and Language 
+Processing (3rd ed. draft). 
+Stanford University.
+Larger context → lower perplexity • Conditioning on more context reduces entropy.
+• More previous words enable a model to leverage syntactic 
+patterns, semantic constraints, and words that frequently appear 
+together (collocational preferences) for better predictions.
+Real systems often use 4-grams or 5-grams
+Model improvement does not scale 
+linearly with context window size: Trigram is 8.8 times better than unigram (not 3 times)
+Diminishing returns for larger 𝑛
+• Early context words resolve critical ambiguities; later words 
+address subtler, rarer distinctions.
+• Data sparsity worsens with larger 𝑛
+
+Word Embeddings
+
+Word Representations
+Problem: How do we represent words to a computer?
+Options
+Strings - “dog”, “cat”, “run”
+Indices - dog = 1, cat = 2, run = 3, …
+Issue?
+Hard to compute with since there is no notion 
+of similarity
+Easy to compute with 
+Arbitrary: why is dog closer to cat than to run?
+Embeddings - Vectors that capture meaning
+Desired.
+Both computable and meaningful: similar 
+words have similar vectors
+For an NLP system to understand language, they need to understand, for example:
+• “cheap” and “inexpensive” mean similar things
+• “king” relates to “queen” like “man” relates to “woman”
+• “excellent” is closer to “great” than to “terrible”
+
+
+Desired Properties of Word Embeddings 
+Property Description Example
+Semantic Similarity Words with similar meanings → 
+similar vectors
+“happy” and “joyful” should be close
+Capture Relationships Vector arithmetic reflects word 
+relationships
+Paris - France + Italy ≈ Rome
+Dense & Low-
+Dimensional
+Typically 50-300 dimensions (not 
+100,000+)
+Efficient to store and compute with
+Syntactic Similarity Words with similar grammar cluster 
+together
+Verbs near verbs, nouns near nouns
+Measurable Distance We can compute similarity between 
+vectors
+Cosine similarity enables applications
+
+One-Hot Vectors
+Property Description
+No Semantic 
+Similarity
+All words are equally different: 
+𝐰𝑑𝑜𝑔 ⋅ 𝐰𝑐𝑎𝑡 = 0
+But we want dog and cat more similar than dog and run!
+High 
+Dimensionality
+Computationally expensive, memory intensive
+Cannot Capture 
+relationships
+No way to represent:
+king:queen :: man:woman
+Problems
+Property Description
+High-Dimensional Vector size 𝑉  is typically between 
+10,000 - 100,000+
+Sparse Only one non-zero entry per vector
+Orthogonal All word vectors are orthogonal:
+𝐰𝑖 ⋅ 𝐰𝑗 = 0 for all 𝑖 ≠ 𝑗
+Properties
+Each word is represented as a vector with a 
+single 1 at its index position:
+𝑑𝑜𝑔= 0,0,0,0,1,0, … , 0
+𝑐𝑎𝑡= 0,0,1,0,0,0, … , 0
+where the vector dimension is the vocabulary 
+size 𝑉 .
+Representation
+Learn dense, low-dimensional 
+embeddings where similar words 
+have similar vectors!
+Solution
+
+Distributional Semantics
+“You shall know a word by the company it keeps” (Firth, 1957)
+The Distributional Hypothesis: Words that occur in similar contexts tend to have similar meanings. 
+• “dog” appears with: "bark”, “walk”, “leash”
+• “calculator” appears with: “compute”, “display”, 
+“equation”
+These words should have dissimilar vector 
+representations
+“dog”, “cat”, “puppy”, “pet” all appear with:
+ “fur”, “animal”, “cute”, “adopt”
+Dog, cat, puppy, and pet should have similar 
+vector representations
+Similar contexts → Similar meanings Different contexts → Different meanings
+
+Distributional Semantics Goals
+Consider these sentences with a missing word:
+“I need to feed my ___“
+“She adopted a new ___”
+“The ___ was sleeping peacefully”
+Words like 𝑑𝑜𝑔, 𝑐𝑎𝑡, 𝑝𝑢𝑝𝑝𝑦, 𝑝𝑒𝑡, ℎ𝑎𝑚𝑠𝑡𝑒𝑟 all 
+fit these contexts.
+Thus, all these words should have similar vectors!
+• Each word is a point in ℝ𝑑 with 𝑑 typically between 50 and 300.
+• Similarity between vectors reflects semantic similarity:
+• Similar meanings → high similarity / small ‘distance’
+• Different meanings → low similarity / large ‘distance’
+Goal
+Create vector representations where:
+𝑑 𝑑𝑜𝑔, 𝑐𝑎𝑡 < 𝑑 𝑑𝑜𝑔, 𝑐𝑎𝑙𝑐𝑢𝑙𝑎𝑡𝑜𝑟
+𝑑(𝑘𝑖𝑛𝑔, 𝑞𝑢𝑒𝑒𝑛)  <  𝑑(𝑘𝑖𝑛𝑔, 𝑏𝑎𝑛𝑎𝑛𝑎) 𝑑 𝑒𝑥𝑎𝑚, 𝑡𝑒𝑠𝑡
+𝑑 𝑑𝑜𝑔, 𝑝𝑢𝑝𝑝𝑦 <  𝑑 𝑑𝑜𝑔, 𝑐𝑎𝑡 < 𝑑 𝑑𝑜𝑔, 𝑐𝑎𝑙𝑐𝑢𝑙𝑎𝑡𝑜𝑟
+𝑑 𝑝𝑖𝑧𝑧𝑎, 𝑎𝑙𝑔𝑜𝑟𝑖𝑡ℎ𝑚 >
+
+
+Question
+Consider a vocabulary with 10,000 words. Which statement about one-hot vectors is false? 
+A. Each word is represented by a 10,000-dimensional vector
+B. The dot product of any two different word vectors equals zero
+C. Each vector has exactly one non-zero entry
+D. Words with similar meanings have similar vector representations
+One-hot vectors are orthogonal (all 
+equally different), so they cannot 
+capture semantic similarity.
+According to the distributional hypothesis “you shall know a word by the company it keeps”, which pair of 
+words would you expect to have representations that should be most similar? 
+A. “king” and “throne” (often appear together in sentences)
+B. “doctor” and “nurse” (appear in similar contexts with similar surrounding words)
+C. “run” and “running” (same root word)
+D. “cat” and “mat” (rhyme with each other)
+The distributional hypothesis is about similar contexts (similar 
+surrounding words). “Doctor” and “nurse” both appear with 
+words like “patient”, “hospital”, “medical”, etc.
+“run” and “running” share morphology, not contexts. They do not consistently appear 
+in similar surrounding word environments (“run a company,” “run away,” “go for a 
+run”; “running water,” “running late,” “running shoes”). Distributional models won’t 
+make them as similar.
+
+Word Embeddings (Dense Vectors)
+Represent each word as a dense, low-dimensional vector with real-valued entries:
+Observe, these vectors are similar but not identical.
+𝑑𝑜𝑔= 0.13, 0.87, −0.23, 0.46, 0.87, −0.31
+𝑐𝑎𝑡= 0.07, 1.03, −0.43, −0.21, 1.11, −0.34
+Property One-Hot Vectors Word Embeddings
+Dimension 𝑉 ∈ [10,000, 100,000+) 𝑑 ∈ [50,300]
+Density Sparse (one 1, rest 0s) Dense (all non-zero) 
+Semantic 
+Similarity
+None (all orthogonal) Captures similarity
+How Created Predetermined by index Learned from data
+
+Definition: Word Embedding
+Definition. Let 𝑉 = 𝑤1, 𝑤2, … , 𝑤𝑛  be a finite vocabulary (set of words), where 𝑉 = 𝑛 denotes the 
+vocabulary size. Let 𝑑 ∈ ℕ be the embedding dimension, with 𝑑 ≪ 𝑉 . Let ℝ𝑑 denote the 𝑑-dimensional 
+Euclidean vector space:
+ℝ𝑑 = 𝑥1, 𝑥2, … , 𝑥𝑑 ∣ 𝑥𝑖 ∈ ℝ for all 𝑖 ∈ 1, … , 𝑑 .
+A word embedding is a function 𝜙: 𝑉 → ℝ𝑑 that maps each word 𝑤 ∈ 𝑉 to a 𝑑-dimensional vector:
+𝜙 𝑤 = 𝐞𝑤 = e𝑤,1,e𝑤,2, … ,e𝑤,𝑑 ∈ ℝ𝑑 where 𝑒𝑤,𝑖 ∈ ℝ for all 𝑖 ∈ 1, … , 𝑑 .
+We call ℝ𝑑 the embedding space and 𝐞𝑤 the embedding vector (or simply embedding) of word 𝑤.
+A word embedding maps each word to a low-dimensional vector, where the location of each 
+word in the embedding space reflects its meaning.
+Much smaller
+
+Word Embedding Similarity: Cosine
+Definition. Let 𝑉 = 𝑤1, 𝑤2, … , 𝑤𝑛  be a finite vocabulary (set) of words, where 
+𝑉 = 𝑛 denotes the vocabulary size. Let 𝑑 ∈ ℕ be the embedding dimension, with 
+𝑑 ≪ 𝑉 . Let ℝ𝑑 denote the 𝑑-dimensional Euclidean vector space:
+ℝ𝑑 = 𝑥1, 𝑥2, … , 𝑥𝑑 ∣ 𝑥𝑖 ∈ ℝ for all 𝑖 ∈ 1, … , 𝑑 .
+A word embedding is a function 𝜙: 𝑉 → ℝ𝑑 that maps each word 𝑤 ∈ 𝑉 to a 𝑑-
+dimensional vector:
+𝜙 𝑤 = 𝐞𝑤 = e𝑤,1,e𝑤,2, … ,e𝑤,𝑑 ∈ ℝ𝑑 where 𝑒𝑤,𝑖 ∈ ℝ for all 𝑖 ∈ 1, … , 𝑑 .
+We call ℝ𝑑 the embedding space and 𝐞𝑤 the embedding vector (or simply 
+embedding) of word 𝑤.
+A word embedding maps 
+each word to a low-
+dimensional vector, where 
+the location of each word 
+in the embedding space 
+reflects its meaning.
+Definition. Let 𝐞𝑤𝒊, 𝐞𝑤𝒋 ∈ ℝ𝑑 be the embedding vectors for words 𝑤𝒊 , 𝑤𝒋 ∈ 𝑉. The 
+cosine similarity between 𝑤𝒊 and 𝑤𝒋 is defined as:
+cosθ =
+𝐞𝑤𝒊 ⋅ 𝐞𝑤𝒋
+𝐞𝑤𝒊 ⋅ 𝐞𝑤𝒋
+Similarity ranges from:
+ −1: exactly opposite,  0: orthogonality,  1: exactly the same.
+Cosine similarity 
+measures the angle 
+between two vectors; 
+values near 1 indicating 
+similar directions and 
+values near 0 indicating 
+orthogonal vectors.
+
+
+Defining Context with Windows
+The idea is that context equates to “words that appear nearby in a sentence”.
+The quick brown fox jumps over the lazy dog.
+Consider the word 𝑤t = fox; we will refer to this word as the center word. 
+Window Size Context
+2
+3
+{ brown, jumps }
+{ quick, brown, jumps, over }
+4 { The, quick, brown, jumps, over, the }
+Words close together are more 
+related than distant words.
+“quick” and “brown” tell us about 
+“fox” more than “lazy” does.
+A fixed window is also 
+computationally tractable.
+
+Similar Words Predict Similar Contexts
+We aim to explore which contexts are predicted by different words.
+dog
+cat
+{ walked, in, park, the, barked, loudly, adopted, a, ... }
+{ petted, the, gently, meowed, softly, adopted, a, ... }
+We observe that the resulting contexts are not mutually exclusive; some contexts overlap.
+This overlap suggests that words sharing similar contexts tend to acquire similar representations 
+and, by extension, similar meanings.
+Building on this intuition, the Skip-gram approach seeks to learn word representations by 
+optimizing them to predict surrounding contexts. Words that share similar contextual predictions 
+will naturally converge toward similar vector representations.
+
+Skip-Gram
+Corpus:
+Window size:
+Parameters:
+A sequence of words 𝑤1, 𝑤2, … 𝑤𝑁
+𝑎 (typically 𝑎 ∈ 2,5 )
+𝜃 is all word vectors to be learned
+For each position 𝑡 in the corpus sequence, we have
+• 𝑤𝑡
+• 𝑤𝑡−𝑎, … , 𝑤𝑡−1, 𝑤𝑡+1, … 𝑤𝑡+𝑎
+center word
+context
+‘window size’ is a misnomer 
+since it refers to a radius
+Our objective is to maximize the probability of 
+predicting context words from center words.
+In practice, we maximize log-likelihood to avoid underflow:
+ℒ(𝜃) = ෑ
+𝑡=1
+N
+ෑ
+−𝑎≤𝑗≤𝑎,𝑗≠0
+𝑃 𝑤𝑡+𝑗 ∣ 𝑤𝑡; 𝜃
+Intuitively, for every word in the corpus, we want high probability of predicting the words that actually appear 
+around it. 
+logℒ(𝜃) = ෑ
+𝑡=1
+N
+ෑ
+−𝑎≤𝑗≤𝑎,𝑗≠0
+log𝑃 𝑤𝑡+𝑗 ∣ 𝑤𝑡; 𝜃
+Semicolon indicates 𝜃 as a 
+learnable parameter (all the word 
+vectors) we are conditioning on.
+
+Skip-Gram Captures Semantics
+How do we model the probability of context word 𝑜 given center word 𝑐?
+Probability Model: Measures how compatible word 𝑜 is 
+as a context word for center word 𝑐
+Use two vectors per word:
+𝐯𝑐 ∈ ℝ𝑑Embedding vector when 𝑐 
+is the center word:
+Embedding vector when 
+𝑜 is in the context: 𝐮𝑜 ∈ ℝ𝑑
+𝑃(𝑜 ∣ 𝑐) = 𝑒𝐮𝑜⋅𝐯𝑐
+σ𝑤∈𝑉 𝑒𝐮𝑤⋅𝐯𝑐 Sums the compatibility scores for every 
+possible word in the vocabulary as a 
+potential context word for 𝑐
+This is a softmax function applied to our 
+specific problem of word prediction.
+
+
+Combining
+ℒ(𝜃) is the product of many individual probabilities computed using 𝑃 𝑜 ∣ 𝑐 , one for each 
+𝑐𝑜𝑛𝑡𝑒𝑥𝑡, 𝑐𝑒𝑛𝑡𝑒𝑟 pair in the corpus.
+ℒ(𝜃) = ෑ
+𝑡=1
+N
+ෑ
+−𝑎≤𝑗≤𝑎,𝑗≠0
+𝑃 𝑤𝑡+𝑗 ∣ 𝑤𝑡; 𝜃
+Let the window radius be 𝑎 = 1. Then,
+ℒ 𝜃 = P 𝐮𝑤2 ∣ 𝐯𝑤1 ⋅ P 𝐮𝑤1 ∣ 𝐯𝑤2 ⋅ P 𝐮𝑤3 ∣ 𝐯𝑤2 ⋅ P 𝐮𝑤2 ∣ 𝐯𝑤3 ⋅ P 𝐮𝑤2 ∣ 𝐯𝑤3 ⋅ …
+center at 𝑤1 center at 𝑤2 center at 𝑤3
+𝑃(𝑜 ∣ 𝑐) = 𝑒𝐮𝑜⋅𝐯𝑐
+σ𝑤∈𝑉 𝑒𝐮𝑤⋅𝐯𝑐
+
+Example: Skip-Gram and 𝜃
+Suppose:
+𝑉 = dog, cat, run
+Embedding Dimension: 𝑑 = 3
+Parameter: 𝜃 contains all word vectors
+Word Center Vector
+𝐯
+Context Vector
+ 𝐮
+dog 0.2, 0.5, −0.1 0.3, −0.2, 0.4
+cat 0.1, 0.6, −0.2 0.4, −0.1, 0.3
+run −0.5, 0.2, 0.8 −0.3, 0.1, 0.7
+We thus have 𝜃 = 2 ⋅ 𝑉 ⋅ 𝑑 = 18 total parameters.
+These vectors are 
+derived through training:
+This increases the probability of context words that 
+actually appear near each center word in the corpus.
+Gradient descent to iteratively adjust 
+𝜃, maximizing the log-likelihood.
+These numbers are initially random, then 
+adjusted through training to match the corpus.
+
+Example: Skip-Gram and 𝜃 II
+What is the probability of “cat” appearing in the context of center word “dog”?
+𝑃 𝐮𝑐𝑎𝑡 ∣ 𝐯𝑑𝑜𝑔 = 𝑒𝐮𝑐𝑎𝑡⋅𝐯𝑑𝑜𝑔
+σ𝑤∈𝑉 𝑒𝐮𝑤⋅𝐯𝑑𝑜𝑔
+𝑒𝐮𝑐𝑎𝑡⋅𝐯𝑑𝑜𝑔 = 𝑒 0.4,−0.1,0.3 ⋅ 0.2,0.5,−0.1 = 𝑒0.08−0.05−0.03 = 1
+෍
+𝑤∈𝑉
+𝑒𝐮𝑤⋅𝐯𝑑𝑜𝑔 = 𝑒𝐮𝑑𝑜𝑔⋅𝐯𝑑𝑜𝑔 + 𝑒𝐮𝑐𝑎𝑡⋅𝐯𝑑𝑜𝑔 + 𝑒𝐮𝑟𝑢𝑛⋅𝐯𝑑𝑜𝑔
+Candidate context:
+All possible word contexts:
+= 𝑒0.06−0.10−0.04 + 1 + 𝑒−0.06+0.05−0.07
+= 0.9231+ 1 +0.9231
+= 2.8462
+𝑃 𝐮𝑐𝑎𝑡 ∣ 𝐯𝑑𝑜𝑔 = 1
+2.8462 ≈ 0.3513
+With current parameters 𝜃, the model assigns 35% 
+probability to “cat” appearing in “dog’s” context.
+
+Example: Skip-Gram and 𝜃 III
+What is the relationship to the full objective ℒ 𝜃 ? 
+ℒ 𝜃 = P 𝐮cat ∣ 𝐯dog ⋅ P 𝐮dog ∣ 𝐯cat ⋅ P 𝐮run ∣ 𝐯cat ⋅ P 𝐮cat ∣ 𝐯run
+center at dog center at cat center at run
+𝑉 = dog, cat, run
+Recall, ℒ 𝜃  is the product of individual probabilities for every (context, center) pair in the corpus. 
+
+How Training Adjusts θ
+Goal: Find 𝜃 that maximizes ℒ 𝜃  (or equivalently, logℒ 𝜃 ).
+Process:
+• Compute current ℒ 𝜃  using all corpus pairs
+• If a pair like (walked, dog) appears in corpus but has low probability, adjust 𝜃 to
+• Increase 𝐮walked ⋅ 𝐯dog
+• This makes 𝐮walked and 𝐯dog more aligned
+• Repeat for millions of pairs, incrementally improving 𝜃 to increase ℒ 𝜃  (using gradient descent).
+Words appearing in similar contexts (e.g., “dog” and “cat” both with “adopted”) end up with similar 𝐯 
+vectors because learned embeddings capture semantic similarity.
+After training, discard 𝐮word or average with 𝐯word.
+
+Word2Vec: Bringing It All Together
+Similarity ranges from:
+ −1: exactly opposite,  0: orthogonality,  1: exactly the same.
+Word2Vec (Mikolov et al., 2013) is a practical algorithm for learning 
+word embeddings that implements the Skip-gram objective with 
+computational optimizations. 
+Core Algorithm: Skip-Gram
+• Given center word → predict context words
+• Learns embeddings 𝐯w that capture distributional semantics
+Possible Optimizations (These make training 
+feasible on large corpora (billions of words):
+• Negative Sampling: Instead of full softmax 
+over 𝑉  words, sample a few "negative" 
+examples (~5-20) (words not in the context).
+• Subsampling: Down-weight very frequent 
+words ("the", "a", "is")
+Word2Vec was revolutionary:
+• Simple, efficient, and scalable
+• Produced high-quality embeddings that capture semantic and syntactic relationships
+• Made word embeddings accessible and practical for NLP applications
+• Famous for capturing analogies: king - man + woman ≈ queen
+Pre-trained embeddings:
+• Can download Word2Vec embeddings trained on Google News (3 billion words)
+• Use immediately without training: plug-and-play for downstream tasks
+
+Visualizing Word Embeddings
+Similar words group together spatially 
+(semantic clustering)
+Multiple relationship types captured:
+• Semantic: dog, cat, puppy, kitten 
+(pets)
+• Geographic: Paris, London, 
+Rome, Berlin (cities)
+• Grammatical: fast, faster, fastest 
+(comparatives)
+• Gender: king/queen, 
+man/woman, actor/actress
+High-dimensional embeddings can 
+be projected to 2D for visualization 
+(using techniques like PCA or t-
+SNE).
+The exact 2D positions are not 
+meaningful, but relative distances 
+and clusters are informative.
+
+Limitations of Simple Word Embeddings
+Similarity ranges from:
+ −1: exactly opposite,  0: orthogonality,  1: exactly the same.
+Problem Solution How It Helps
+No context Contextualized embeddings 
+BERT, ELMo, GPT
+Different vector for each word occurrence based 
+on surrounding context 
+Fixed Vocabulary Subword tokenization (BPE, 
+WordPiece, SentencePiece)
+Break unknown words into known subword 
+pieces
+No 
+Compositionality
+Contextualized Models with 
+attention
+Model interactions between words to represent 
+phrases and sentences
+Modern models (like 
+Transformers) address all three 
+limitations simultaneously 
+using subword tokenization, 
+contextualized representations, 
+and attention mechanisms.
+1. No Context Sensitivity: Each word has a single fixed vector 
+regardless of context
+• “bank” (river) vs “bank” (financial institution) → same vector
+• “bat” (animal) vs “bat’ (baseball equipment) → same vector
+ 2.Fixed Vocabulary: Cannot handle out-of-vocabulary (OOV) words
+• Unseen words have no embedding: model trained on 
+vocabulary 𝑉
+• No representation for typos, rare words, new terms
+3. No Compositionality: Unclear how to 
+represent multi-word expressions
+• How to get embedding for “New 
+York” from “New” + “York”?
+• Idioms like “kick the bucket” ≠ sum 
+of parts
+
+Summary
+1. Language Models: Assign probabilities to word sequences
+2. N-grams: Use Markov assumption to make estimation tractable
+3. Smoothing: Handle unseen events (critical for larger n)
+4. Perplexity: Intrinsic evaluation metric (lower is better)
+5. Word Embeddings: Dense vectors capture semantic similarity
+6. Distributional Semantics: “You shall know a word by the company it keeps”
+• Larger 𝑛 → better modeling, but more sparsity
+• Higher dimensions → more expressivity, but harder to train
+• Simple methods (𝑛-grams) still useful in many applications
+Key Concepts
+Trade-offs

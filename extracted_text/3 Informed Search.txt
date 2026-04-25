@@ -1,0 +1,413 @@
+Informed Search
+
+Uniformed Search vs. Informed Search
+goal
+𝒈 𝒏
+start 𝑛
+𝒉 𝒏
+What we know with uninformed search:
+• 𝒈 𝒏 : path cost from start to state 𝑛.
+• Successor states
+With Informed search, we know:
+• All properties from uninformed search
+• 𝒉 𝒏 : a heuristic path cost from 𝑛 to the goal.
+What if we had some guidance 
+about which direction to search?
+
+Using the Heuristic
+goal
+𝒈 𝒏
+start 𝑛
+𝒉 𝒏′
+Recall with uniform-cost search:
+• We store potential next states with a priority queue
+• Expand the state with the smallest “first-half-cost”: 𝒈 𝒏 𝒉 𝒏  is a “second-half-cost”
+How can we use 𝒉 𝒏 ?
+𝑛′′
+𝑛′
+𝒉 𝒏′′
+𝒄𝒐𝒔𝒕 𝒏, 𝒏′′
+Goal: speed up search using 
+domain knowledge.
+
+How does UCS proceed?
+Problem: Visit too many nodes, some clearly out of the question.
+Visualizing UCS vs. A*
+A Classic Example
+Straight-line Distances to Bucharest
+Recall, it minimizes 𝒈 𝒏 .
+
+Straight-line Distances to Bucharest
+Approach: Choose smallest ℎ 𝑛
+Arad → Sibiu → Rimnicu Vilcea → Pitesti
+Attempt: Greedy Best-First
+
+
+Greedy Best-First
+Explore the grid expanding node 
+with shortest distance to goal.Complete?
+Optimal?
+Start
+ Goal
+Optimal path
+*assuming no cycles
+Issue: Greedy Best-First ignores path 
+gets lured by promising ℎ 𝑛  heuristic 
+values and does not account for cost 
+to reach those nodes: 𝑔 𝑛 .
+
+Approach: Expand smallest 𝑔 𝑛 + ℎ 𝑛
+A* Search By Example
+Straight-line Distances to Bucharest
+140 + 253 = 393
+75 + 374 = 449
+118 + 329 = 447
+239 + 176 = 415
+220 + 193 = 413
+366 + 160 = 526
+317 + 100 = 417
+418 + 0 = 418
+455 + 160 = 615
+450 + 0 = 450
+
+Node ℎ(𝑥)
+S 7
+A 3
+B 4
+C 8
+D 4
+E 3
+F 2
+G 0
+Quick Example
+𝑆
+A B C
+For A* choose minimal 𝑓(𝑛) = 𝑔 𝑛 + ℎ 𝑛
+4 + 3 = 7 3 + 4 = 7 7 + 8 = 15
+G
+8 + 0 = 8
+C D
+5 + 8 = 13 4 + 4 = 8
+E
+6 + 3 = 9
+
+
+Heuristic Properties: A Roadmap
+Admissibility → Ensures A* finds optimal solutions 
+Without this, A* may return suboptimal paths
+A* is only as good as its heuristic. But what makes a “good” heuristic?
+Goal: Design / select heuristics that make A* both optimal and efficient.
+We consider three key properties of heuristics:
+Dominance → Helps us choose between multiple admissible heuristics 
+Given several valid heuristics, which one performs best?
+Consistency → Enables more efficient search 
+Allows A* to avoid redundant work
+
+Admissible (Global) Heuristics
+Under what conditions is A* guaranteed to find optimal solutions?
+Interpretation: ℎ 𝑛  is admissible if it never overestimates the cost to reach the destination node.
+Definition. Heuristic ℎ 𝑛  is admissible if:
+0 ≤ ℎ 𝑛 ≤ ℎ∗ 𝑛 for all 𝑛 where ℎ∗ 𝑛  is the true cost from 𝑛 to goal.
+Examples:
+Straight-line distance for route finding
+Manhattan distance for grid worlds
+Number of misplaced tiles for 8-puzzle
+Minimum Spanning Tree in the Traveling Salesperson problem.
+Number of attacking pairs: in the 8-Queens problem.
+Max(horizontal distance, vertical distance)
+Random numbers
+Actual driving time (overestimates driving 
+distance)
+Examples?
+
+
+A* Proof of Optimality
+Theorem. A*, with admissible heuristic, will find an optimal solution.
+Proof by Contradiction.
+Then some first node 𝑛 on the optimal path remains unexpanded with 𝑓(𝑛) ≥ 𝑪 > 𝐶∗ (otherwise A* 
+would have expanded 𝑛 before the suboptimal goal.
+Suppose the optimal path has cost 𝐶∗, but A* returns a suboptimal 
+path with cost 𝑪 > 𝐶∗.
+Recall, 𝑓 𝑛  is the path cost through 𝑛 to 
+a goal (and how A* decides which node to expand next).
+𝑓 𝑛 = 𝑔 𝑛 + ℎ 𝑛
+= 𝑔∗ 𝑛 + ℎ 𝑛 Since 𝑛 is on an optimal path
+≤ 𝑔∗ 𝑛 + ℎ∗ 𝑛 Admissability: ℎ 𝑛 ≤ ℎ∗ 𝑛  
+= 𝐶∗ By definition, 𝐶∗ = 𝑔∗ 𝑛 + ℎ∗ 𝑛
+However, our assumption was 𝑓 𝑛 > 𝐶∗. 
+Contradiction.
+Let 𝑔∗ 𝑛  be the cost of the optimal path from start to 𝑛 and ℎ∗ 𝑛  be the cost of the optimal path 
+from 𝑛 to the goal.
+𝒈∗ 𝒏
+𝑆 𝑛
+𝒉∗ 𝒏
+… 𝐺…
+Optimal path: 𝐶∗ = 𝑔∗ 𝑛 + ℎ∗ 𝑛
+Suboptimal path: 𝑪 > 𝐶∗
+𝑝
+…
+
+Put the start state 𝑆 on the priority queue called OPEN.
+Repeat until OPEN is empty,
+ Remove from OPEN and add to CLOSED a node 𝑛 for which 𝑓 𝑛 = 𝑔 𝑛 + ℎ 𝑛 is minimum.
+ If 𝑛 is a goal node
+  Exit (recover path by tracing back pointers from 𝑛 to 𝑆)
+ Expand 𝑛, generating all successors and attach to pointers back to 𝑛.
+ For each successor 𝑛′ of 𝑛:
+ If 𝑛′ is not already on OPEN or CLOSED:  # New node found
+ℎ 𝑛′ = 𝑐𝑜𝑚𝑝𝑢𝑡𝑒 𝑛′, 𝑔𝑜𝑎𝑙
+𝑔 𝑛′ = 𝑔 𝑛 + 𝑐 𝑛, 𝑛′
+𝑓 𝑛′ = 𝑔 𝑛′ + ℎ 𝑛′
+ Place 𝑛′ on OPEN.
+ Else If 𝑛′ is already on OPEN or CLOSED:
+If 𝑔(𝑛′) is lower for the new version of 𝑛′.
+Redirect pointers backward from 𝑛′ along path yielding lower 𝑔(𝑛′).
+If (𝑛′ is already on OPEN) then update 𝑛′ on OPEN;
+else add 𝑛′ to OPEN
+Exit with failure
+States already expanded
+Full A* Algorithm
+
+Heuristic Dominance
+We have considered how different algorithms trade off optimality, completeness, and efficiency. But 
+how can we evaluate the effectiveness of our heuristic?
+That is, if we are using A*, how do we choose between different admissible heuristics?
+Definition. Heuristic ℎ2 is said to dominate heuristic ℎ1 if both ℎ1 and ℎ2 are admissible 
+and for all nodes 𝑛:
+ℎ1 𝑛 ≤ ℎ2 𝑛
+Recall, admissible heuristics are always optimistic 
+(underestimate true cost):
+ℎ1 𝑛 ≤ ℎ2 𝑛 ≤ ℎ3 𝑛 ≤ ⋯ ≤ ℎ∗ 𝑛
+where ℎ∗ 𝑛  is the true optimal cost to goal.
+Having dominant heuristics is important!
+More accurate estimates → better guidance → fewer wrong paths explored
+→ a dominating heuristic gives us estimates closer 
+to the real costs (that are still admissible).
+
+Heuristic Dominance: Example
+8-puzzle: may only slide tiles into the 
+empty space (no jumping or diagonal 
+moves).
+Example State: 𝑛
+1 2 3
+4 5 6
+7 8
+Goal State
+Challenge: Find the minimum sequence 
+of moves to reach the goal state from 
+any given starting configuration.
+3 1 2
+7 5 6
+8 4
+ℎ1: (Misplaced tiles): Count tiles not in goal 
+position
+ℎ2: (Manhattan distance): Sum of distances each 
+tile must move
+ℎ3: (Manhattan + Linear Conflict):
+Manhattan distance + 2 ⋅ number of linear conflicts
+Two tiles are 
+in linear 
+conflict if:
+• They are in the correct row/column.
+• A pairwise comparison indicates they are not in 
+correct relative order.
+• Each conflict adds 2 to the heuristic indicating the 
+minimum moves needed to resolve the conflict.
+ℎ1 𝑛 = 1 + 1 + 1 + 1 + 0 + 0 + 1 + 1 = 6
+ℎ2 𝑛 = 1 + 1 + 2 + 1 + 0 + 0 + 1 + 2 = 8
+ℎ3 𝑛 = 8 + 2 ⋅ 𝑟𝑜𝑤1 + 𝑟𝑜𝑤2 + 𝑟𝑜𝑤3 + 𝑐𝑜𝑙1 + 𝑐𝑜𝑙2 + 𝑐𝑜𝑙3
+= 8 + 2 ⋅ 1 + 1 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0
+= 12 (Observe no column conflicts here: multiple tiles in 
+each column are in the goal column but out of order.)
+ℎ3 provides the tightest estimate (6 ≤
+9 ≤ 12), meaning A* with ℎ3 would 
+expand fewer nodes and reach the goal 
+more efficiently than with ℎ2 or ℎ1.
+
+From Admissible to Consistent
+Admissibility
+Consistency
+A global promise about the goal
+Never overestimate the cost to reach the goal.
+But this says nothing about the journey along the way...
+What if we made a promise about every single step?
+
+A graph-search (without reopening) generates an optimal 
+solution if ℎ(𝑛) is a consistent:
+▪ ℎ(𝑛) is consistent (or monotonic) if for every node 𝑛 
+and for every successor node 𝑛′ of 𝑛:
+𝑛
+𝑛’
+𝑑
+ℎ(𝑛)
+𝑐(𝑛, 𝑛’) ℎ(𝑛’)
+ℎ(𝑛) is consistent → ℎ(𝑛) is admissible
+Consistency (Local Optimism)
+(This is a form of triangle inequality.)
+Example. Euclidean distance heuristic.
+It represents the shortest possible path between two points, so the direct distance to the goal is always less than 
+or equal to any indirect route through neighboring nodes.
+With a consistent heuristic, the first time we reach a state, it will be on the optimal path. So we never have to re-
+add a state to the frontier (or check the CLOSED list).
+(An inconsistent heuristic may end up with multiple paths reaching the same state.)
+ℎ(𝑛) ≤ 𝑐(𝑛, 𝑛’) + ℎ(𝑛’)
+
+Inconsistent Example
+Now imagine you are at Furman main entrance with 12 miles using surface roads to your 
+destination: Cook Out.
+You drive 2 miles to reach Timmons gate. From the Timmons gate, GPS discovered a more 
+direct highway access that significantly shortens the remaining distance to Cook Out (only 
+8 miles left).
+ℎ(𝑛) ≤ 𝑐(𝑛, 𝑛’) + ℎ(𝑛’)
+Consider a situation where your GPS estimates distance to destination based on old road information.
+𝑀 𝐶𝑂
+𝑇
+𝟏𝟐
+𝟖𝟐
+Do we have consistency? 12 ≤ 2 + 8
+?
+No.
+
+A* Optimality
+Tree-search has no CLOSED list, allowing the same state to be expanded multiple times via different paths. 
+Inefficient, but guarantees finding the optimal solution with any admissible heuristic.
+Graph-search with reopening maintains CLOSED but checks it for cheaper paths. If found, it updates costs and re-
+opens the node. This safety net means admissibility alone suffices.
+Graph-search without reopening skips CLOSED nodes entirely, assuming the first path found is optimal. This is only 
+true with a consistent heuristic, which ensures 𝑓-values never decrease along any path.
+A* Version Requirement for Optimality Notes
+Tree-search Admissible heuristic No CLOSED list—can re-expand 
+states.
+Graph-search with reopening Admissible heuristic Checks CLOSED nodes for 
+cheaper paths.
+Graph-search without reopening Consistent heuristic Skips CLOSED nodes entirely.
+Bottom line: Consistency enables efficiency; no reopening is needed when you are guaranteed 
+the first path is best.
+
+A* Avoids the Best-First Trap
+Start
+ Goal
+
+Brief A* Analysis
+Time complexity:
+Space complexity:
+𝑂 𝑏𝑑 where:
+• 𝑏 is the branching factor and
+• 𝑑 the depth of the optimal solution.
+However, with a good heuristic, A* can, in practice, be 𝑂 𝑏𝜖⋅𝑑  
+where 0 < 𝜖 < 1 represents how much the heuristic can reduce 
+the search space.
+𝑂 𝑏𝑑
+A* consumes lots of memory: 𝑂 #𝑠𝑡𝑎𝑡𝑒𝑠  (OPEN, CLOSED, back-pointers). Thus, 
+may run out on large problems.
+If the heuristic can be consistent, we earn space efficiency by not re-adding nodes 
+to the open list (by re-opening CLOSED nodes).
+
+IDA*
+IDA*: incrementally increasing the maximum 𝑓-value 𝑓 𝑛 = 𝑔 𝑛 + ℎ 𝑛
+We have encountered the problem of running out of memory before. Our solution to meld 
+BFS and DFS was iterative deepening.
+Time complexity:
+Space complexity:
+𝑂 𝑏𝑑 where:
+• 𝑏 is the branching factor and
+• 𝑑 the depth of the optimal solution.
+𝑂 𝑏𝑑
+Complete?
+Optimal?
+with an admissible heuristic.
+(Just as A*)
+stores path like DFS, but re-explores.
+
+Beam Search
+A* is optimal but uses exponential memory. IDA* is memory efficient but may re-explore nodes. What 
+if we need something in between?
+Complete?
+Optimal?
+Motivation: Reduce memory usage by limiting frontier size while allowing our heuristic to guide us.
+Local Beam Search
+• The frontier is a priority queue with fixed size beam width 𝑘.
+• Expand all 𝑘 nodes simultaneously
+• Keep best 𝑘 successors for next iteration
+Stochastic Beam Search
+• Beam width 𝑘
+• Selection of 𝑘 successors is 
+probabilistic.
+• All successors are assigned 
+probabilities based on 
+‘goodness’.
+• 𝑘 are then selected according 
+to that distribution.
+• Helps avoid getting trapped in local 
+minima by introducing randomness 
+into node selection
+Can discard (optimal) paths by 
+keeping only locally promising nodes
+Space?
+Time?
+𝑂 𝑘
+𝑂 𝑘 ⋅ 𝑑
+
+Beyond Optimal Search: Weighted A*
+What if optimality is not worth the computational cost? Sometimes “good enough” solutions found 
+quickly are better than optimal solutions found slowly.
+Weight 𝑤 is a tunable parameter that can emphasize the heuristic more heavily:
+• 𝑤 = 1 : balanced between actual cost 𝑔 𝑛  and heuristic ℎ 𝑛
+• 𝑤 → ∞: making search more "optimistic" about reaching the goal by emphasizing ℎ 𝑛
+Weighted A*: 𝑓 𝑛 = 𝑔 𝑛 + 𝑤 ⋅ ℎ 𝑛 where 𝑤 > 1
+Standard A*
+Greedy Best-First
+Complete?
+Optimal?
+Best-First and A* are complete; we are still using an admissible heuristic.
+Space?
+Time?
+𝑂 𝑏𝑑
+𝑂 𝑏𝑑
+Solution cost is guaranteed to be ≤ 𝑤 ⋅ 𝐶∗where C* is optimal cost
+Often faster than A* in practice.
+Used in real-time systems, video games, robotics.
+Often expands significantly fewer nodes in practice as 𝑤 increases.
+
+Beyond Optimal Search: Anytime Algorithms
+What if we do not know how much time we have to search?
+Games, online planning, real-time decision making
+Idea:
+• Start with a quick, possibly suboptimal solution
+• Improve solution quality over time if more time is available
+• Stop anytime and return current best solution
+• Graceful degradation: longer time → better solutions
+Common in game environments due to issues with frame rate.
+Goal: Always have 
+some answer ready.
+Properties
+• Interruptible: Can stop and return solution at any time
+• Monotonic improvement: Solution quality never decreases
+• Diminishing returns: Biggest improvements happen early
+Anytime A* Approaches
+• With Weighted A*, start with high 𝑤, gradually reduce
+• Iterative deepening with increasing time/space limits
+• For beam search, increase beam width over time
+
+Practical Consideration: When To Use?
+Algorithm When to Use
+Greedy Best-First
+• Quick approximate solutions
+• Good heuristic available
+• Optimality not important
+A*
+• Need optimal solution
+• Have good admissible heuristic
+• Memory is available
+IDA*
+• Need optimal solution
+• Memory is limited
+• Heuristic is good (low branching factor)
+Beam Search
+• Large search spaces
+• Optimal solution not required
+• Time/memory constraints
+Anytime Algorithms
+• Uncertain time constraints
+• Need solution quickly, improve if time allows
+• Real-time systems (games, robotics)

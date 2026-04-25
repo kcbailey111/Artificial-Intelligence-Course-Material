@@ -1,0 +1,702 @@
+Advanced Search 
+(Optimization)
+
+Search vs. Optimization
+New setting: Optimization
+• States 𝑠 have values 𝒇(𝑠)
+Before, the goal was simply to find a path from the start state to the goal state using 
+search strategies such as uninformed methods or informed approaches like A*.
+Challenge: Too many states for uninformed and informed approaches
+• Cannot enumerate all paths
+• Function may not be differentiable (cannot use gradient descent)
+Goal: Find 𝑠 with optimal value 𝒇(𝑠)
+• Sometimes we maximize 𝒇(𝑠)(e.g., satisfaction, profit)
+• Sometimes we minimize 𝒇(𝑠)(e.g., cost, distance)
+
+
+𝑛-Queens
+Classic puzzle: Place 𝑛 queens on an 𝑛 × 𝑛 chessboard so that no two 
+queens attack each other (same row, column, or diagonal)
+State: Configuration of the board (position of all queens)
+Objective function 𝒇(𝑠): Number of non-attacking queen pairs
+Goal: Maximize 𝒇(𝑠). Ideally, with all combinations: 𝒇 𝑠 =
+𝑛 𝑛−1
+2 .
+nano banana
+For large 𝑛 (e.g., 𝑛 = 1000), the search space becomes 
+intractable; optimization methods will scale much better 
+This problem can be solved using traditional search methods. 
+However, consider when 𝑛, the number of queens and 
+number of sides on the chessboard, becomes large.
+Ug!
+Why optimization instead of search?
+
+Traveling Salesperson Problem (TSP)
+Problem: Given a complete, weighted graph 𝐺 = (𝑉, 𝐸), find a 
+Hamiltonian cycle that minimizes total distance
+State: A particular cyclic path (ordered list of nodes, e.g., A-B-C-D-E-A)
+Objective function 𝒇(𝑠): Total weight of the path (e.g., total miles)
+Goal: Minimize 𝒇(𝑠)
+Ug!
+Number of possible paths in a complete weighted graph where every 
+permutation of cities gives a valid tour : 
+𝑛−1 !
+2  .
+Why optimization instead of search?
+• Visits each node exactly once
+• Returns to the initial node
+• Minimizes total distance
+For 𝑛 = 10 cities, there are ~181,000 tours; 𝑛 = 20 → ~60 quintillion.
+• Even with good heuristics (e.g., MST), A* does not scale 
+due to exponential state space and memory requirements
+• We only need the best tour, not the path to find it
+
+Boolean Satisfiability
+Problem: Given a Boolean formula in CNF, find a satisfying assignment
+State: Assignment to variables (e.g., A=T, B=F, C=T, D=T, E=T)
+Objective function 𝒇(𝑠): Number of satisfied clauses
+Goal: Maximize 𝒇(𝑠) (MAX-SAT: satisfy the maximum number of clauses)
+2𝑛 possible assignments of true / false.
+For hard or unsatisfiable instances, search may fail to 
+quickly find a solution, but optimization techniques can 
+still produce good assignments by maximizing satisfied 
+clauses even when a perfect solution does not exist.
+Why optimization instead of search?
+Example
+(A ∨ ¬B ∨ C) ∧
+(¬A ∨ C ∨ D) ∧
+(B ∨ D ∨ ¬E) ∧
+(¬C ∨ ¬D ∨ ¬E) ∧
+(¬A ∨ ¬C ∨ E)
+
+Hill Climbing
+Basic algorithm:
+• Start at one state,
+• Move to a neighbor with a better 𝒇(𝑠) value,
+• Repeat until no neighbors have better 𝒇(𝑠) value.
+Critical Question: How do we define neighbor?
+• Neighbors refer to states reachable by a single action from current state
+• In optimization, we have more freedom in defining actions than in path-finding
+• Path-finding: actions often dictated by problem structure (roads, legal moves)
+• Optimization: we choose what counts as an action (which queen to move? how to modify 
+tour?)
+• This design choice significantly impacts algorithm performance
+• Requires careful consideration of tradeoffs
+
+Defining Neighbors: 𝑛-Queens
+Approach: Small changes to current state
+• Look at the most-conflicting column (if a tie, choose the rightmost column)
+• Move queen in that column vertically to a different location
+Result: Neighborhood contains 𝑛 − 1 states 
+(one for each possible vertical position)
+… Neighborhood of 𝑠
+Objective function 𝒇(𝑠): 
+Number of non-attacking 
+queen pairs
+𝒇 𝑠 = 6 
+𝒇 𝑠 = 6 
+𝒇 𝑠 = 5 
+
+Defining Neighbors: Traveling Salesperson Problem
+Approach: 2-change operation
+• Select two edges to remove
+• Flipping the edges between the removed edges
+• Reconnect the tour to the flipped edges
+Original tour: A-B-C-D-E-F-G-H-A
+A
+B
+C
+D
+E
+F
+G
+H(B,C) and (E,F)
+C-D-E → E-D-C
+Our new tour.
+Select two edges to remove:
+Reverse the edges in-between:
+Reconnect the tour with the reversed elements:
+A-B    C-D-E    F-G-H-A
+A-B    E-D-C F-G-H-A
+A-B-E-D-C-F-G-H-A
+𝒇(𝑠): Total weight of the path
+
+Defining Neighbors: SAT
+Approach: Flip one variable assignment
+Example
+(A ∨ ¬B ∨ C) ∧
+(¬A ∨ C ∨ D) ∧
+(B ∨ D ∨ ¬E) ∧
+(¬C ∨ ¬D ∨ ¬E) ∧
+(¬A ∨ ¬C ∨ E)Example:
+Starting state (A=T, B=F, C=T, D=T, E=T)
+Resulting Neighborhood:
+(A=F, B=F, C=T, D=T, E=T)
+(A=T, B=T, C=T, D=T, E=T)
+(A=T, B=F, C=F, D=T, E=T)
+(A=T, B=F, C=T, D=F, E=T)
+(A=T, B=F, C=T, D=T, E=F)
+𝒇(𝑠): Number of satisfied clauses
+𝒇 𝑠 = 4
+𝒇 𝑠 = 4
+𝒇 𝑠 = 4
+𝒇 𝑠 = 5
+𝒇 𝑠 = 4
+𝒇 𝑠 = 4
+
+Hill Climbing: Tradeoffs
+What is a neighbor?
+Neighborhood too small?
+Algorithm gets stuck in local optima
+Vaguely: for a given problem structure, neighbors are states that
+can be produced by a small change.
+How to pick next state?
+ Greedy: Choose best neighbor
+Neighborhood too large?
+Algorithm is inefficient (too many neighbors to evaluate)
+When to terminate?
+When no neighbor has better value than current state
+The Tradeoff!
+
+Hill Climbing Algorithm
+Pick initial state 𝑠
+Loop:
+ Pick 𝑡 ∈ neighbors(𝑠) with the best 𝑓(𝑡)
+ If 𝑓(𝑡) is not better than 𝑓(𝑠) THEN break
+ 𝑠 ← 𝑡
+return 𝑠
+What could have happened?
+We may have found a “local 
+optimum,” not a “global optimum”
+Local optima!
+The algorithm stops when no neighbor is better
+
+Hill Climbing: The Local Optima Problem
+Our space is a complex landscape 
+with multiple optima.
+Our goal is to find the global optimum.
+But we can only see locally: fog 
+obscures everything except 
+immediate neighbors
+The result is that we climb to a local 
+optimum and stop, even though a global 
+optimum exists elsewhere.
+What is actually going onWhat we see
+𝑓 𝑠
+Global optimum: 
+what we want to find
+𝑠
+𝑓 𝑠
+𝑠
+
+Hill Climbing: Escaping Local Optima
+𝑓 𝑠
+𝑠
+𝑓 𝑠
+𝑠
+Done?
+Where do I go?
+Strategy 1: Random Restarts
+• When stuck, pick a random new starting point
+• Run hill climbing again
+• Repeat 𝑘 times, return best result
+Strategy 2: Stochastic Hill Climbing
+• Transform 𝑓 𝑠  into a probability distribution 
+over neighbors, with higher 𝑓 𝑠  values 
+receiving higher probability
+• Does not always pick the best neighbor
+How do we escape Local optima?
+
+Questions
+A hill climbing algorithm is solving a scheduling problem. After 50 iterations, it finds a solution with 𝑓(𝑠) = 87. 
+After 500 more iterations, we still have 𝑓(𝑠)  =  87. What is the BEST next step?
+You are using hill climbing to solve a problem. The algorithm stops at a state where 𝑓(𝑠) = 15, and all 
+neighbors have 𝑓(𝑡) ≤ 15. Which of the following is TRUE?
+A. You have definitely found the global optimum
+B. You have definitely found a local optimum, but it might also be the global optimum
+C. The algorithm failed because it didn't improve the solution 
+D. You need to restart with a different objective function
+E. All neighbors must have 𝑓(𝑡) = 15 (no variation)
+A. Declare the problem unsolvable and try a different algorithm
+B. Continue running hill climbing longer—it just needs more time
+C. Use random restart: pick a new random initial state and run hill climbing again
+D. Reduce the neighborhood size to find smaller improvements
+E. Increase the neighborhood size to explore more options 
+
+
+Simulated Annealing
+Inspiration: Annealing strengthens metal by heating it and cooling it 
+slowly, relieving internal stresses and creating a uniform crystal structure.
+𝑠 := choose initial state
+best := 𝑠       # track best observed solution
+T := 1     # temperature; this could be larger
+K := 1     # iterations
+for k = 0 through K:
+    T := T ⋅ 0.99            # cool down
+    𝑡 := neighbor(𝑠)       # pick a random neighbor 
+    if 𝑓 𝑡 > 𝑓(𝑠), then
+       𝑠 := 𝑡
+        if 𝑓 𝑡 > 𝑓(𝑠), then best := 𝑡
+    else with probability 𝑒− 𝑓 𝑠 −𝑓 𝑡
+𝑇  do 𝑠 := 𝑡 
+return best
+wikihow.com
+Algorithmic analog: Allow “bad” moves early (high temperature) then 
+cool by becoming increasingly selective over time; eventually behaving 
+like hill climbing (low temperature).
+The Probability Formula:
+• Borrowed from physics (Boltzmann 
+distribution in thermodynamics)
+• Gives desired properties: gradual 
+transition from exploration to 
+exploitation
+• The exponential decay naturally 
+handles the temperature cooling
+# worse, 
+but choose 
+anyway
+
+Simulated Annealing: Temperature Cooling Schedule
+How fast to decrease 𝑻?
+Too fast:
+ Becomes hill climbing
+ Gets stuck in local optima
+Too slow:
+ Takes too long to converge
+ Wasteful exploration
+Common approach:
+  Geometric decay or something similar
+  Commonly: 𝑇𝑡+1 = 0.99 ⋅ 𝑇𝑡
+Phase Temperature Acceptance of 
+Worse Moves 
+Goal 
+Early High Frequent Exploration
+Middle Moderate Occasional Refinement
+Late Low Rare Convergence
+Evolution 
+over time
+
+Question
+Which of the following is likely to give the best cooling schedule for simulated annealing?
+A. 𝑇𝑡+1 = 𝑇𝑡 ⋅ 1.25
+B. 𝑇𝑡+1 = 𝑇𝑡
+C. 𝑇𝑡+1 = 𝑇𝑡 ⋅ 0.8
+D. 𝑇𝑡+1 = 𝑇𝑡 ⋅ 0.001
+Temperate is increasing
+Temperate is constant
+Cools way too fast; basically, hill-climbing
+
+
+Questions
+Which of the following would be better to solve 
+with hill climbing rather than A* search?
+i. Finding the smallest set of vertices such 
+that every edge in the graph has at least 
+one endpoint in the set
+ii. Finding the fastest way to schedule jobs 
+with varying runtimes on machines with 
+varying processing power
+iii. Finding the fastest way through a maze
+Distinction
+• Use A* when: small branching 
+factor, want the path, good 
+heuristic exists
+• Use hill climbing when: huge 
+state space, only care about 
+final solution, can define 
+neighbors easily
+A*: Small branching factor, good heuristic (distance), 
+need the path itself
+Hill climbing: 2𝑛 state space (𝑛 vertices), no path 
+structure, unclear heuristic for A*;
+Start with valid set, remove vertices to improve
+Hill climbing: Large state space. 
+only care about final schedule
+Start random, swap 
+jobs/machines to improve
+For 𝑛 jobs and 𝑚 machines,
+𝑛! ⋅  𝑚𝑛 state space
+𝑛! : ordering of jobs on machines 
+affects completion time
+𝑚𝑛 : each job assigned to one of 
+𝑚 machines
+
+Genetic Algorithms
+
+Genetic Algorithms
+Inspiration: Biological Evolution Algorithmic Analog
+• Organisms encode genetic information in DNA
+• Beneficial traits help survival and reproduction
+• Population evolves toward better fitness over 
+generations
+• Encode solutions as “chromosomes”
+• Better solutions have higher “fitness”
+• Apply selection, crossover, and mutation 
+operations
+
+
+Genetic Algorithms: Biology 
+  Computer Science
+Biology CS Analog
+DNA/Chromosome String or array (state representation) 
+Gene Single element in array (e.g., position i) 
+Population Collection of candidate solutions
+Fitness Function Objective function value 𝒇(𝑠) 
+Generation Iteration of the algorithm: replace some or all of the old 
+population with new offspring
+Evolution Iterative improvement over generations 
+Operations
+Natural Selection Probabilistic selection based on 𝒇(𝑠): better fitness have 
+higher probability of reproducing
+Crossover/Recombination Swap/merge portions of two arrays 
+Mutation Randomly modify array element(s)
+
+Genetic Algorithm Pseudocode
+1. Let s₁, ..., sN be the current population
+2. Let pᵢ = f(sᵢ) / Σⱼf(sⱼ) be the reproduction probability
+3. for k = 1; k < N; k += 2:
+      parent1 = randomly pick according to pᵢ
+      parent2 = randomly pick another
+      Randomly select crossover point, swap substrings of
+         parents 1, 2 to generate children t[k], t[k+1]
+4. for k = 1; k ≤ N; k++:
+     Randomly mutate each position in t[k] with small
+       probability (mutation rate)
+5. New generation replaces old: {s} ← {t}. Repeat.
+# Probability 
+Distribution based on 
+fitness of individuals;
+Higher fitness → 
+higher chance of 
+being selected.
+# Crossover to create 
+a pair of children
+# Mutate: Possibly modify 
+each gene (position) of each 
+individual in the population 
+# Repeat the process with 
+the next generation 
+
+Example
+Problem: Schedule 5 courses (A, B, C, D, E) into 3 time 
+slots (Mon/Wed, Tue/Thu, Fri/Sat)
+• Each course is assigned to exactly one time slot; 
+multiple courses can share a slot
+• Students can only attend one course per time 
+slot
+Goal: Maximize the number of students who 
+can enroll in all their desired courses
+Student 
+Request
+# Students
+A, B, C 2
+A, B, D 7
+A, D, E 3
+B, C, D 4
+B, D, E 10
+C, D, E 5
+2 students want to take 
+courses A, B, and C
+Individual/Chromosome/State: Assignment of courses to time slots
+Encoding: 5-character string (one character per course)
+Character values: M (Mon/Wed), T (Tue/Thu), F (Fri/Sat)
+Character positions: A = 1, B = 2, C = 3, D = 4, E = 5
+Example chromosome: MMFTM
+Population: Collection of chromosomes
+• A → Mon/Wed
+• B → Mon/Wed
+• C → Fri/Sat
+• D → Tue/Thu
+• E → Mon/Wed
+e.g. : { MMFTM, TTFMM, FMTTF, MTTTF }
+
+Example: Fitness Calculation
+What are we trying to optimize?
+Maximize the number of students who can take all their desired courses.
+What defines a valid solution for each student?
+Their requested courses must be scheduled in different time slots (no conflicts).
+How do we quantify solution quality?
+Count satisfied constraints (students who can enroll without conflicts).
+𝑓(𝑐ℎ𝑟𝑜𝑚𝑜𝑠𝑜𝑚𝑒) = # students who can enroll without conflicts
+
+Example: Fitness Calculation
+Time Slots
+M, M, F 
+M, M, T 
+M, T, M 
+M, F, T 
+M, T, M 
+F, T, M
+𝑓(𝑐ℎ𝑟𝑜𝑚𝑜𝑠𝑜𝑚𝑒) = students who can enroll without conflicts
+𝑓 MMFTM = 4 + 5 = 9
+𝐴𝐵𝐶𝐷𝐸
+Constraint
+(Student Request)
+# Students
+A, B, C 2
+A, B, D 7
+A, D, E 3
+B, C, D 4
+B, D, E 10
+C, D, E 5
+Satisfied?
+No
+No
+No
+Yes
+No
+Yes
+Time Slots
+M, T, F 
+M, T, M 
+M, M, F 
+T, F, M
+T, M, F
+F, M, F
+Constraint
+(Student Request)
+# Students
+A, B, C 2
+A, B, D 7
+A, D, E 3
+B, C, D 4
+B, D, E 10
+C, D, E 5
+Satisfied?
+Yes
+No
+No
+Yes
+Yes
+No
+𝑓 MTFMF = 2 + 4 + 10 = 16
+
+Population and Parent Selection
+For an initial population, we can randomly 
+generate strings and calculate their fitness:
+Individual: 𝑠 𝑓(𝑠)
+MMFTM 9
+TTFMM 4
+FMTTF 19
+MTTTF 3
+෍ 𝑓 𝑠 = 35
+~%
+26
+11
+54
+9
+Just like Stochastic Hill Climbing, we:
+• Transform 𝑓 𝑠  into a probability distribution over 
+individuals, with higher 𝑓 𝑠  values receiving higher 
+probability
+• Does not always pick the best individual
+FMTTF is most likely to be selected 
+as a parent but is not guaranteed.
+Selecting Parents
+A parent is an individual from the current population that is 
+selected to contribute genetic material to create offspring 
+for the next generation.
+
+Crossover
+Parents MMFTM FMTTF
+Crossover is the operation of combining 
+genetic material from two parents to 
+create two children.
+This is the way for the genetic algorithm 
+to mix traits from different solutions to 
+explore new combinations.
+MMTTF FMFTMOffspring
+Crossover Point: Index 2
+
+Mutation
+Original MMFTM FMTTF
+Mutation is is the operation of 
+randomly modifying individual genes 
+(elements) of a chromosome.
+This is a way for a genetic algorithm 
+to introduce new genetic variation 
+and explore solutions beyond the 
+current population.
+MFFTM FMFMMMutated
+The mutation rate controls how often mutations 
+occur (in each position of an individual).
+Mutation Rate (𝜇) Behavior
+0.001 (too low) Rare 
+mutations 
+0.05 (good) Occasional 
+mutations 
+0.5 (too high) Frequent 
+mutations 
+Result
+Population lacks diversity, 
+converges too quickly 
+Maintains diversity, steady 
+improvement 
+Good solutions disrupted, 
+poor convergence 
+Convergence: When individuals in the population become highly 
+similar to each other and fitness values stabilize across generations.
+
+The Next Generation
+Individual: 𝑠 𝑓(𝑠)
+MMFTM 9
+TTFMM 4
+FMTTF 19
+MTTTF 3
+~%
+26
+11
+54
+9
+The Original Population
+Individual: 𝑠 𝑓(𝑠)
+FMFTT 11
+MMTTF 13
+MMTFF 4
+FTTTF 0
+~%
+39
+46
+14
+0
+selection, crossover, mutation
+෍ 𝑓 𝑠 = 28
+We want to improve with each generation, 
+but our next generation is worse!
+Average fitness dropped: 8.75 → 7
+Best fitness dropped: 19 → 13
+Total fitness dropped: 35 → 28
+One solution: Elitism! Always keep the best individual(s) from the previous generation; 
+we can modify the algorithm as:
+5. New generation replaces old: {s} ← {t}, except:
+       Keep the best k individuals from {s} in {t} (elitism)
+The Next Generation
+෍ 𝑓 𝑠 = 35
+
+Genetic Algorithms: Key Parameters and Variations
+Parameter / 
+Choice
+Options Recommendation
+Population size 20-200 Larger for complex 
+problems
+Mutation Rate 0.01-0.1 Start with 1/n (n = 
+chromosome length)
+Generations 100-10000 Run until fitness 
+plateaus
+Selection Proportional / 
+Rank / 
+Tournament
+Rank-based reduces 
+extreme fitness 
+effects
+Crossover Single-point / 
+Multi-point / 
+Uniform 
+Single-point is 
+standard, simple
+Elitism Yes / No always keep best 
+solution(s)
+Variation Description Benefit
+Elitism Keep best k 
+individuals from 
+previous generation
+Never lose best solution 
+found
+Rank-based 
+selection
+Order raw fitness 
+values and assign a 
+rank (1, 2, 3, …)
+Reduces influence of 
+extreme fitness values
+Multi-point 
+crossover
+Split at multiple 
+positions instead of 
+one
+Increases genetic mixing
+Adaptive 
+mutation rate
+Change μ over time 
+(high → low)
+More exploration early, 
+exploitation later
+Tournament 
+selection
+Pick best from 
+random subset
+Simpler than probability 
+calculation 
+Choosing Variations
+Elitism (Recommended): ensures best solution is never lost
+Rank-based selection: Useful when fitness values vary widely
+Adaptive parameters: requires tuning and experimentation
+• Could also train a neural network to recommend parameters
+
+Genetic Algorithms: Challenges
+Challenge Problem Solution Approaches
+Encoding design How to represent solutions 
+as chromosomes?
+Design so crossover is meaningful;
+Ensure mutations maintain validity
+Premature 
+convergence
+All individuals become 
+identical early
+Higher mutation rate;
+Use niching techniques (methods to maintain diversity by 
+encouraging different subpopulations to explore different 
+regions of the search space.
+Parameter 
+selection
+Choosing N, μ, crossover 
+rate (whether to apply 
+crossover), etc.
+Use rules of thumb (μ = 1/n);
+Experiment;
+Adaptive parameters
+Computational cost Large populations × many 
+generations 
+GPU parallelization;
+Adaptive stopping criteria:
+• No improvement stopping
+• Convergence threshold
+• Fitness target reached
+• Rate of improvement is too slow
+
+In Summary
+
+Comparing the Three Approaches
+Approach Local Optima? Population? Randomness? Parameters Best For
+Hill Climbing Vulnerable Single state Deterministic Neighborhood 
+definition
+Simple problems, 
+try first
+Simulated 
+Annealing
+Better escape Single state Probabilistic Temperature, 
+cooling rate
+When HC gets 
+stuck
+Genetic 
+Algorithms
+Best escape Multiple states Probabilistic N, μ, selection, 
+crossover
+Hard, multimodal 
+(many local 
+optima) problems
+Trade-offs
+Hill climbing: Simplest, fastest per iteration, but gets stuck
+Simulated annealing: More robust, requires tuning temperature
+Genetic algorithms: Most complex, good for hard problems, many parameters
+
+What We Saw
+1. Optimization problems require different techniques than path-finding
+2. Local search is efficient but can get trapped in local optima
+3. Randomness helps escape local optima
+4. Nature-inspired algorithms (annealing, evolution) provide powerful metaphors
+Some Advice
+• Start simple (hill climbing) 
+• Add sophistication as needed (simulated annealing, genetic algorithms)
+• Experiment with parameters
+• Consider problem structure when designing state encoding and neighborhoods

@@ -1,0 +1,570 @@
+Supervised Learning: From 
+Linear Models to Neural 
+Networks
+
+Machine Learning: The Big Picture
+Reinforcement Learning: Learn from rewards and penalties
+• Agent takes actions and receives feedback from environment
+• Examples: game playing (chess, Go), robotics, autonomous driving
+Unsupervised Learning: Find patterns in unlabeled data
+• Data has inputs but no labeled outputs
+• Examples: clustering customers, dimensionality reduction, anomaly detection
+Supervised Learning: Learn from labeled examples
+• Training data includes correct answers (labels)
+• Examples: spam detection, image classification, price prediction
+Machine Learning refers to algorithms that improve through experience by learning patterns 
+from data rather than relying on explicit programming.
+Our focus for 
+the rest of 
+the course.
+Presented in 
+272.
+Already 
+Introduced This!
+Given
+Data (examples, observations, interactions)
+Goal
+Learn patterns to make predictions or decisions
+
+Supervised Learning: The Setup
+Training Data
+Learning 
+Algorithm
+Hypothesis: h
+Inference
+(Prediction)
+𝑒1 =  𝑥11 , 𝑥21, … , 𝑥𝑛1  →  𝑦₁ 
+𝑒2 =  𝑥12 , 𝑥22, … , 𝑥𝑛2  →  𝑦2
+…
+𝑒𝑚 = 𝑥1𝑚 , 𝑥2𝑚, … , 𝑥𝑛𝑚 →  𝑦𝑚
+(input, output) pairs
+Finds patterns
+Learned Model 
+hypothesis ℎ about the 
+world; it approximates 
+the true function.
+ො𝑦 for new example 𝐱∗
+feature−vector outputexample
+Apply ℎ for inference 
+on new inputs:
+𝑒 = 𝐱, 𝑦  where 𝐱 ∈ ℝ𝑛 and 𝑦 ∈ ℝ
+(describes 
+regression, not 
+classification)
+Map feature vectors 
+to predictions:
+ො𝑦 = ℎ 𝐱∗
+ℎ: ℝ𝑛 → ℝ
+Find the best parameters 
+𝜃 by minimizing error: min
+𝜃
+෍
+𝑖=1
+𝑚
+ℎ 𝐱𝑖 − 𝑦𝑖 2
+* Refers to a new example
+
+Supervised Classification Example: Set
+Task
+ Classify whether 3 cards form a valid 
+Set according to the rules of Set:
+• “Same trait”: All three cards 
+share the exact same version of a 
+trait
+• “All different”: Each of the three 
+cards possesses a unique version 
+of a trait, with no repeats
+Features Color, Shape, Number, Shading
+
+
+Supervised Classification Example: Set
+Training
+Data
+[[red, oval, 1, solid], [red, diamond, 1, solid], [red, squiggle, 1, solid]]
+[[red, oval, 1, solid], [green, oval, 2, striped], [purple, oval, 3, empty]]
+[[red, oval, 1, solid], [red, oval, 2, striped], [green, diamond, 1, solid]]
+Label 𝒚 ∈ 𝑺𝒆𝒕, 𝑵𝒐𝒕 𝑺𝒆𝒕
+Learning Find ℎ that predicts whether a combination of 3 cards is a Set.
+Inference Given 3 new cards* → predict 𝑺𝒆𝒕 or 𝑵𝒐𝒕 𝑺𝒆𝒕
+Scenario 
+Assume the 
+machine does 
+not know the 
+rules of Set. 
+That is, it must 
+intuit the 
+pattern from 
+examples (i.e., 
+no explicit 
+programming of 
+“all same or all 
+different”).
+𝑺𝒆𝒕
+𝑵𝒐𝒕 𝑺𝒆𝒕
+𝑺𝒆𝒕
+... (many more labeled examples)
+𝑺𝒆𝒕* indicates a new input vector
+Machine Learning: We provide examples, algorithm learns ‘rules’.
+
+(Two) Types of Supervised Learning
+Regression
+Predict continuous values
+Classification
+Predict discrete categories
+The difference is the type of output we are predicting.
+𝑦 ∈ ℝ 𝑦 ∈ {1,2, … , 𝑘} (class labels)Output
+Predicts
+Examples
+Type
+• house prices
+• temperature
+• stock prices
+• blood pressure
+• spam/not spam
+• cat/dog
+• disease/healthy
+• Categorizing a product 
+(electronics, clothing, 
+etc.)
+nano banana
+How much? Which one?Core Question
+
+Supervised Regression Example: Temperature
+Task Predict temperature from time and weather conditions
+Training
+Data
+e₁ = [6am, 20%, 80%] → 15°C
+e₂ = [2pm, 10%, 40%] → 28°C
+e₃ = [9pm, 60%, 70%] → 18°C
+…
+𝐱 = [hour, cloud_cover, humidity] ∈ ℝ3
+𝑦 ∈ ℝ (in °C)
+Learning Find ℎ that predicts temperature
+Inference Given new conditions x* → predict temperature ŷ
+Observe, we 
+are visualizing 
+the input 
+points only.
+
+start equation theta
+min lower limit theta of , sum of open second paren y sub i. minus h open third paren y sub i. , , close third paren , close second paren , squared
+start equation 
+lambda
+lambda to the asterisk operator equals argmin lower limit lambda of , v a. l i. d a. t i. o n sub e r r o r
+Training Phase
+Use training set to learn 
+parameters 𝜃; minimize loss:
+ min
+𝜃
+σ 𝑦𝑖 − ℎ 𝑦𝑖
+2
+Tuning/Validation Phase
+Evaluate hyperparameter (𝜆) 
+combinations on validation set.
+Select the best model configuration 
+(𝜆∗ = argmin
+𝜆
+𝑣𝑎𝑙𝑖𝑑𝑎𝑡𝑖𝑜𝑛_𝑒𝑟𝑟𝑜𝑟)
+Testing Phase
+Final evaluation on test set
+Report generalization 
+performance
+Training, Tuning, and Testing Pipeline and Data
+Learn model 
+parameters (60-80%):
+𝑒𝟏 = 𝐱𝟏, 𝑦1  , 
+𝑒𝟐 = 𝐱𝟐, 𝑦2  ,
+…,
+𝑒𝐧 = 𝐱𝐧, 𝑦𝑛  
+Each phase has a specific role and 
+dataset because we want to prevent 
+overfitting to our training data (where 
+the model memorizes the training 
+data and generalizes poorly).
+Select hyperparameters (𝜆) 
+(10-20%):
+• Choose model 
+complexity, 
+regularization, etc.
+• Never used for learning 
+parameters
+Final evaluation (10-20%):
+• Never used during 
+training or tuning
+• Measures generalization 
+to new data
+60-80% 10-20% 10-20%
+
+The Generalization Challenge
+Overfitting
+Model memorizes training data
+Perfect on training set, poor on test set
+Too complex for the amount of data
+Underfitting
+Model too simple
+Poor on both training and test sets
+Does not capture patterns in data
+Goal
+Balance complexity with generalization
+Good training performance and good test performance
+nano 
+banana
+
+Linear Regression
+
+Univariate Linear Regression
+𝒚 (output)
+𝒙 (input feature)
+𝒙, 𝒚
+𝑦-intercept: 𝜽𝟎
+Training data:
+𝒙𝒊, 𝒚𝒊
+Slope: 𝜽𝟏
+Linear regression finds 
+the line that best fits 
+the training data.
+
+Univariate Linear Regression: MSE
+𝐞𝒊=𝒚𝒊−ෝ𝒚𝒊
+We want predictions ෝ𝒚𝒊 
+close to actual values 𝒚𝒊.
+The error for example 𝑖:
+𝐞𝒊 = ෝ𝒚𝒊 − 𝒚𝒊
+The squared error for 
+example 𝑖:
+𝐞𝒊
+2 = ෝ𝒚𝒊 − 𝒚𝒊 2
+• Always positive
+• Penalizes large 
+errors more heavily
+Mean Squared Error (MSE):
+MSE = 1
+𝑚min
+𝜽𝟎,𝜽𝟏
+෍
+𝑖=1
+𝑚
+ෝ𝒚𝒊 − 𝒚𝒊 2
+Our objective is to find 𝜽𝟎 
+and 𝜽𝟏 that minimize MSE.
+𝐞𝒊
+2
+
+Multivariate Linear Regression
+𝐱 = 𝑥1, 𝑥2, … , 𝑥𝑛 ∈ ℝ𝑛 Input 𝑥1, 𝑥2, … , 𝑥𝑛: feature values (e.g., size, bedrooms, age)
+𝛉 = 𝜃0, 𝜃1, 𝜃2, … , 𝜃𝑛 ∈ ℝ𝑛+1 Parameters
+𝜃0: intercept
+𝜃1, 𝜃2, … , 𝜃𝑛: weights for each feature
+ො𝑦 = ℎ𝛉 𝐱 = 𝜃0 + 𝜃1𝑥1 + 𝜃2𝑥2 + ⋯ + 𝜃n𝑥n = 𝛉 ⋅ 𝐱Model (𝐱 is augmented 
+with 𝑥₀ = 1)
+1
+𝑚min
+𝛉
+෍
+𝑖=1
+𝑚
+ෝ𝒚𝒊 − 𝒚𝒊 2Find 𝛉 that minimizes MSE:Training
+Inference: ℎ𝛉: ℝ𝑛+1 → ℝResult
+(Same principle  as univariate)
+Maps feature vectors to 
+predictions using learned 𝛉
+
+
+Example: Predicting House Prices
+𝑥1: size (in 𝑓𝑡2) 𝑥2: number of bedroomsFeatures
+Training 
+Data
+ො𝑦 = 50 + 0.1𝑥1 + 30𝑥2Model
+• 𝜃0 = 50: Base price ($50K)
+• 𝜃1 = 0.1: Each 𝑓𝑡2 adds $100
+• 𝜃2 = 30: Each bedroom adds $30K
+ො𝑦 = ℎ 1800, 3 = 50 + 0.1 ⋅ 1800 + 30 ⋅ 3 = 320K
+Inference 
+Example
+
+
+Example: Email Spam Detection
+𝑥1 = 𝑓𝑟𝑒𝑞("𝑓𝑟𝑒𝑒")Features
+Training 
+Data
+Model
+Inference 
+Example
+𝑥2 = 𝑓𝑟𝑒𝑞("𝑚𝑜𝑛𝑒𝑦")
+ො𝑦 = 0.16 + 0.61𝑥1 + 0.54𝑥2
+• 𝜃0 = 0.16: Base prediction
+• 𝜃1 = 0.61: Weight for “free” frequency
+• 𝜃2 = 0.54: Weight for “money” frequency
+ො𝑦 = ℎ freq("free") = 0.70, freq("money") = 0.60 = 0.16 + 0.61 ⋅ 0.70 + 0.54 ⋅ 0.60 = 0.911
+𝑥1 = 𝑓𝑟𝑒𝑞("𝑓𝑟𝑒𝑒") 𝑥2 = 𝑓𝑟𝑒𝑞("𝑚𝑜𝑛𝑒𝑦") ෝ𝒚
+0.10 0.05 Not Spam 
+0.80 0.70 Spam
+0.05 0.10 Not Spam 
+0.90 0.60 Spam
+0.15 0.20 Not Spam 
+0.65 0.85 Spam
+• Real-valued output does not directly correspond to discrete classes
+• Linear regression produces a real number (0.91);  we need Spam or Not SpamProblem
+We need a better approach…
+Logistic Regression
+• Predictions are unbounded and can be < 0 or > 1
+• We want to interpret the result as a probability: 𝑃(spam ∣ 𝐱), not 
+an arbitrary number
+
+Training Linear Regression
+We will consider an iterative method called 
+gradient descent.
+ො𝑦 = ℎ𝛉 𝐱 = 𝜃0 + 𝜃1𝑥1 + 𝜃2𝑥2 + ⋯ + 𝜃n𝑥n = 𝛉 ⋅ 𝐱 Our goal for training is to find 
+parameters 𝛉 that minimize 
+prediction error.
+Mean Squared Error as Loss function for Linear Regression
+𝑀𝑆𝐸 𝛉 = 1
+𝑚min
+𝛉
+෍
+𝑖=1
+𝑚
+ℎ𝛉 𝐱𝑖 − 𝒚𝒊 2
+A Loss Function measures prediction error.
+• Training attempts to  minimize loss
+• The lower the loss results in better 
+predictions
+How do we find the optimal parameters 𝛉∗ that 
+minimizes 𝑀𝑆𝐸 𝛉 ?
+
+What is a Gradient?
+Recall, our model has 𝑛 + 1 parameters 𝛉 = 𝜃0, 𝜃1, 𝜃2, … , 𝜃𝑛 ∈ ℝ𝑛+1.
+How do we decide how to increase or decrease each parameter? Again, our goal 
+is to reduce the loss, 𝑀𝑆𝐸 𝛉 . 
+For a function 𝑓, the gradient ∇𝑓 is a 
+mathematical construct that helps us identify 
+the direction and rate of the steepest increase.
+Thus, we are interested in computing ∇𝑀𝑆𝐸 𝛉 .
+In a multivariable setting,∇𝑓 is a vector of 
+partial derivatives, where each component 
+represents how sensitive the function is to 
+changes in one variable
+∇𝑀𝑆𝐸 𝛉 = 𝜕𝑀𝑆𝐸
+𝜕𝜃0
+, 𝜕𝑀𝑆𝐸
+𝜕𝜃1
+, 𝜕𝑀𝑆𝐸
+𝜕𝜃2
+, … , 𝜕𝑀𝑆𝐸
+𝜕𝜃𝑛
+In gradient descent, we move opposite the gradient (downhill) to minimize MSE.
+
+The Optimization Problem
+Suppose our training data is defined as 
+𝐗𝑚×(𝑛+1) (examples × features) with 
+corresponding true output vector 𝐘𝑚×1.
+Each of the 𝑚 rows of 𝐗𝑚×(𝑛+1) is a 
+training example: 1, 𝑥1, 𝑥2, … , 𝑥𝑛
+𝛉 = 𝜃0, 𝜃1, 𝜃2, … , 𝜃𝑛 ∈ ℝ𝑛+1
+The linear system
+𝑀𝑆𝐸 𝛉 = 1
+𝑚min
+𝛉
+෍
+𝑖=1
+𝑚
+ℎ𝛉 𝐱𝑖 − 𝒚𝒊 2
+𝐗 ⋅ 𝛉 = 𝐘.
+Now that we understand gradients, we can use them to solve our optimization problem. Gradients 
+point uphill, so gradient descent moves downhill toward a minimum of our loss (error) function.
+Training 
+Data
+Parameters
+Model
+Loss Function
+
+Gradient Descent (Iterative Optimization)
+Idea: Start with random 𝛉, iteratively improve it.
+Initialize 𝛉 randomly (or to zeros)
+repeat until convergence:
+• for all training examples 𝑖 = 1, … , 𝑚, 
+compute predictions:
+• for all training examples 𝑖 = 1, … , 𝑚, 
+compute errors:
+ෝ𝑦𝑖 = ℎ𝛉 𝐱𝑖 = 𝛉𝐓𝐱𝒊
+𝐞𝒊 = ෝ𝒚𝒊 − 𝒚𝒊
+∇𝑀𝑆𝐸 𝛉 = 1
+𝑚min
+𝛉
+෍
+𝑖=1
+𝑚
+𝐞𝒊𝐱𝑖
+𝛉 := 𝛉 − 𝛼 ⋅ ∇𝑀𝑆𝐸 𝛉
+• Compute the direction of steepest increase 
+(gradient):
+• Update all parameters simultaneously in the 
+direct of the steepest decrease:
+• If MSE is decreasing by less than 𝜖 per 
+iteration, stop (as the algorithm converged)
+return 𝛉∗
+𝛼: learning rate that 
+controls step size
+
+Example: Single Gradient Descent Update I
+Setup 𝐱 = 1,2 , true label 𝑦 = 1One training example:
+Initial parameters: 𝛉 = 0.5,0.2  
+Learning Rate: 𝛼 = 0.1
+Step 1: Compute Prediction ො𝑦 = ℎ𝛉 𝐱𝑖 = 𝛉𝐓𝐱𝒊 = 0.5 ⋅ 1 + 0.2 ⋅ 2 = 0.9
+Step 2: Compute Error 
+Step 3: Compute Gradient
+𝐞 = ො𝑦 − 𝒚 = 0.9 − 1 = −0.1
+Step 4: Update Parameters 𝛉 := 𝛉 − 𝛼 ⋅ ∇𝑀𝑆𝐸 𝛉
+∇𝑀𝑆𝐸 𝛉 = 𝐞 ⋅ 𝐱 = −0.1 ⋅ 1,2 = −0.1, −0.2
+𝛉 := 0.5,0.2 − 0.1 ⋅ −0.1, −0.2
+𝛉 = 0.51,0.22
+New Prediction: ො𝑦2 = 0.51 ⋅ 1 + 0.22 ⋅ 2 = 0.95 ො𝑦3 = 0.515 ⋅ 1 + 0.23 ⋅ 2 = 0.975
+
+Monitoring Training: Loss Curves
+Learning Rate Loss Pattern Interpretation Action
+𝛼 too small Very slow decrease Creeping toward minimum Increase 𝛼
+𝛼 just right Smooth decrease, plateaus Converged successfully Continue or stop
+𝛼 too large Oscillates or increases Overshooting the minimum Decrease 𝛼
+Early Stopping: Stop training when MSE 
+improvement stalls (change < small threshold 𝜖). 
+𝛉 := 𝛉 − 𝛼 ⋅ ∇𝑀𝑆𝐸 𝛉
+
+
+Gradient Descent Variants
+Variant Data Used Updates 
+Per Epoch
+Speed Stability Best For
+Batch All 𝑚 examples 1 Slow Accurate Small Datasets
+Stochastic (SGD) 1 random sample 𝑚 Fast Noisy Not recommended 
+for fixed datasets
+Mini-Batch Small batch (e.g., 𝑏 =
+32)
+𝑚
+32
+Fast Stable Standard Practice
+Trade-Offs
+• More data per update → fewer updates per 
+epoch, slower per-epoch progress
+• Less data per update → more updates per 
+epoch, but each update is noisier
+• Mini-batch balances: ~30 updates per epoch 
+and stable gradients
+Epoch: One complete pass through all training data
+Standard practice: Train for multiple epochs using 
+mini-batch gradient descent. Each epoch: shuffle 
+data, compute 
+𝑚
+32 mini-batch updates, evaluate on 
+validation set.
+
+Training Linear Regression: Summary
+The problem: Find 𝛉 that minimizes
+ 𝑀𝑆𝐸 𝛉 =
+1
+𝑚 σ𝑖=1
+𝑚 ℎ𝛉 𝐱𝑖 − 𝒚𝒊 2
+Solution 1: Normal Equation Solution 2: Gradient Descent
+𝛉∗ = 𝐗𝐓𝐗
+−𝟏
+𝐗𝐓𝐲
+• Direct computation so there is no iteration.
+• Impractical for large 𝑛
+𝛉 := 𝛉 − 𝛼 ⋅ ∇𝑀𝑆𝐸 𝛉
+• Scales to big data
+• Requires tuning 𝛼
+Gradient descent is the fundamental optimization 
+algorithm in machine learning. It works for:
+• Linear regression
+• Logistic regression
+• Deep Neural networks
+where 𝐲 is the target vector (actual labels for all 
+𝑚 examples).  
+
+Logistic Regression
+
+Logistic Regression
+Problem: Linear regression outputs real numbers (e.g., 0.91). For classification, we need probabilities or discrete 
+classes.
+Solution: Use the sigmoid function to squash outputs to a range of 0, 1 : 𝜎(𝑧) = 1
+1 + 𝑒−𝑧
+ where 𝑧 = 𝛉𝐓𝐱.
+Model definition:
+Logistic Regression = Linear model + Sigmoid activation
+1. Apply sigmoid: ො𝑦 = 𝜎 𝛉𝐓𝐱 ∈ 0,1
+2. Output: Probability for binary classification: 
+𝑃(𝑐𝑙𝑎𝑠𝑠 = 1 ∣ 𝐱)
+Training: Same gradient descent as before, but with different 
+loss function (cross-entropy instead of MSE)
+ො𝑦 > 0.5
+Predict Class 1
+ො𝑦 ≤ 0.5
+Predict Class 0
+
+Sigmoid Properties
+lim
+𝑧→−∞
+𝜎 𝑧 = 0
+lim
+𝑧→∞
+𝜎 𝑧 = 1
+Inflection point at z = 0
+Bounded output interpretable for 
+classification.
+Efficient derivative: The derivative depends 
+only on the output value, so it can be 
+computed once during backpropagation.
+𝜎′(𝑧) = 𝜎(𝑧) 1 − 𝜎(𝑧)
+Monotonically Increasing: Unambiguous 
+relationship: as 𝑧 increases, 𝜎(𝑧) increases. 
+Non-linear S-Shape: Learns non-linear decision boundaries. Pure 
+linearity would fail for overlapping or non-separable classes.
+Flexible decision 
+boundaries; can 
+handle complex 
+patterns
+Clear cause-effect 
+between inputs and 
+predictions
+Gives valid 
+probabilities. 
+Fast gradient 
+computation during 
+training
+Why these matter 
+for Classification
+
+Loss Function for Probability Predictions
+Why CE Works?
+• Sigmoid outputs are probabilities.
+• Cross-entropy is designed to measure “how likely was the true label?” This is a natural fit for classification.
+True Label = 1
+Prediction MSE Loss Cross-Entropy 
+Loss
+MSE 
+Interpretation
+Cross-Entropy 
+Interpretation
+0.01 (very wrong) 1 − 0.01 2 = 0.98 −log 0.01 ≈ 4.6 small error huge penalty
+0.5 (also wrong) 1 − 0.5 2 = 0.25 −log 0.5 ≈ 0.69 smaller error moderate penalty
+• Both predictions look like “small errors”.
+• MSE has weak gradients when most 
+wrong: learning signal gets dampened at 
+extremes.
+• Confident mistakes (0.01) are heavily 
+penalized.
+• Strong gradients when most wrong thus it 
+learns fast from confident mistakes.
+MSE CE
+
+Logistic Regression is a Single-Layer NN
+Neural networks are built by stacking these layers:
+• More layers = deeper networks
+• Different activation functions (𝑅𝑒𝐿𝑈, tanh)
+• Same optimization principle: gradient 
+descent with appropriate loss function
+This is logistic regression. 
+It is a neural network!
+Now we can evaluate it: Precision, Recall, 
+F1, AUC all apply to classifiers like this.
+𝑧 = 𝛉𝐓𝐱 𝜎 𝑧 ∈ 0,1
+Input Features

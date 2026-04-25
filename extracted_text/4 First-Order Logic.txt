@@ -1,0 +1,940 @@
+First-Order Logic
+
+Going Beyond Propositional Logic I
+We explored Propositional Logic (PL). It allowed us to represent and reason about facts that 
+are either true or false. It is powerful for modeling simple boolean scenarios (e.g., whether a 
+light is on or off or whether a person is present or absent), but what if we want to express 
+more nuanced ideas:
+• If a person is a student, then 
+they have an advisor.
+• Some professors teach 
+multiple courses.
+• Every student in the class 
+submitted the assignment.
+PL cannot handle variables or object properties. We would need 
+a rule like Student(x) ⇒ HasAdvisor(x).
+PL cannot represent relationships between objects (e.g., 
+professors and courses). We need a predicate like 
+Teaches(ProfX, CourseY).
+PL lacks quantifiers: ‘every’. We would need a separate 
+proposition for each student (e.g., Submitted_Alice, 
+Submitted_Bob). This does not scale or generalize.
+
+First-Order Logic
+First-Order Logic (FOL) is a formal system for representing knowledge and reasoning about 
+objects, their properties, and relationships between them.
+Properties
+• More expressive than 
+propositional logic
+• Uses variables, predicates, and 
+quantifiers
+Capabilities
+• Foundation for knowledge 
+representation in AI
+• Enables reasoning about infinite 
+domains
+First-Order Logic is sometimes refered to as Predicate Logic or Predicate Calculus.
+
+Syntax: Terms
+Definition. A term represents an object in the domain.
+Functions: computed objects (map 
+objects to objects)
+Variables: placeholders for objects
+Constants: specific objects
+The father of John
+The result of 2 + 3
+The left leg of 𝑥
+𝑥, 𝑦, 𝑝𝑒𝑟𝑠𝑜𝑛, 𝑛𝑢𝑚𝑏𝑒𝑟
+John, 42, Alice, 2, Madison, Green
+Types Examples
+Father(John)
+Plus(2,3)
+LeftLeg(𝑥)
+Definition. A ground term is a term with no variables.
+
+Terms vs Sentences
+Terms
+Refer to objects in the domain:
+Terms are not true or false, they 
+just name objects
+John
+42
+Father(John)
+𝑥
+a specific person
+a specific number
+John’s father (a person)
+any object (placeholder)
+Sentences
+Sentences make claims that can be 
+evaluated as true / false.
+Sentences are true / false: they 
+make assertions.
+Student(Alice)
+Tall(John)
+Loves(Jesse, Jordan)
+Is Alice a student?
+Is John tall?
+Does Jesse love Jordan?
+Does every 
+student have 
+a laptop?
+∀𝑥 Student(𝑥) ⇒ HasLaptop(𝑥)
+Father(John) Tall(Father(John))refers to someone. claims something.
+
+Distinguishing Functions from Predicates
+Note, functions appear inside predicates:
+In FOL, predicates and functions use the same syntax (Symbol(arg₁, arg₂, ...)), creating 
+potential ambiguity: Father(John) might be a function (term) or predicate (sentence) depending on 
+how Father is defined, whereas IsFather(John) is clearly a predicate.
+Context and declaration are needed to disambiguate.
+PredicateFunction
+Father(John) Returns John's father.
+Tall(Father(John)) Is the father of John tall? IsFather(John) Is John a father?
+IsFather(John) ∧ Doctor(John)
+Compound claim: Is John a 
+father and is John a doctor?
+Tall(Father(John))
+No. Father(John) is not a sentence.Is Father(John) ∧ Doctor(John) 
+a valid compound sentence?
+You might write: ∃𝑥 (𝑥 = Father(John) ∧ Doctor(𝑥))
+
+Syntax: Atomic Sentences
+Intuitive Definition. An atomic sentence is the simplest sentence in FOL:
+𝑃 𝑡1, 𝑡2 , … , 𝑡n
+𝑃 is a predicate symbol and each 𝑡ᵢ is a term.
+Arity refers to the number of arguments a predicate takes.
+Unary Tall(John) Property of an object
+Binary Loves(Alice, Bob) - Relation between two objects
+Ternary Between(Madison, Chicago, Milwaukee) Relation among three objects
+𝒏-ary Grade(Alice, CSC-343, Fall, 2026, A, …) In general, predicates can take any 
+number of arguments
+Atomic sentences make a single assertion without logical connectives (∧, ∨, ¬, ⇒) or quantifiers (∀, ∃), 
+and can be evaluated as true or false.  
+Why can 𝑃 not be a function?
+
+Syntax: Complex Sentences (Quantifiers)
+Logical Connectives (same interpretation as with propositional logic)
+Quantified Statements
+Not: ~𝜙
+And: 𝜙 ∧ 𝜓
+Or: 𝜙 ∨  𝜓
+Implies: 𝜙 ⇒ 𝜓
+Iff: 𝜙 ⇔ 𝜓
+Universal (∀): Statement holds for all objects Existential (∃): Statement holds for at least one object
+∀𝑥 Student 𝑥 ⇒ HasLaptop 𝑥
+All students have a laptop.
+∃𝑥 Student 𝑥 ∧ GPA 𝑥, 4.0
+Some student has a 4.0 GPA
+All CS majors must take CSC-223.
+∃𝑥 Student 𝑥 ∧ Equals GPA 𝑥 , 4.0
+Some student has a 4.0 GPA
+∀𝑥 CS_Major 𝑥 ⇒ Take 𝑥, 𝐶𝑆𝐶_223
+∃𝑥 Student John, 𝑥 ∧ Doctor 𝑥
+John is a student of someone who is a doctor.
+
+Syntax: Mixed Quantifiers
+∀𝑥 ∃𝑦 Enrolled 𝑥, 𝑦
+Order matters!
+For all students…
+For each 𝑥, we can choose a different 𝑦
+Every student is enrolled in some course.
+(Each student can be in a different course.)
+∃𝑦 ∀𝑥 Enrolled 𝑥, 𝑦
+There exists a course…
+This same 𝑦 must work for all 𝑥
+There's a course that every student is 
+enrolled in.
+(One specific course contains all students.)
+We assume a domain where 𝑥 ranges over students, 𝑦 ranges over courses.
+
+∀𝑥 ∃𝑦 𝐿𝑜𝑣𝑒𝑠(𝑥, 𝑦)
+Syntax: Mixed Quantifiers II
+(Each person loves at least one 
+person; could be different people.) (There is one specific person that everyone loves.)
+“Everyone loves someone” “Someone is loved by everyone”
+∃𝑦 ∀𝑥 𝐿𝑜𝑣𝑒𝑠(𝑥, 𝑦)
+Read mixed quantifiers left to right, thinking about dependency: 
+∀𝑥 ∃𝑦 
+The 𝑦 must be the same for all 𝑥. The 𝑦 can be different for each 𝑥.
+“for each 𝑥, find a 𝑦”
+(𝑦 depends on 𝑥)
+∃𝑦 ∀𝑥 “find one 𝑦 that works for all 𝑥”
+
+Question
+Translate each FOL sentence to natural English; Domain: People.
+∀𝑥 ∃𝑦 𝐿𝑖𝑘𝑒𝑠(𝑥, 𝑦)
+∃𝑦 ∀𝑥 𝐿𝑖𝑘𝑒𝑠(𝑥, 𝑦)
+∀𝑥 ∃𝑦 𝐾𝑛𝑜𝑤𝑠(𝑦, 𝑥)
+∃𝑥 ∀𝑦 𝐾𝑛𝑜𝑤𝑠(𝑥, 𝑦)
+∀𝑥 ∀𝑦 𝐿𝑖𝑘𝑒𝑠(𝑥, 𝑦)
+∃𝑥 ∃𝑦 𝐿𝑖𝑘𝑒𝑠(𝑥, 𝑦)
+Everyone likes someone
+There′s someone everyone likes 
+Everyone is known by someone
+There′s someone who knows everyone
+Everyone likes everyone
+Someone likes someone
+Each person likes at least one person, 
+possibly different people
+One specific person is liked by everyone
+Each person has at least one person who 
+knows them
+One person knows all people
+All people like all people
+At least one person likes at least one 
+person
+Assume we read left to right:
+𝐿𝑖𝑘𝑒𝑠(𝑥, 𝑦) means “𝑥 likes y”
+English Description Interpretation
+
+Question
+Consider the following domain:
+• People: {Alice, Bob, Carol}
+• 𝐾𝑛𝑜𝑤𝑠 𝐴𝑙𝑖𝑐𝑒, 𝐵𝑜𝑏 = 𝑡𝑟𝑢𝑒
+• 𝐾𝑛𝑜𝑤𝑠(𝐵𝑜𝑏, 𝐶𝑎𝑟𝑜𝑙)  =  𝑡𝑟𝑢𝑒
+• 𝐾𝑛𝑜𝑤𝑠(𝐶𝑎𝑟𝑜𝑙, 𝐴𝑙𝑖𝑐𝑒)  =  𝑡𝑟𝑢𝑒
+• (All other 𝐾𝑛𝑜𝑤𝑠 relationships are false.)
+Evaluate each statement as true or false.
+∀𝑥 ∃𝑦 𝐾𝑛𝑜𝑤𝑠(𝑥, 𝑦) 
+Every person knows at least one other person.
+True
+∃𝑦 ∀𝑥 𝐾𝑛𝑜𝑤𝑠(𝑥, 𝑦)
+There is a single person that everyone knows.
+False
+∀𝑥 ∃𝑦 𝐾𝑛𝑜𝑤𝑠(𝑦, 𝑥)
+Everyone is known by someone.
+True
+∃𝑥 ∀𝑦 𝐾𝑛𝑜𝑤𝑠(𝑥, 𝑦)
+There is a person who knows everyone.
+False
+Assume we read left to right:
+𝐾𝑛𝑜𝑤𝑠(𝑥, 𝑦) means “𝑥 knows y”
+
+Question
+Every student has an advisor 
+who advises them.
+Each sentence below has an error in the FOL translation. Identify and fix it:
+∃𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥) ⇒ ∃𝑦 𝐴𝑑𝑣𝑖𝑠𝑜𝑟(𝑦) ∧  𝐴𝑑𝑣𝑖𝑠𝑒𝑠(𝑦, 𝑥)
+Uses ∃𝑥 instead of ∀𝑥.
+Every professor teaches at 
+least one course.
+∀𝑥 ∃𝑦 𝑃𝑟𝑜𝑓𝑒𝑠𝑠𝑜𝑟(𝑥) ∧  𝐶𝑜𝑢𝑟𝑠𝑒(𝑦) ⇒ 𝑇𝑒𝑎𝑐ℎ𝑒𝑠(𝑥, 𝑦)
+Correct Form:
+∀𝑥 𝑃𝑟𝑜𝑓𝑒𝑠𝑠𝑜𝑟(𝑥) ⇒ ∃𝑦 𝐶𝑜𝑢𝑟𝑠𝑒(𝑦)  ∧  𝑇𝑒𝑎𝑐ℎ𝑒𝑠(𝑥, 𝑦)
+This says, “For all 𝑥, there exists 𝑦 such that:
+ if (𝑥 is a professor AND 𝑦 is a course), then 𝑥 teaches 𝑦.”
+Implications are of the form
+If [condition], then [consequence]
+
+Question
+A. Truth tables do not work for FOL because the domain can be infinite, and 
+we need to consider all possible interpretations of predicates and functions, 
+not just variable assignments.
+How many entries does a truth table have for a FOL sentence with 𝑘 variables where 
+each variable can take on 𝑛 values?
+A. Truth tables are not applicable to FOL
+B. 2𝑘
+C. 𝑛𝑘
+D. It depends
+
+Quantifiers: Important Patterns
+Universal (∀) typically uses implication (⇒)
+∀𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥) ∧  𝑆𝑚𝑎𝑟𝑡(𝑥)∀𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥)  ⇒  𝑆𝑚𝑎𝑟𝑡(𝑥)
+“All students are smart” “Everything is both a student and smart”
+Existential (∃) typically uses conjunction (∧)
+∃𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥)  ⇒  𝑆𝑚𝑎𝑟𝑡(𝑥)∃𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥)  ∧  𝑆𝑚𝑎𝑟𝑡(𝑥)
+“Some student is smart” True if anything is not a student!
+≡ ∃𝑥 ~𝑆𝑡𝑢𝑑𝑒𝑛𝑡 𝑥 ∨ 𝑆𝑚𝑎𝑟𝑡(𝑥)
+
+1. “All birds can fly”
+2. “Some students have laptops”
+3. “No one is perfect”
+4. “Everyone likes ice cream or cake”
+5. “If someone is a teacher, then they 
+have students”
+Question
+Translate to FOL.
+1. ∀𝑥 𝐵𝑖𝑟𝑑(𝑥)  ⇒  𝐶𝑎𝑛𝐹𝑙𝑦(𝑥)
+2. ∃𝑥 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥)  ∧  𝐻𝑎𝑠𝐿𝑎𝑝𝑡𝑜𝑝(𝑥)
+3. ¬∃𝑥 𝑃𝑒𝑟𝑓𝑒𝑐𝑡(𝑥) 𝑜𝑟 ∀𝑥 ¬𝑃𝑒𝑟𝑓𝑒𝑐𝑡(𝑥)
+4. ∀𝑥 𝐿𝑖𝑘𝑒𝑠(𝑥, 𝐼𝑐𝑒𝐶𝑟𝑒𝑎𝑚) ∨  𝐿𝑖𝑘𝑒𝑠(𝑥, 𝐶𝑎𝑘𝑒)
+5. ∀𝑥 𝑇𝑒𝑎𝑐ℎ𝑒𝑟(𝑥)  ⇒  ∃𝑦 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑦)  ∧
+ 𝑇𝑒𝑎𝑐ℎ𝑒𝑠(𝑥, 𝑦)
+
+Symmetry and Transitivity
+“If 𝑥 is a sibling of 𝑦, then 𝑦 is a sibling of 𝑥”
+This states that the sibling relation is symmetric.
+“If 𝑥 is an ancestor of 𝑦, and 𝑦 is an ancestor of 𝑧, then 𝑥 is an ancestor of 𝑧”
+This states that the ancestor relation is transitive.
+∀𝑥 ∀𝑦 𝑆𝑖𝑏𝑙𝑖𝑛𝑔(𝑥, 𝑦)  ⇒  𝑆𝑖𝑏𝑙𝑖𝑛𝑔(𝑦, 𝑥)
+∀𝑥 ∀𝑦 ∀𝑧 (𝐴𝑛𝑐𝑒𝑠𝑡𝑜𝑟(𝑥, 𝑦) ∧  𝐴𝑛𝑐𝑒𝑠𝑡𝑜𝑟(𝑦, 𝑧))  ⇒  𝐴𝑛𝑐𝑒𝑠𝑡𝑜𝑟(𝑥, 𝑧)
+
+Unification
+
+
+Unification: Matching Rules to Facts
+We have facts in our knowledge base:
+We have general rules:
+Student(𝐴𝑙𝑖𝑐𝑒)
+Takes(𝐴𝑙𝑖𝑐𝑒, 𝐶𝑆𝐶343)
+∀𝑥 (Student(𝑥)  ∧ Takes(𝑥, 𝐶𝑆C343)) ⇒ Smart(𝑥)
+Can we conclude Smart(𝐴𝑙𝑖𝑐𝑒)?
+
+Unification: Matching Rules to Facts II
+The challenge is that variables in rules can match any term
+Which of these could 
+match 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥)?
+We need a systematic way to:
+1. Find what value(s) make expressions match
+2. Apply those values consistently throughout reasoning
+3. Handle complex nested terms
+Unification to the rescue!
+• 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝐴𝑙𝑖𝑐𝑒)
+• 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝐵𝑜𝑏)
+• 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝐹𝑎𝑡ℎ𝑒𝑟𝑂𝑓(𝐶ℎ𝑎𝑟𝑙𝑖𝑒))
+• 𝑇𝑒𝑎𝑐ℎ𝑒𝑟(𝐴𝑙𝑖𝑐𝑒)
+• 𝑆𝑡𝑢𝑑𝑒𝑛𝑡(𝑥, CSC_343)
+Different predicate
+Different arity
+
+
+Unification: The Main Idea
+Unification finds substitutions that make expressions identical.
+𝐿𝑖𝑘𝑒𝑠(𝐴𝑙𝑖𝑐𝑒, 𝑥)
+What should 𝑥 be?
+𝐿𝑖𝑘𝑒𝑠(𝐴𝑙𝑖𝑐𝑒, 𝑃𝑖𝑧𝑧𝑎)
+Rules
+Facts
+𝑥 = 𝑃𝑖𝑧𝑧𝑎
+Goal: Make two expressions match by finding substitutions for variables.
+Unification enables automated reasoning by systematically matching facts 
+with rules so we can apply inference in FOL and power systems like Prolog.
+Once we can unify, we can automate logical reasoning!
+
+Unification Examples
+Example: Multiple variables
+Sibling(x, y)
+Sibling(John, Mary)
+Example: Variables on both sides
+Parent(x, Bob)
+Parent(Alice, y)
+Unifier: { x/John, y/Mary } Unifier: {x/Alice, y/Bob}
+Example: Nested Terms
+Ancestor(FatherOf(x), y)
+Ancestor(FatherOf(John), Mary)
+Unifier: { x/John, y/Mary }
+Example: Functions Unifying with Variables
+Age(x)
+Age(MotherOf(Alice))
+Unifier: { x/ MotherOf(Alice)) }
+
+When Unification Fails
+Example: Different Constants
+Student(Alice)
+Student(Bob)
+Example:
+Student(x)
+Teacher(x)
+Cannot Unify: Alice ≠ Bob Cannot Unify: Different Predicates
+Example: Occurs Check
+x
+f(x)
+Cannot unify! x appears inside f(x).
+The occurs check prevents infinite substitutions.
+If we unify x with  f(x) to acquire the substitution 
+{ x / f(x)} (that is, x <- f(x)), then whenever we 
+need to use the value of x, we replace it with f(x).
+x <- f(x)
+x <- f(f(x))
+x <- f(f(f(x)))
+
+Unification Algorithm
+function UNIFY(exp1, exp2, Θ):
+    if Θ = FAIL then return FAIL
+    if exp1 = exp2 then return Θ
+    if exp1 is a variable then
+        return UNIFY-VAR(exp1, exp2, Θ)
+    else if exp2 is a variable then
+        return UNIFY-VAR(exp2, exp1, Θ)
+    if exp1 and exp2 are functions/predicates then
+        if they have same name and arity then
+            UNIFY-ARGS(args(exp1), args(exp2), θ)
+        else return FAIL
+    return FAIL
+# If already failed, propagate failure
+# Identical expressions need no substitutions
+# Handle either expression being variables
+# Unify all arguments pairwise
+# Different functions or arity
+# Handle compound expressions
+# Θ is a list of substitutions
+# Cannot unify: no other cases match
+{x/Alice, y/Bob}
+Likes(x, y) = Likes(x, y)
+x , Father(Bob)
+Knows(x, y) and Knows(Alice, Bob)
+{x/Alice, y/Bob}
+Father(Bob) , x
+x , Alice
+Alice , x
+
+UNIFY-VAR
+function UNIFY-VAR(var, x, Θ):
+    # If var already has a binding, unify its value with x
+   if Θ(var) = val then
+        return UNIFY(val, x, Θ)
+    # If x is a variable with a binding, unify var with x's value 
+    else if x is a variable and Θ(x) = val then
+        return UNIFY(var, val, Θ)
+   # Prevent binding var to a term containing var (prevent
+    # infinite structures)
+    else if OCCURS-CHECK(var, x) then return FAIL
+    # No conflicts: add the new binding Θ(var) = x
+    else return Θ ∪ var / x
+Goal: Given a variable and an 
+expression, find a substitution that 
+makes them identical, following 
+any existing bindings and 
+preventing circular references.
+var: z
+x : Alice
+Θ: {z/Bob}
+UNIFY(Bob, Alice, Θ)
+var: z
+x: w
+Θ = {w/Alice}
+UNIFY(z, Alice, Θ)
+FAIL
+{w/Alice, z/Alice}
+var: z
+x: f(z)
+Θ = {}
+FAIL
+var: z
+x: Alice
+Θ = {}
+Θ = {z/Alice}
+
+UNIFY-VAR Examples 
+UNIFY-VAR(x, Alice, {}) {x/Alice}→
+UNIFY-VAR(y, x, {x/Alice}) {x/Alice, y/Alice}→
+UNIFY-VAR(x, Bob, {x/Alice}) FAIL→
+Simple variable binding
+Following existing 
+bindings
+Variable already bound
+UNIFY-VAR(x, Parent(y, x), {y/Alice}) FAIL→Occurs check violation
+UNIFY-VAR(z, MotherOf(Alice), {}) {z/MotherOf(Alice)}→Binding to a complex 
+term
+UNIFY-VAR(z, y, {x/Alice, y/x}) {x/Alice, y/x, z/Alice}→Chain of variable 
+bindings
+
+UNIFY-ARGSfunction UNIFY-ARGS(args1, args2, Θ):
+    # Base case: no more arguments to unify
+   if args1 and args2 are both empty then return Θ
+    # Different number of arguments - should never 
+    # happen; checked in UNIFY
+    if args1 = ∅ and args2 ≠ ∅ then return FAIL
+    if args1 ≠ ∅ and args2 = ∅ then return FAIL
+    # Unify the first pair of arguments from the 
+    # ‘parallel’ lists
+    Θ’ = UNIFY(head(args1), head(args2), Θ)
+    # If that failed, propagate failure
+   if Θ′ = FAIL then return FAIL
+    # Recursively unify remaining arguments with 
+    # updated substitution
+    return UNIFY-ARGS(tail(args1), tail(args2), Θ’)
+𝐿 = head | tail
+     ≡ 𝐿[0] + L[1: ]
+Goal: Given two parallel lists, 
+unify arguments one at a time 
+(left to right), threading the 
+substitution through each step.
+
+UNIFY-ARGS Examples I 
+UNIFY-ARGS([Alice, x], [y, Bob], {})
+{y/Alice, x/Bob}→
+UNIFY-ARGS([x, x], [Alice, y], {})
+{x/Alice, y/Alice}→
+UNIFY(Alice, y, {}) → {y/Alice}
+UNIFY-ARGS([x], [Bob], {y/Alice})
+UNIFY(x, Bob, {y/Alice})
+UNIFY(x, Alice, {}) → {x/Alice}
+UNIFY-ARGS([x], [y], {x/Alice})
+UNIFY(x, y, {x/Alice})
+
+UNIFY-ARGS Examples II
+UNIFY-ARGS([x, MotherOf(y)],
+           [Alice, MotherOf(Bob)], {})
+{y/Alice, x/Bob}→
+UNIFY(x, Alice, {}) → {x/Alice}
+UNIFY-ARGS([MotherOf(y)], [MotherOf(Bob)], {x/Alice})
+UNIFY(MotherOf(y), MotherOf(Bob), {x/Alice})
+UNIFY-ARGS([y], [Bob], {x/Alice})
+UNIFY(y, Bob, {x/Alice})
+UNIFY-ARGS([Alice, x], [Bob, y], {})
+UNIFY(Alice, Bob, {}) FAIL→
+
+UNIFY Example
+UNIFY(Parent(John, MotherOf(x)),
+      Parent(y, MotherOf(Bob)), {})
+UNIFY-ARGS([John, MotherOf(x)],
+           [y, MotherOf(Bob)], {})
+{y/John, x/Bob}→
+Same predicate and arity
+UNIFY(John, y, {}) → {y/John}
+UNIFY(MotherOf(x), MotherOf(Bob), {y/John})
+UNIFY-ARGS([x], [Bob], {y/John})
+UNIFY(x, Bob, {y/John})
+
+Inference in First-Order Logic
+
+Toward Inference
+What Has Been Built:
+• Syntax: How to write statements in FOL.
+• Unification: How to make expressions match.
+Why does matching matter?
+What is missing?
+Goal: Automated Reasoning
+Input: Facts and rules in a knowledge base Output: Answers to queries (true / false or variable bindings)
+Process:
+1. Find a rule that might apply to the query.
+2. Use unification to match the rule's premises with known facts.
+3. Apply the same substitution to the rule's conclusion. 
+4. Derive new knowledge and repeat as needed.
+→ Because rules are general but facts are specific!
+→ How to derive new knowledge!
+Knowledge Base:
+Student(Alice)
+∀x Student(x) ⇒ TakesCourses(x)
+∀x TakesCourses(x) ⇒ NeedsCoffee(x)
+Query: NeedsCoffee(Alice)? Yes.
+We need formal rules for deriving new knowledge, using quantifiers, and making valid substitutions.
+
+Inference Rules: Universal Instantiation
+Rule: If something is true for all 𝑥, then it is true for any specific instance.
+Formally:
+Given:
+Infer:
+∀𝑥 𝑃(𝑥)
+𝑃(𝑐) where 𝑐 is any term
+KB:
+Student(Alice)
+Student(Bob)
+Student(FatherOf(Charlie))
+∀x Student(x) ⇒ Person(x)
+Using universal instantiation, we can infer:
+Student(Alice) ⇒ Person(Alice)
+Student(Bob) ⇒ Person(Bob)
+Student(FatherOf(Charlie)) ⇒ Person(FatherOf(Charlie))
+
+Inference Rules: Existential Instantiation
+Rule: If we know something with property 𝑃 exists, we can introduce a new 
+constant to refer to it.
+Given:
+Infer:
+∃𝑥 𝑃(𝑥)
+𝑃(𝑘) where 𝑘 is a new constant (called Skolem 
+constant): a unique new symbol introduced to 
+represent the specific object whose existence is 
+claimed
+KB:
+∃x Student(x) ∧ Smart(x)
+Using existential instantiation, we can infer:
+Student(S1) ∧ Smart(S1)
+“There exists a student who is smart” “Let S1 be a Skolem constant that 
+names the smart student.”
+We don't know which student is smart, only that at least one exists so we 
+need to use a new symbol not used elsewhere in the KB. 
+Formally
+
+Generalized Modus Ponens (GMP)
+Universal Instantiation + Unification + Modus Ponens = Generalized Modus Ponens
+Knowledge Base: 
+Facts: 𝑓1, 𝑓2, … , 𝑓n
+Rule(s): ∀𝑥 𝑟1, 𝑟2, … , 𝑟𝑛 ⇒ 𝑠
+And we have a substitution Θ where 
+for all 𝑖:
+Suppose we have:
+If we can unify facts with the premises of a rule, we can infer the conclusion with 
+that same substitution. 
+We can infer:
+𝑓𝑖 = Θ 𝑟𝑖
+Θ 𝑠 Since 𝑠 is a sentence that 
+may contain variables that 
+got bound during 
+unification, we infer Θ 𝑠 .
+
+Example of Generalized Modus Ponens
+KB:
+Teaches(Alvin, CSC343, Spring2026)
+Enrolled(Alice, CSC343, Spring2026)
+Rule(s):
+∀prof ∀student ∀course ∀semester (Teaches(prof, course, semester) ∧ Enrolled(student, course, semester))
+⇒ InClass(student, prof, course)
+Θ(Teaches(prof, course, semester) ) = Teaches(Alvin, CSC343, Spring2026)
+where  Θ(prof) = Alvin, Θ(course) = CSC343, and Θ(semester) = Spring2026
+Match premises with facts using Θ:
+Θ(Enrolled(student, course, semester)) = Enrolled(Alice, CSC343, Spring2026)) 
+where  Θ(student) = Alice, Θ(course) = CSC343, and Θ(semester) = Spring2026
+Θ(InClass(student, prof, course)) = InClass(Alice, Alvin, CSC343)
+So by generalized Modus Ponens, we have:
+
+Forward Chaining in FOL
+1. Start with initial facts in KB
+2. Find a rule whose premises match facts (using unification)
+3. Apply GMP to derive the conclusion
+4. Add the new fact to KB
+5. Repeat until goal is derived or no new facts can be added
+Properties
+This is the same algorithm as in 
+propositional logic, except here 
+we use unification and GMP to 
+derive new facts in FOL.
+Sound: Everything derived is entailed by the KB
+• Forward chaining only derives logical consequences
+• No false conclusions from true premises
+Complete for definite clauses: Find all entailed 
+atomic facts
+• Definite clause: 𝑝1 ∧ 𝑝2 ∧ ⋯ ∧ 𝑝n ⇒ q
+(single positive conclusion)
+• If entailed, forward chaining will eventually derive it
+Exhaustive: Derives all entailed facts
+• Continues until no new inferences
+• Guarantees nothing is missed
+May derive irrelevant facts: the “Shotgun 
+approach”
+• Produces facts unrelated to your query
+• Inefficient for large KBs
+
+Backward Chaining in FOL
+1. Check if goal is already a fact in KB
+2. Find rules whose conclusions could match the goal
+3. Use UNIFY to match the rule's conclusion with the goal
+4. If unification succeeds, apply θ to the rule's premises to get specific subgoals
+5. Recursively apply backward chaining to prove each subgoal
+6. If all subgoals are proven, return success; otherwise try next rule
+7. If no rule succeeds, return failure
+Properties
+Same algorithm as in 
+propositional logic, except 
+here we use unification to 
+work backwards from 
+goals to facts in FOL.
+Sound: Proves only entailed goals
+• No false conclusions
+• Every step is logically valid
+Complete for definite clauses: Finds a proof if 
+one exists
+• Definite clause: 𝑝1 ∧ 𝑝2 ∧ ⋯ ∧ 𝑝n ⇒ q
+• If entailed, backward chaining will prove it
+Goal-Directed: More efficient than forward chaining
+• Explores only facts relevant to the query
+• Avoids irrelevant derivations
+Prolog-based:
+• Prolog uses backward chaining with 
+depth-first search
+• Ideal for answering queries
+
+Example: Backward Chaining in FOL
+KB:
+1. Student(Alice)
+2. Takes(Alice, CSC343)
+3. ∀x (Student(x) ∧ Takes(x, CSC343)) ⇒ Smart(x)
+Smart(Alice)
+Θ = UNIFY Smart 𝑥 , Smart Alice = { 𝑥/Alice }
+∀x (Student(x) ∧ Takes(x, CSC343)) ⇒ Smart(x)
+Find matching rule: conclusion 
+could match the goal
+UNIFY goal with rule conclusion:
+Apply Θ to premises to get subgoals.
+Student Alice ∧ Takes Alice, CSC343
+Prove subgoals
+Student Alice Takes Alice, CSC343
+In KB.
+ In KB.
+Query: Smart(Alice)
+
+Inference in Prolog
+
+Backtracking
+If we reach a point where a goal cannot be matched, or the body of a rule cannot be matched, 
+we backtrack to the last (most recent) spot where a choice of matching a particular fact or rule 
+was made. 
+We then try to match a different fact or rule. If this cannot be done, we go back to the next 
+previous place where a choice was made and try a different match there.
+We try alternatives until we are able to solve all the goals in our query or until all possible 
+choices have been tried and found to fail.
+If this happens, we answer “no” the query can’t be solved.
+As we try to match facts and rules we try them in their order of definition.
+Depth-first search.
+
+Backtracking Example
+grandMotherOf(X,GM) :- motherOf(X,M), motherOf(M,GM).
+grandMotherOf(X,GM) :- fatherOf(X,F), motherOf(F,GM).
+fatherOf(tom,dick).
+fatherOf(dick,harry).
+fatherOf(jane,harry).
+motherOf(tom,judy).
+motherOf(dick,mary).
+motherOf(jane,mary).
+Our database:
+?- grandMotherOf(tom, GM).
+Query:
+We try the first grandMotherOf rule first.
+This forces M = judy.
+motherOf(judy,GM)
+We have to solve:
+motherOf(tom,M), motherOf(M,GM).
+None of the motherOf rules 
+match this goal, so we backtrack.
+No other motherOf rule can 
+solve motherOf(tom,M).
+This forces X = tom.
+
+Lists in Prolog
+"_" (underscore) can be used as a wildcard or "don’t care" symbol in matches. 
+The notation [H | T] represents a list with H matching the head of the list and T 
+matching the rest of the list.
+[1, 2, 3] = [1 | [2,3]] = [1, 2 | [3]] = [1, 2, 3 | [] ]
+
+
+List Operations
+List operations are defined using rules and facts.
+The definitions are similar to those used in Scheme or ML, but they are non-procedural. That is, you do 
+not give an execution order.
+Instead, you state recursive rules and non-recursive "base cases" that characterize the operation you are 
+defining.
+append([], L, L).
+append([H | T1], L2, [H | T3]) :- append(T1, L2, T3).
+An empty list (argument 1) appended 
+to any list L (argument 2) gives L 
+(argument 3) as its answer.
+% Base Case
+% Recursion
+The rest of the resulting list, T3, is the result of 
+appending T1 (the rest of the first list) with L2 
+(the second input list).
+input output
+input output
+If we take a list that begins with H and has T1 as 
+the rest of the list and append it to a list L2 then 
+the resulting appended list will begin with H.
+
+Example: append
+append([], L, L).
+append([H | T1], L2, [H | T3]) :- append(T1, L2, T3).
+append([1], [2,3], T)
+append([H | T1], L2, [H | T3]) :- append(T1, L2, T3).
+Unify([], [1]) FAILS 
+append([], L, L)
+Unify([], T1=[]) SUCCESS 
+append([], L, L)
+Unify(L, L2=[2,3]) SUCCESS 
+Unify(L=[2,3], T3) SUCCESS 
+T3=[2,3]
+T = [1,2,3]
+Unify(H, 1) SUCCESS 
+Unify(T1, []) SUCCESS 
+Unify(L2, [2,3]) SUCCESS 
+Unify(T, [1 | T3]) SUCCESS 
+SUCCESS 
+SUCCESS 
+SUCCESS 
+SUCCESS 
+
+Ancestral Backtracking Example (continued)
+grandMotherOf(X,GM) :- motherOf(X,M), motherOf(M,GM).
+grandMotherOf(X,GM) :- fatherOf(X,F), motherOf(F,GM).
+fatherOf(tom,dick).
+fatherOf(dick,harry).
+fatherOf(jane,harry).
+motherOf(tom,judy).
+motherOf(dick,mary).
+motherOf(jane,mary).
+?- grandMotherOf(tom, GM).Query:
+We try the second grandMotherOf rule.
+This forces F = dick.
+motherOf(dick,GM)
+We have to solve:
+fatherOf(tom,F), motherOf(F,GM).
+None of the fatherOf rules 
+match this goal, so we backtrack.
+No other motherOf rule can 
+solve motherOf(dick, GM).
+This forces X = tom.
+We can match:
+fatherOf(tom,dick).
+We can match:
+motherOf(dick, mary).
+We have matched all our goals, so we 
+know the query is true, with GM = mary.
+
+Query Overview
+grandMotherOf(X, GM)
+motherOf(X, M), motherOf(M, GM) fatherOf(X, F), motherOf(F, GM)
+motherOf(tom, judy)
+motherOf(dick, mary)
+motherOf(jane, mary)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+fatherOf(tom, dick)
+fatherOf(dick, harry)
+fatherOf(jane,harry)
+X=   ,
+M=
+X=   ,
+GM= 
+X=   ,
+GM= 
+X=   ,
+M=   ,
+GM= 
+X=   ,
+F=
+X=   ,
+F=
+
+Visualizing Prolog Query Search I
+grandMotherOf(X, GM)
+motherOf(X, M), motherOf(M, GM)
+motherOf(tom, judy) motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+X=tom,
+M=judy
+X=?,
+GM=?
+X=tom,
+M=judy,
+GM=?
+
+
+Visualizing Prolog Query Search II
+grandMotherOf(X, GM)
+motherOf(X, M), motherOf(M, GM)
+motherOf(dick, mary)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+X=dick,
+M=mary
+X=   ,
+GM= 
+X=dick,
+M=mary,
+GM=?
+
+
+Visualizing Prolog Query Search III
+grandMotherOf(X, GM)
+motherOf(X, M), motherOf(M, GM)
+motherOf(jane, mary)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+X=jane,
+M=mary
+X=   ,
+GM= 
+X=jane,
+M=mary,
+GM= 
+
+
+Visualizing Prolog Query Search IV: New Rule 
+grandMotherOf(X, GM)
+motherOf(X, M), motherOf(M, GM) fatherOf(X, F), motherOf(F, GM)
+motherOf(tom, judy)
+motherOf(dick, mary)
+motherOf(jane, mary)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+fatherOf(tom, dick)
+fatherOf(dick, harry)
+fatherOf(jane,harry)
+X=   ,
+M= 
+X=   ,
+GM= 
+X=   ,
+GM= 
+X=   ,
+M=   ,
+GM= 
+X=   ,
+F= 
+X=   ,
+F=   ,
+GM= 
+
+Visualizing Prolog Query Search V
+grandMotherOf(X, GM)
+fatherOf(X, F), motherOf(F, GM)
+motherOf(dick, mary)
+motherOf(tom,judy)
+fatherOf(tom, dick)
+X=?,
+GM=?
+X=tom,
+F=dick
+X=tom,
+F=dick,
+GM=maryGM=?
+X=tom,
+GM=mary
+
+
+Visualizing Prolog Query Search VI
+grandMotherOf(X, GM)
+fatherOf(X, F), motherOf(F, GM)
+fatherOf(tom, dick)
+X=?,
+GM=?
+X=tom,
+F=dick
+X=tom,
+F=dick,
+GM=?
+motherOf(jane, mary)
+
+
+Visualizing Prolog Query Search VII
+grandMotherOf(X, GM)
+fatherOf(X, F), motherOf(F, GM)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+fatherOf(dick, harry)
+X=   ,
+GM= 
+X=dick,
+F=harry    
+X=dick,
+F=harry
+GM=?
+
+
+Visualizing Prolog Query Search VIII
+grandMotherOf(X, GM)
+fatherOf(X, F), motherOf(F, GM)
+motherOf(jane, mary)
+motherOf(dick, mary)
+motherOf(tom,judy)
+X=   ,
+GM= 
+X=jane,
+F=harry    
+X=jane,
+F=harry
+GM=?
+fatherOf(jane,harry)
