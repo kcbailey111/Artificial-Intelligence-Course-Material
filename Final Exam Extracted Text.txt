@@ -1,0 +1,105 @@
+=== Final Exam Instructions.pdf ===
+
+ 
+CSC-343: Final Exam 
+ 
+Writing the Exam 
+• All answers must be written in complete sentences with proper punctuation and grammar. This is a 
+conceptual exam and clarity of expression is part of the answer. 
+• Show your reasoning explicitly. Answers that state a conclusion without explanation will receive 
+little or no credit, even if the conclusion is correct. 
+• You may draw diagrams or figures to help explain your responses. Please be neat. 
+• Use a pencil or erasable pen for your responses. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+Questions and Answering Those Questions 
+• For each section, you are required to answer one question. 
+• Please circle the question you are answering. 
+• Begin your answer at the bottom of the page; you may continue your answer onto the next page as 
+needed. 
+Grading 
+• The exam contains four sections: Section A (Logic and Search), Section B (Reinforcement 
+Learning and Language Models), Section C (Machine Learning), and Section D (Redacted). 
+• You must answer exactly one (1) question from each section, for a total of four (4) questions. 
+• Each question is weighted equally. 
+• Credit is awarded for demonstrated understanding. A partial answer that shows genuine conceptual 
+engagement is valued over a confident but shallow one. 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+ 
+
+=== Sample Final Exam Questions.pdf ===
+
+ 
+CSC-343: Final Exam (Sample Questions) 
+ 
+Writing the Exam 
+• All answers must be written in complete sentences with proper punctuation and grammar. This is a 
+conceptual exam and clarity of expression is part of the answer. 
+• Show your reasoning explicitly. Answers that state a conclusion without explanation will receive 
+little or no credit, even if the conclusion is correct. 
+• You may draw diagrams or figures to help explain your responses. Please be neat. 
+• Use a pencil or erasable pen for your responses. 
+• Your responses should reflect the notation and techniques presented in class. While alternative 
+conventions exist, consistency with course material is required for full credit. 
+Questions and Answering Those Questions 
+• For each section, you are required to answer one question. 
+• Please circle the question you are answering. 
+• Begin your answer at the bottom of the page; you may continue your answer onto the next page as 
+needed. 
+Grading 
+• The exam contains four sections: Section A (Logic and Search), Section B (Reinforcement 
+Learning and Language Models), Section C (Machine Learning), and Section D (Redacted). 
+• You must answer exactly one (1) question from each section, for a total of four (4) questions. 
+• Each question is weighted equally. 
+• Credit is awarded for demonstrated understanding. A partial answer that shows genuine conceptual 
+engagement is valued over a confident but shallow one. 
+ 
+By signing below, I certify that the work on this exam is my own without the use of external resources. 
+ 
+________________________________ 
+Printed Name 
+ 
+________________________________ 
+Signature 
+
+Section A — Logic and Search 
+Sample 1. Iterative deepening depth -first search (IDS) is often described as combining the best properties of depth -first 
+and breadth-first search. A student argues that “IDS is strictly better than BFS in every case since it uses less memory and 
+finds optimal solutions. Hence, there is no reason to ever prefer BFS.” Evaluate this claim. 
+Your answer must address: 
+• What property of a problem IDS relies on to guarantee optimality, and under what conditions that property fails; 
+• A concrete scenario where BFS finds an optimal solution but IDS does not; and 
+• What this reveals about how the choice of search algorithm should be driven by problem structure rather than 
+general-purpose efficiency claims. 
+ 
+Section B — Reinforcement Learning and Language Models 
+Sample 2. A language model is evaluated using cross -entropy loss on a held -out test set. A researcher observes that after 
+an additional week of training, the model's cross -entropy on the test set increases slightly, even though its cross -entropy 
+on the training set continues to decrease. The researcher concludes the model has begun to overfit and immediately halts 
+training. Evaluate this conclusion. 
+Your answer must address: 
+• What cross-entropy measures in the context of language modeling and how it relates to perplexity; 
+• Why a divergence between training and test cross -entropy is not by itself sufficient evidence of harmful 
+overfitting; and 
+• A concrete downstream task where a model at the earlier checkpoint might actually perform worse despite having 
+lower test cross-entropy. 
+ 
+Section C — Machine Learning 
+Sample 3. CNNs and GNNs both update a node's (or pixel's) representation by aggregating information from its local 
+neighborhood, yet they make fundamentally different assumptions about the structure of their input. A colleague proposes 
+using a CNN to classify molecules by their biological activity, reasoning that “a molecule is just a graph, and a graph can 
+be represented as a matrix, so a CNN should work fine.” Evaluate this proposal. 
+Your answer must address: 
+• What structural assumption a CNN makes about its input that allows neighborhood aggregation to work 
+effectively, and why that assumption holds for images but fails for molecular graphs; 
+• What property of GNN message passing makes it better suited to graph-structured data, and what it preserves that 
+a CNN applied to an adjacency matrix would discard; and 
+• One genuine limitation that GNNs share with CNNs despite their architectural differences, grounded in what both 
+approaches ultimately do when they collapse neighborhood information into a single representation. 
