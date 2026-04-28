@@ -1,0 +1,183 @@
+Proposition	A statement that is either true or false. The basic building block of propositional logic.
+Knowledge Base (KB)	A set of facts and rules an agent uses for reasoning about the world.
+Inference	The process of deriving new statements from known statements using logical rules.
+Entailment (KB ⊨ phi)	phi is true in every model where the knowledge base is true. It is a semantic relationship, not a proof procedure.
+Provability (KB ⊢ phi)	phi can be derived from the knowledge base using formal inference rules. It is a syntactic relationship.
+Soundness	If a system can prove a statement, then that statement is actually true. No false conclusions are ever derived. (KB ⊢ phi implies KB ⊨ phi)
+Completeness	If a statement is true, the system can prove it. All true conclusions are derivable. (KB ⊨ phi implies KB ⊢ phi)
+Validity	A formula that is true in every possible model, regardless of variable assignments. Also called a tautology.
+Satisfiability	A formula is satisfiable if it is true in at least one model. It is unsatisfiable if true in no model.
+CNF (Conjunctive Normal Form)	A logical formula expressed as an AND of OR-clauses. Required format for applying resolution.
+Resolution	An inference rule that derives new clauses by combining complementary literals. Used in proof by contradiction — if the empty clause is derived, entailment is proven.
+Steps to convert to CNF	1) Eliminate implications and biconditionals. 2) Push negations inward (DeMorgan's laws + double negation). 3) Distribute OR over AND. 4) Remove tautological clauses.
+How to prove entailment by resolution	Negate the query, add it to the KB in CNF, then repeatedly resolve clauses. Deriving the empty clause proves the entailment.
+DeMorgan's Laws	not(A and B) = (not A) or (not B). not(A or B) = (not A) and (not B). Used to push negations inward during CNF conversion.
+Implication elimination	A => B is equivalent to (not A) or B. This is the first step in converting to CNF.
+Common trap: implication vs equivalence	A => B does NOT mean B => A. Implication is one-directional. Biconditional (A <=> B) means both directions hold.
+Predicate (FOL)	A relation or property applied to objects, e.g., Student(x) says x is a student. Predicates give first-order logic its expressive power over propositional logic.
+Universal quantifier (forall)	"For all objects in the domain." Used with implication: "All A are B" becomes forall x (A(x) => B(x)).
+Existential quantifier (exists)	"There exists at least one object." Used with conjunction: "Some A are B" becomes exists x (A(x) and B(x)).
+Why quantifier order matters	forall x exists y is NOT the same as exists y forall x. "Everyone loves someone" (each person may love a different person) differs from "There is someone loved by everyone" (one specific person).
+FOL translation: "All A are B"	forall x (A(x) => B(x))
+FOL translation: "Some A are B"	exists x (A(x) and B(x))
+FOL translation: "No A are B"	forall x (A(x) => not B(x)), or equivalently not exists x (A(x) and B(x))
+Common FOL mistake: "All" with AND	"All dogs are animals" is forall x (Dog(x) => Animal(x)), NOT forall x (Dog(x) AND Animal(x)). Using AND would say everything in the domain is both a dog and an animal.
+Unification	Finding variable substitutions that make two logical expressions identical so inference rules like resolution can be applied.
+Substitution	Replacing variables with specific terms (constants or other variables) during unification or inference.
+Forward Chaining	Data-driven inference: start from known facts and repeatedly apply rules to derive new facts until the goal is reached or no more facts can be derived.
+Backward Chaining	Goal-driven inference: start from the query and work backward, checking which rules and facts could establish it. More focused than forward chaining.
+State Space	The set of all possible states reachable in a search problem.
+Initial State	The starting state of the agent in a search problem.
+Goal Test	A condition or function used to determine whether a given state is a solution.
+Successor Function	Rules defining how to generate the next states from a current state. Defines the edges in the state space graph.
+Path Cost (g(n))	The total accumulated cost from the start state to node n along the current path.
+Branching Factor (b)	The average number of successors per state. Determines how quickly the search tree grows.
+Solution Depth (d)	The depth of the shallowest goal node in the search tree.
+Maximum Depth (m)	The maximum depth of any node in the search tree. Relevant for DFS worst-case analysis.
+BFS (Breadth-First Search)	Expands shallowest nodes first. Complete and optimal with unit or monotone edge costs. Time and space both O(b^d). Best for shallow solutions.
+DFS (Depth-First Search)	Expands deepest nodes first. Uses very low memory O(bm) but is not complete in infinite-depth spaces and not optimal. Best when memory is severely limited.
+UCS (Uniform Cost Search)	Expands the node with the lowest path cost g(n). Complete and optimal with positive step costs. Strictly necessary when edge costs are non-uniform.
+IDS (Iterative Deepening Search)	Repeated depth-limited DFS with increasing depth limits. Combines BFS-level completeness and optimality (unit costs) with DFS-level memory O(bd). Ideal when solution depth is unknown.
+When IDS fails to be optimal	IDS guarantees optimality only with unit step costs. With varying edge costs, it may return a shallower but costlier solution, so UCS would be preferred.
+Why IDS is not "strictly better than BFS in every case"	IDS relies on unit step costs for optimality. When edges have varying costs, BFS (or UCS) may find the optimal solution while IDS does not. Algorithm choice should match problem structure.
+A* Search	Expands nodes by f(n) = g(n) + h(n). Optimal when the heuristic is admissible (tree search) or consistent (graph search). Often the best choice when a good heuristic is available.
+A* main practical limitation	Memory. A* stores many frontier and explored nodes, which can become prohibitive on large problems.
+IDA* (Iterative Deepening A*)	Iterative deepening using f-cost thresholds instead of depth. Gets A*-style optimality with DFS-level memory, but re-expands nodes across iterations.
+Greedy Best-First Search	Expands the node with the lowest heuristic value h(n). Often fast but not optimal because it ignores the path cost g(n).
+Beam Search	Keeps only the top k nodes at each level. Fast and memory-efficient but can prune the optimal path. Neither complete nor optimal.
+Admissible Heuristic	A heuristic that never overestimates the true cost to the goal: h(n) <= h*(n). Guarantees A* finds the optimal solution in tree search.
+Consistent Heuristic	A heuristic satisfying the triangle inequality: h(n) <= c(n,n') + h(n'). Stronger than admissibility. Prevents A* graph search from needing to reopen nodes.
+Why consistency matters beyond admissibility	With only admissibility, A* graph search may need to reopen already-expanded nodes when it finds cheaper paths, causing inefficiency. Consistency eliminates this problem.
+Dominating Heuristic	When two heuristics are both admissible but one always gives a higher estimate (closer to true cost), the higher one dominates and leads to fewer node expansions in A*.
+Heuristic Error	The difference between the heuristic estimate h(n) and the true remaining cost h*(n). Lower error generally means more efficient search.
+BFS vs DFS	BFS is complete and optimal (unit costs) but uses O(b^d) memory. DFS uses much less memory O(bm) but is not complete or optimal in general.
+UCS vs A*	UCS expands by path cost g(n) alone. A* adds a heuristic h(n) to guide search more efficiently toward the goal.
+Admissible vs Consistent	Admissible means never overestimates. Consistent means admissible plus monotonic (satisfies triangle inequality). Every consistent heuristic is admissible, but not vice versa.
+Local Search vs Systematic Search	Local search optimizes the current state without tracking paths (e.g., hill climbing). Systematic search expands a tree or graph and tracks full paths to the goal (e.g., BFS, A*).
+Hill Climbing	Move to the best neighboring state. Simple and fast but easily stuck at local optima and plateaus.
+Local Optimum	A state that is better than all its neighbors but not the globally best state. A common failure of hill climbing.
+Plateau	A region of the search space where all neighboring states have equal value, stalling progress for hill climbing.
+Random Restarts	Running hill climbing multiple times from different random starting points to reduce the chance of getting stuck at a single local optimum.
+Simulated Annealing	Occasionally accepts worse moves controlled by a "temperature" parameter and cooling schedule. High temperature allows more exploration; as it cools, behavior becomes more exploitative.
+Cooling Schedule	The rule for reducing the temperature over time in simulated annealing. Controls the transition from exploration to exploitation (e.g., geometric cooling like T = 0.99 * T).
+Genetic Algorithm	Population-based optimization using selection, crossover, and mutation. Strong global exploration but has many hyperparameters to tune.
+Selection (Genetic Algorithm)	Choosing individuals from the population to be parents, typically favoring higher-fitness individuals.
+Crossover (Genetic Algorithm)	Combining parts of two parent solutions to create offspring, mixing traits from both.
+Mutation (Genetic Algorithm)	Introducing random changes to offspring to maintain diversity and prevent premature convergence.
+Elitism (Genetic Algorithm)	Preserving the best individuals across generations to prevent losing top solutions during crossover and mutation.
+Common trap: non-admissible heuristic with A*	If the heuristic overestimates the true cost, A* is NOT guaranteed to find the optimal solution. Always verify admissibility before claiming optimality.
+Common trap: DFS for completeness	DFS is not complete in spaces with infinite depth. If completeness is required, use BFS, IDS, or UCS instead.
+N-gram Model	Predicts the next word using a fixed window of previous words. Unigram uses no context, bigram uses one previous word, trigram uses two.
+Markov Assumption in N-grams	The probability of a word depends only on a limited number of preceding words, not the entire history. This makes computation tractable but limits long-range understanding.
+Chain Rule for Language Modeling	The probability of a sequence is the product of each word's probability given all preceding words: P(w1...wn) = product of P(wi | w1...w(i-1)).
+Unigram Model Limitation	Uses no context at all — each word is predicted independently. Fast but produces incoherent text with poor local flow.
+Bigram vs Trigram	Trigram captures more local grammar by using two previous words instead of one, but suffers worse data sparsity because many three-word combinations are never observed in training.
+Core Tradeoff of Larger N-grams	Larger context windows improve local quality and grammar, but data sparsity worsens because many long word combinations are never seen in training data.
+Why Smoothing is Needed	Without smoothing, unseen word combinations get zero probability, which breaks sequence likelihood calculations entirely. Smoothing assigns small probability to unseen events so they remain possible.
+Add-one (Laplace) Smoothing	Adds 1 to every count. Simple but tends to over-smooth, distorting the probabilities of common events by redistributing too much mass to unseen events.
+Add-alpha Smoothing	Adds a tunable alpha (usually less than 1) to every count. More balanced than add-one, giving better probability estimates when alpha is properly tuned.
+Cross-entropy in Language Modeling	Measures the average surprise (negative log likelihood per token) of the model on real text. Lower cross-entropy means the model predicts text better.
+Perplexity	A measure of how uncertain the model is when predicting the next word. Conceptually, the effective number of equally likely choices the model considers. Lower is generally better.
+Relationship between Cross-entropy and Perplexity	Perplexity equals 2 raised to the power of cross-entropy. They measure the same thing on different scales — both decrease when the model improves.
+Why Lower Perplexity Does Not Always Mean a Better Model	Perplexity is an intrinsic metric measuring prediction quality on held-out text. A model with slightly worse perplexity can still outperform on downstream tasks like summarization or translation.
+Intrinsic Evaluation	Tests the model in isolation using metrics like perplexity or cross-entropy on held-out data. Fast and cheap, good for quick iteration during development.
+Extrinsic Evaluation	Tests the model's impact on a real downstream task like translation, speech recognition, or summarization. Slower and more expensive but reflects real-world usefulness.
+Why Intrinsic and Extrinsic Can Diverge	A model optimized for perplexity may learn patterns that don't help (or even hurt) a specific task. Real-world usefulness depends on more than just next-word prediction accuracy.
+Overfitting in Language Models	When training cross-entropy keeps dropping but test cross-entropy rises. However, this divergence alone is not sufficient proof of harmful overfitting — downstream task performance may still improve.
+One-hot Vectors	Represent each word as a sparse, high-dimensional vector with a single 1. Treat all words as equally unrelated and cannot capture semantic similarity.
+Dense Embeddings	Low-dimensional vectors where semantically similar words are placed close together. Capture meaningful relationships, reduce dimensionality, and transfer well to downstream tasks.
+Word2Vec Skip-gram	Learns word representations by predicting nearby context words given a center word. Words appearing in similar contexts end up close in vector space.
+Negative Sampling in Word2Vec	Computing the full softmax over the entire vocabulary is expensive. Negative sampling approximates it by only updating against a small random set of "negative" words, making training efficient.
+Static Embedding Limitation	Every occurrence of a word gets the same vector regardless of sentence context. The word "bank" has one representation whether it means a river bank or a financial institution.
+Co-occurrence Does Not Equal Deep Semantics	Words that frequently appear together may share statistical patterns without sharing true meaning. Relying solely on co-occurrence can mislead about semantic relationships.
+Exploration (RL)	Trying uncertain or less-known actions to gather information about their true value. Sacrifices short-term reward for long-term learning.
+Exploitation (RL)	Choosing the currently best-known action to maximize immediate reward. Good for short-term payoff but risks missing better alternatives.
+Exploration-Exploitation Tradeoff	The fundamental tension between gaining new information (exploration) and using current knowledge for reward (exploitation). Both are needed for good long-term performance.
+Under-exploration Risk	Premature convergence to a suboptimal policy. The agent locks into a mediocre action and never discovers better options.
+Over-exploration Risk	Excessive short-term losses from too much random behavior. Leads to slow convergence and low cumulative reward during learning.
+Regret	The difference between the reward received and the reward of the best possible action at each step.
+Cumulative Regret	The total regret accumulated over many decisions. A key measure of how much an agent's imperfect choices cost it over time.
+Epsilon-greedy	Exploit the best-known action with probability 1-epsilon, explore a random action with probability epsilon. Simple and widely used, but random exploration can be inefficient in large action spaces.
+Decaying Epsilon	Start with high exploration (high epsilon) and gradually reduce it over time. Strong practical default because early information gain is high, then exploitation takes over as estimates improve.
+Optimistic Initialization	Start with high value estimates for all actions. The agent naturally explores many actions to verify those optimistic beliefs, encouraging exploration without explicit randomness at every step.
+UCB (Upper Confidence Bound)	Choose the action that maximizes estimated value plus an uncertainty bonus. More directed than epsilon-greedy because it specifically targets uncertain actions rather than exploring randomly.
+Thompson Sampling	Sample from the posterior belief distribution over each action's value and pick the action with the best sampled value. Naturally balances exploration and exploitation through uncertainty.
+Softmax / Boltzmann Exploration	Select actions with probability proportional to their estimated value (using a temperature parameter). Higher temperature means more random; lower temperature means more greedy.
+Multi-armed Bandit	The simplest form of the exploration-exploitation tradeoff. Each arm (action) has an unknown reward distribution; the agent picks arms repeatedly to maximize total reward over time.
+Stationary vs Non-stationary Environments	In stationary environments, reward distributions are fixed, so exploration can be safely reduced over time. In non-stationary environments, rewards change, requiring some exploration to continue indefinitely.
+Why Setting Epsilon to 0 Too Early is Risky	After limited interactions, reward estimates may be inaccurate. Stopping all exploration locks the agent into a potentially suboptimal action, and cumulative regret can grow unboundedly.
+Exploration is Not "Random Forever"	Good exploration is strategic and decreasing. It gathers information early when uncertainty is high, then gradually shifts to exploitation as the agent becomes more confident.
+Connection Between RL Exploration and LM Uncertainty	Both domains manage uncertainty: RL agents choose among uncertain actions, language models choose among uncertain next tokens. Better uncertainty handling improves decisions in both cases.
+Connection Between Exploration and Search	Exploration in RL is analogous to broad search (trying many paths), while exploitation is analogous to focusing on the best-known path. Both tradeoffs balance breadth vs depth.
+Bias-Variance Tradeoff	The tension between a model being too simple (high bias, underfitting) and too complex (high variance, overfitting). The goal is a model complex enough to capture patterns but simple enough to generalize.
+High Bias (Underfitting)	High training error AND high validation error. The model is too simple to capture the underlying pattern. Fix by increasing model capacity, adding features, or using a more expressive model.
+High Variance (Overfitting)	Low training error BUT high validation error. The model memorizes training data noise. Fix with regularization, more training data, pruning, or a simpler model.
+Regularization	A technique that penalizes model complexity during training to prevent overfitting. Makes the model prefer simpler solutions that generalize better.
+Confusion Matrix	A table summarizing predictions: True Positives (TP), True Negatives (TN), False Positives (FP), and False Negatives (FN). The basis for computing most classification metrics.
+True Positive (TP)	The model correctly predicts the positive class. The prediction is positive and the actual label is also positive.
+True Negative (TN)	The model correctly predicts the negative class. The prediction is negative and the actual label is also negative.
+False Positive (FP)	The model incorrectly predicts positive when the actual label is negative. Also called a "Type I error" or "false alarm."
+False Negative (FN)	The model incorrectly predicts negative when the actual label is positive. Also called a "Type II error" or a "miss."
+Accuracy	The proportion of all predictions that are correct: (TP + TN) / (TP + TN + FP + FN). Best when classes are balanced and error costs are roughly equal.
+Precision	Of all predicted positives, how many are actually positive: TP / (TP + FP). Prioritize when false positives are costly (e.g., spam filtering).
+Recall (Sensitivity / TPR)	Of all actual positives, how many did the model catch: TP / (TP + FN). Prioritize when false negatives are costly (e.g., medical screening).
+Specificity (TNR)	Of all actual negatives, how many did the model correctly identify: TN / (TN + FP). Important when correctly identifying negatives matters.
+F1 Score	The harmonic mean of precision and recall: 2 * (Precision * Recall) / (Precision + Recall). Useful when you need a single metric balancing both, especially under class imbalance.
+MCC (Matthews Correlation Coefficient)	A balanced metric that uses all four confusion matrix values. Ranges from -1 to +1. Considered more informative than accuracy or F1 for imbalanced datasets.
+ROC-AUC	Area under the ROC curve (TPR vs FPR at all thresholds). Measures ranking quality in a threshold-independent way. Can look misleadingly high under severe class imbalance.
+PR-AUC	Area under the Precision-Recall curve. More informative than ROC-AUC when the positive class is rare, because it focuses on how well the model identifies the minority class.
+Why Accuracy is Misleading with Imbalanced Data	A classifier can achieve high accuracy by always predicting the majority class. Example: with 2% positive prevalence, predicting all negative gives 98% accuracy but catches zero positives.
+SMOTE (Synthetic Minority Over-sampling Technique)	Creates new minority-class samples by interpolating between existing minority points rather than simply duplicating them. Aims to improve recall on underrepresented classes.
+Critical SMOTE Pipeline Rule	Always split into train/test FIRST, then apply SMOTE only to the training set. Applying SMOTE before splitting leaks synthetic information into the test set and inflates results.
+Why SMOTE Can Hurt Precision	By generating synthetic minority samples near the decision boundary, SMOTE can create ambiguous points that increase false positives even as recall improves.
+Random Oversampling	Duplicates existing minority-class points. Simple but risks overfitting to the exact duplicated examples.
+Random Undersampling	Removes majority-class points to balance the dataset. Simple but risks discarding useful information that the model could learn from.
+Class Weights	Assign higher penalty for errors on the minority class during training. The model learns to pay more attention to rare cases without altering the data itself.
+Threshold Moving	Adjusting the decision cutoff (e.g., from 0.5 to 0.3) to trade precision for recall or vice versa. Requires proper calibration and validation on held-out data.
+SHAP (SHapley Additive exPlanations)	A method for explaining individual predictions by assigning each feature a contribution value based on Shapley values from cooperative game theory.
+SHAP Global Summary Plot	Shows overall feature impact across the entire dataset. Features with higher average absolute SHAP values have stronger overall influence on predictions.
+SHAP Local Waterfall / Force Plot	Explains a single prediction by showing how each feature pushes the model output higher or lower from the baseline expected value.
+SHAP Sign Convention	Positive SHAP values push the prediction toward the positive class (higher output). Negative SHAP values push toward the negative class (lower output).
+SHAP Dependence Plot	Shows how a single feature's value relates to its SHAP value across the dataset. Reveals nonlinear effects and potential feature interactions.
+Why Good SHAP Explanations Don't Prove Model Validity	SHAP explains what the model learned, not whether what it learned is correct or ethical. A model can produce intuitive-looking explanations while still being unreliable, biased, or unfair.
+Additional Validation Beyond SHAP	Before deployment, check predictive performance on held-out data, test for fairness across subgroups, and validate that explanations align with domain expertise — not just that they look reasonable.
+Linear / Logistic Regression	Interpretable, fast, and stable. Strong baselines for tabular data with linear trends. Limited in capturing nonlinear relationships.
+Decision Tree	Captures nonlinear patterns with intuitive if-then rules. Easy to explain. But prone to high variance and overfitting without pruning.
+Random Forest	An ensemble of decision trees. Strong out-of-the-box performance and more robust to overfitting than a single tree. Less interpretable than individual trees.
+SVM (Support Vector Machine)	Finds the maximum-margin decision boundary. Good on medium-sized data with tuned kernels. Sensitive to feature scaling and kernel choice.
+Neural Network	Very flexible function approximation capable of learning complex patterns. Requires large data and significant computation. Often treated as a "black box."
+CNN (Convolutional Neural Network)	Assumes a fixed grid structure (like pixels in an image) where spatial locality is meaningful. Uses local filters that slide over the grid to detect patterns.
+GNN (Graph Neural Network)	Handles arbitrary graph structures where neighborhood is defined by edges, not spatial position. Uses message passing to aggregate information from connected nodes.
+CNNs vs GNNs: Key Structural Difference	CNNs assume a fixed grid with spatial locality. GNNs work on arbitrary graph topologies with no fixed layout. GNNs preserve permutation invariance while CNNs do not.
+Why a CNN Fails on Molecular Graphs	A molecule's graph has no fixed spatial layout. Representing it as an adjacency matrix and applying a CNN means reordering atoms changes the matrix even though the molecule is the same — violating permutation invariance.
+What GNN Message Passing Preserves	Permutation invariance: the output is the same regardless of how nodes are ordered. GNNs aggregate neighbor info based on graph connectivity, not position.
+Limitation Shared by CNNs and GNNs	Both collapse local neighborhood information into a single representation through aggregation, which can lose fine-grained structural detail. This is known as over-squashing or information bottleneck.
+Common Pitfall: Accuracy on Imbalanced Data	Reporting only accuracy when classes are imbalanced gives a misleadingly positive picture. Always check precision, recall, F1, or PR-AUC for minority class performance.
+Common Pitfall: SMOTE Before Splitting	Applying SMOTE to the full dataset before train/test split creates data leakage. Synthetic points based on test examples contaminate the training set.
+Strategy (Game Theory)	A complete plan of action specifying what a player will do in every possible situation during the game.
+Payoff	The utility or reward a player receives from a particular outcome of the game.
+Nash Equilibrium	A state where no player can improve their payoff by unilaterally changing their own strategy. All players are playing mutual best responses.
+Dominant Strategy	An action that is the best choice for a player regardless of what the opponent does. If it exists, a rational player always plays it.
+Strictly Dominated Strategy	An action that is always worse than some other action, no matter what the opponent does. Can be safely eliminated from consideration.
+No Dominant Strategy Does NOT Mean No Nash Equilibrium	A game can lack dominant strategies but still have Nash equilibria found through mutual best responses or mixed strategies. Nash's theorem guarantees at least one exists in finite games.
+Best Response	The action that gives a player the highest payoff given a specific strategy by the opponent. Nash equilibria occur where all players simultaneously play best responses.
+Saddle Point	A stable pure-strategy equilibrium in a zero-sum matrix game where the row player's maximin equals the column player's minimax value.
+Zero-sum Game	A game where one player's gain is exactly the other's loss. The payoffs always sum to zero (or a constant).
+Minimax	Choose the action that maximizes your minimum possible payoff, assuming the opponent plays optimally against you. Guarantees the best worst-case outcome in adversarial settings.
+Minimax Procedure	1) Expand game tree to depth limit or terminal states. 2) Evaluate leaf utilities. 3) Back up values: max at MAX nodes, min at MIN nodes. 4) Choose root action with the best backed-up value.
+Evaluation Function (Game Trees)	A heuristic that estimates the utility of a non-terminal game state when the tree cannot be fully expanded. Quality of the evaluation function directly affects play quality.
+Terminal State (Game Trees)	A state where the game is over (win, loss, or draw). Has a known utility value that does not need estimation.
+Alpha-beta Pruning	Produces the exact same result as full minimax but skips branches that provably cannot affect the final decision. Makes search faster without changing the answer.
+Alpha (in Alpha-beta Pruning)	The best value that MAX can guarantee so far along the current path. Used as a lower bound to prune at MIN nodes.
+Beta (in Alpha-beta Pruning)	The best value that MIN can guarantee so far along the current path. Used as an upper bound to prune at MAX nodes.
+Prune Condition at a MIN Node	If the current value becomes less than or equal to alpha, prune remaining children — MAX already has a guaranteed better option elsewhere.
+Prune Condition at a MAX Node	If the current value becomes greater than or equal to beta, prune remaining children — MIN already has a guaranteed better option elsewhere.
+Why Move Ordering Matters for Alpha-beta	Examining likely best moves first increases pruning dramatically, reducing worst-case O(b^d) toward best-case O(b^(d/2)). Poor ordering yields little to no pruning benefit.
+Alpha-beta Does NOT Change the Optimal Decision	A common misconception. Alpha-beta pruning only skips irrelevant branches — it always returns the exact same move and value as full minimax.
+Why Greedy One-step Play Can Lose to Minimax	A locally attractive move may lead to a position where the opponent gains a large strategic advantage. Minimax considers the full game tree to avoid such traps.
+Depth-limited Minimax	When the full game tree is too large, expand only to a fixed depth and use an evaluation function at the cutoff. Trades accuracy for tractability.
+Mixed Strategies	Randomized action selection where a player assigns probabilities to actions. Necessary when no pure-strategy Nash equilibrium exists. Players randomize to make opponents indifferent.
+Pure vs Mixed Strategy	A pure strategy is a single definite action. A mixed strategy is a probability distribution over actions. Some games only have equilibria in mixed strategies.
+Steps to Analyze a Normal-form Game Matrix	1) Identify each player's actions. 2) Fill in payoff pairs. 3) Eliminate strictly dominated strategies. 4) Find mutual best responses (Nash equilibria). 5) Distinguish pure vs mixed equilibria.
+Connection Between Adversarial Search and ML	Both use evaluation functions (minimax evaluation vs learned value estimation), but adversarial search provides game-theoretic guarantees while ML offers statistical approximation. Self-play systems combine both.
+Self-play	A training paradigm where an agent plays against itself to improve. Combines adversarial search concepts with reinforcement learning, as seen in systems like AlphaGo.
